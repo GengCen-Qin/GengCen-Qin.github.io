@@ -1,1 +1,662 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><link href="/static/css/chunk-libs.eebac533.css" rel="stylesheet"><link href="/static/css/app.0d31776f.css" rel="stylesheet"><!-- hexo injector head_end start --><script rel="prefetch" async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/components/prism-core.js" data-manual></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/autoloader/prism-autoloader.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/toolbar/prism-toolbar.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js"></script><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/themes/prism.min.css"/><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/toolbar/prism-toolbar.min.css"/><link rel="stylesheet" href="https://fonts.loli.net/css?family=Rubik" /><script rel="preload" src="https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.js"></script><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.css"/><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"></head><body id="body-container"><noscript><strong>We're sorry but Aurora Blog doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script>(function(e){function t(t){for(var a,n,u=t[0],i=t[1],c=t[2],l=0,p=[];l<u.length;l++)n=u[l],Object.prototype.hasOwnProperty.call(o,n)&&o[n]&&p.push(o[n][0]),o[n]=0;for(a in i)Object.prototype.hasOwnProperty.call(i,a)&&(e[a]=i[a]);f&&f(t);while(p.length)p.shift()();return s.push.apply(s,c||[]),r()}function r(){for(var e,t=0;t<s.length;t++){for(var r=s[t],a=!0,n=1;n<r.length;n++){var u=r[n];0!==o[u]&&(a=!1)}a&&(s.splice(t--,1),e=i(i.s=r[0]))}return e}var a={},n={runtime:0},o={runtime:0},s=[];function u(e){return i.p+"static/js/"+({404:"404",about:"about",archives:"archives",categories:"categories",page:"page",post:"post",result:"result",tags:"tags"}[e]||e)+"."+{404:"00d640a8",about:"024aacd1",archives:"574ac664",categories:"90aa5475",page:"a02618ad",post:"cebfbaa4",result:"39470350",tags:"2ad613f5"}[e]+".js"}function i(t){if(a[t])return a[t].exports;var r=a[t]={i:t,l:!1,exports:{}};return e[t].call(r.exports,r,r.exports,i),r.l=!0,r.exports}i.e=function(e){var t=[],r={404:1,about:1,archives:1,categories:1,page:1,post:1,result:1,tags:1};n[e]?t.push(n[e]):0!==n[e]&&r[e]&&t.push(n[e]=new Promise((function(t,r){for(var a="static/css/"+({404:"404",about:"about",archives:"archives",categories:"categories",page:"page",post:"post",result:"result",tags:"tags"}[e]||e)+"."+{404:"1a6cd5bd",about:"32dfa3b0",archives:"c0d49bd5",categories:"10e2be12",page:"749ad047",post:"9f951a60",result:"10e2be12",tags:"10e2be12"}[e]+".css",o=i.p+a,s=document.getElementsByTagName("link"),u=0;u<s.length;u++){var c=s[u],l=c.getAttribute("data-href")||c.getAttribute("href");if("stylesheet"===c.rel&&(l===a||l===o))return t()}var p=document.getElementsByTagName("style");for(u=0;u<p.length;u++){c=p[u],l=c.getAttribute("data-href");if(l===a||l===o)return t()}var f=document.createElement("link");f.rel="stylesheet",f.type="text/css",f.onload=t,f.onerror=function(t){var a=t&&t.target&&t.target.src||o,s=new Error("Loading CSS chunk "+e+" failed.\n("+a+")");s.code="CSS_CHUNK_LOAD_FAILED",s.request=a,delete n[e],f.parentNode.removeChild(f),r(s)},f.href=o;var d=document.getElementsByTagName("head")[0];d.appendChild(f)})).then((function(){n[e]=0})));var a=o[e];if(0!==a)if(a)t.push(a[2]);else{var s=new Promise((function(t,r){a=o[e]=[t,r]}));t.push(a[2]=s);var c,l=document.createElement("script");l.charset="utf-8",l.timeout=120,i.nc&&l.setAttribute("nonce",i.nc),l.src=u(e);var p=new Error;c=function(t){l.onerror=l.onload=null,clearTimeout(f);var r=o[e];if(0!==r){if(r){var a=t&&("load"===t.type?"missing":t.type),n=t&&t.target&&t.target.src;p.message="Loading chunk "+e+" failed.\n("+a+": "+n+")",p.name="ChunkLoadError",p.type=a,p.request=n,r[1](p)}o[e]=void 0}};var f=setTimeout((function(){c({type:"timeout",target:l})}),12e4);l.onerror=l.onload=c,document.head.appendChild(l)}return Promise.all(t)},i.m=e,i.c=a,i.d=function(e,t,r){i.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},i.r=function(e){"undefined"!==typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},i.t=function(e,t){if(1&t&&(e=i(e)),8&t)return e;if(4&t&&"object"===typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(i.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var a in e)i.d(r,a,function(t){return e[t]}.bind(null,a));return r},i.n=function(e){var t=e&&e.__esModule?function(){return e["default"]}:function(){return e};return i.d(t,"a",t),t},i.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},i.p="/",i.oe=function(e){throw console.error(e),e};var c=window["webpackJsonp"]=window["webpackJsonp"]||[],l=c.push.bind(c);c.push=t,c=c.slice();for(var p=0;p<c.length;p++)t(c[p]);var f=l;r()})([]);</script><script src="/static/js/chunk-libs.dc6146cd.js"></script><script src="/static/js/app.6d2c358d.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="google-site-verification" content="TZE0rZyIqLl10trYu3BWBWa1Vmz6HFwhb2OcNEK4u-s" />
+     <link rel="shortcut icon" href= /img/favicon.ico >
+    <title>
+        玲辰书斋
+        12312
+    </title>
+    <meta name="description" content= 嘿，我是刘训灼～这是我的子站，用于展示写的Hexo主题：Coder。欢迎访问！ >
+    <meta name="keywords" content= Blog,Hexo,Theme,刘训灼,LiuXunzhuo >
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-home
+ replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            Redis 底层结构
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <h2 id="BigKey"><a href="#BigKey" class="headerlink" title="BigKey"></a>BigKey</h2><h3 id="是什么-？"><a href="#是什么-？" class="headerlink" title="是什么 ？"></a>是什么 ？</h3><p>BigKey通常以Key的大小和Key中成员的数量来综合判定，例如：</p>
+<ol>
+<li>Key本身的数据量过大：一个String类型的Key，它的值为5 MB。</li>
+<li>Key中的成员数过多：一个ZSET类型的Key，它的成员数量为10,000个。</li>
+<li>Key中成员的数据量过大：一个Hash类型的Key，它的成员数量虽然只有1,000个但这些成员的Value（值）总大小为100 MB。</li>
+</ol>
+<p>推荐值：</p>
+<ol>
+<li>单个key的value小于10KB</li>
+<li>对于集合类型的key，建议元素数量小于1000</li>
+</ol>
+<h3 id="有什么危害-？"><a href="#有什么危害-？" class="headerlink" title="有什么危害 ？"></a>有什么危害 ？</h3><ul>
+<li>网络阻塞</li>
+</ul>
+<p>对BigKey执行读请求时，少量的QPS就可能导致带宽使用率被占满，导致Redis实例，乃至所在物理机变慢 </p>
+<ul>
+<li>数据倾斜</li>
+</ul>
+<p>BigKey所在的Redis实例内存使用率远超其他实例，无法使数据分片的内存资源达到均衡 </p>
+<ul>
+<li>Redis阻塞</li>
+</ul>
+<p>对元素较多的hash、list、zset等做运算会耗时较旧，使主线程被阻塞 </p>
+<ul>
+<li>CPU压力</li>
+</ul>
+<p>对BigKey的数据序列化和反序列化会导致CPU的使用率飙升，影响Redis实例和本机其它应用</p>
+<h3 id="怎么识别-？"><a href="#怎么识别-？" class="headerlink" title="怎么识别 ？"></a>怎么识别 ？</h3><ul>
+<li>redis-cli –bigkeys</li>
+</ul>
+<p>利用redis-cli提供的–bigkeys参数，可以遍历分析所有key，并返回Key的整体统计信息与每个数据的Top1的big key </p>
+<ul>
+<li>scan扫描</li>
+</ul>
+<p>自己编程，利用scan扫描Redis中的所有key，利用strlen、hlen等命令判断key的长度（此处不建议使用MEMORY USAGE） </p>
+<ul>
+<li>第三方工具</li>
+</ul>
+<p>利用第三方工具，如 Redis-Rdb-Tools 分析RDB快照文件，全面分析内存使用情况 </p>
+<ul>
+<li>网络监控</li>
+</ul>
+<p>自定义工具，监控进出Redis的网络数据，超出预警值时主动告警</p>
+<h3 id="如何删除-？"><a href="#如何删除-？" class="headerlink" title="如何删除 ？"></a>如何删除 ？</h3><p>BigKey内存占用较多，即便时删除这样的key也需要耗费很长时间，导致Redis主线程阻塞，引发一系列问题。 </p>
+<ul>
+<li>redis 3.0 及以下版本</li>
+</ul>
+<p>如果是集合类型，则遍历BigKey的元素，先逐个删除子元素，最后删除BigKey </p>
+<ul>
+<li>Redis 4.0以后 </li>
+</ul>
+<p>Redis在4.0后提供了异步删除的命令：unlink</p>
+<h2 id="底层数据结构"><a href="#底层数据结构" class="headerlink" title="底层数据结构"></a>底层数据结构</h2><h3 id="动态字符串SDS"><a href="#动态字符串SDS" class="headerlink" title="动态字符串SDS"></a>动态字符串SDS</h3><p>Redis并未使用C语言的字符串，因为存在一些问题：</p>
+<ol>
+<li>获取字符串长度需要运算</li>
+<li>非二进制安全</li>
+<li>不可修改</li>
+</ol>
+<p>因此Redis自己优化了字符串结构，为简单动态字符串（Simple Dynamic String），简称SDS。</p>
+<p>我们在最初学习Redis时，会操作：<code>set key value</code>, 底层实际上创建了两个SDS，一个包含 key，一个包含 value。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ib64ydeij30w00dtq5b.jpg" alt="image-20221126101355075"></p>
+<p>​    我们看到它提到了动态字符串，那相应应该有动态扩容的能力，假如我们要给SDS追加一段字符串“,Amy”，这里首先会申请新内存空间：</p>
+<ul>
+<li>如果新字符串小于1M，则新空间为扩展后字符串长度的两倍+1；</li>
+<li>如果新字符串大于1M，则新空间为扩展后字符串长度+1M+1。称为内存预分配。</li>
+</ul>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>优点：</p></blockquote>
+<ol>
+<li>获取字符串长度为 <code>O(1)</code></li>
+<li>支持动态扩容</li>
+<li>减少内存分配次数</li>
+<li>二进制安全</li>
+</ol>
+<h3 id="IntSet"><a href="#IntSet" class="headerlink" title="IntSet"></a>IntSet</h3><p>IntSet 是Redis的Set结构的一种实现方式，基于<strong>整数数组</strong>来实现，并且<strong>长度可变</strong>，<strong>有序</strong>。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ibaytj98j30qm0dfdia.jpg" alt="image-20221126101835593"></p>
+<p>为了方便查找，本身按照整数进行<strong>升序存储</strong>保存到content[]内</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ibeluzphj30vz0b5dgx.jpg" alt="image-20221126102206179"></p>
+<p>假设最初存储元素：<code>&#123;5,10,20&#125;</code>采用的编码是INTSET_ENC_INT16，则每个整数占2字节。</p>
+<p>我们向该其中添加一个数字：50000，这个数字超出了int16_t的范围，intset会自动升级编码方式到合适的大小。以当前案例来说流程如下：</p>
+<ol>
+<li><p>升级编码为INTSET_ENC_INT32, 每个整数占4字节，并按照新的编码方式及元素个数<strong>扩容数组</strong></p>
+</li>
+<li><p><strong>倒序</strong>依次将数组中的元素拷贝到扩容后的正确位置（倒序保证，之前节点不会被覆盖）</p>
+</li>
+</ol>
+<h4 id="新增流程"><a href="#新增流程" class="headerlink" title="新增流程"></a>新增流程</h4><pre class="line-numbers language-c#" data-language="c#"><code class="language-c#">intset *intsetAdd(intset *is, int64_t value, uint8_t *success) &#123;
+    uint8_t valenc &#x3D; _intsetValueEncoding(value);&#x2F;&#x2F; 获取当前值编码
+    uint32_t pos; &#x2F;&#x2F; 要插入的位置
+    if (success) *success &#x3D; 1;
+    &#x2F;&#x2F; 判断编码是不是超过了当前intset的编码
+    if (valenc &gt; intrev32ifbe(is-&gt;encoding)) &#123;
+        &#x2F;&#x2F; 超出编码，需要升级
+        return intsetUpgradeAndAdd(is,value);
+    &#125; else &#123;
+        &#x2F;&#x2F; 在当前intset中查找值与value一样的元素的角标pos
+        if (intsetSearch(is,value,&amp;pos)) &#123;
+            if (success) *success &#x3D; 0; &#x2F;&#x2F;如果找到了，则无需插入，直接结束并返回失败
+            return is;
+        &#125;
+        &#x2F;&#x2F; 数组扩容
+        is &#x3D; intsetResize(is,intrev32ifbe(is-&gt;length)+1);
+        &#x2F;&#x2F; 移动数组中pos之后的元素到pos+1，给新元素腾出空间
+        if (pos &lt; intrev32ifbe(is-&gt;length)) intsetMoveTail(is,pos,pos+1);
+    &#125;
+    &#x2F;&#x2F; 插入新元素
+    _intsetSet(is,pos,value);
+    &#x2F;&#x2F; 重置元素长度
+    is-&gt;length &#x3D; intrev32ifbe(intrev32ifbe(is-&gt;length)+1);
+    return is;
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="升级流程"><a href="#升级流程" class="headerlink" title="升级流程"></a>升级流程</h4><pre class="line-numbers language-c#" data-language="c#"><code class="language-c#">static intset *intsetUpgradeAndAdd(intset *is, int64_t value) &#123;
+    &#x2F;&#x2F; 获取当前intset编码
+    uint8_t curenc &#x3D; intrev32ifbe(is-&gt;encoding);
+    &#x2F;&#x2F; 获取新编码
+    uint8_t newenc &#x3D; _intsetValueEncoding(value);
+    &#x2F;&#x2F; 获取元素个数
+    int length &#x3D; intrev32ifbe(is-&gt;length); 
+    &#x2F;&#x2F; 判断新元素是大于0还是小于0 ，小于0插入队首、大于0插入队尾
+    int prepend &#x3D; value &lt; 0 ? 1 : 0;
+    &#x2F;&#x2F; 重置编码为新编码
+    is-&gt;encoding &#x3D; intrev32ifbe(newenc);
+    &#x2F;&#x2F; 重置数组大小
+    is &#x3D; intsetResize(is,intrev32ifbe(is-&gt;length)+1);
+    &#x2F;&#x2F; 倒序遍历，逐个搬运元素到新的位置，_intsetGetEncoded按照旧编码方式查找旧元素
+    while(length--) &#x2F;&#x2F; _intsetSet按照新编码方式插入新元素
+        _intsetSet(is,length+prepend,_intsetGetEncoded(is,length,curenc));
+    &#x2F;* 插入新元素，prepend决定是队首还是队尾*&#x2F;
+    if (prepend)
+        _intsetSet(is,0,value);
+    else
+        _intsetSet(is,intrev32ifbe(is-&gt;length),value);
+    &#x2F;&#x2F; 修改数组长度
+    is-&gt;length &#x3D; intrev32ifbe(intrev32ifbe(is-&gt;length)+1);
+    return is;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>总结：</p></blockquote>
+<ol>
+<li>底层为<strong>整数数组</strong>，也就是一块儿完整的内存</li>
+<li>内部元素，<strong>唯一</strong>，<strong>有序</strong>。</li>
+<li>具备类型升级（<strong>倒序扩容</strong>）。</li>
+<li>底层采用二分查找。（因为有序）</li>
+</ol>
+<h3 id="Dict"><a href="#Dict" class="headerlink" title="Dict"></a>Dict</h3><p>​    我们知道Redis中是Key-Value结构，在Java中类似的也有Map结构，能够快速的进行增删改查，底层一定是有关系的映射。Redis正是基于Dict实现的。</p>
+<p>​    Dict有三个部分：哈希表（DictHashTable）、哈希节点（DictEntry）、字典（Dict）</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">typedef struct dictht &#123;
+    &#x2F;&#x2F; entry数组
+    &#x2F;&#x2F; 数组中保存的是指向entry的指针
+    dictEntry **table; 
+    &#x2F;&#x2F; 哈希表大小
+    unsigned long size;     
+    &#x2F;&#x2F; 哈希表大小的掩码，总等于size - 1
+    unsigned long sizemask;     
+    &#x2F;&#x2F; entry个数
+    unsigned long used; 
+&#125; dictht;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">typedef struct dictEntry &#123;
+    void *key; &#x2F;&#x2F; 键
+    union &#123;
+        void *val;
+        uint64_t u64;
+        int64_t s64;
+        double d;
+    &#125; v; &#x2F;&#x2F; 值
+    &#x2F;&#x2F; 下一个Entry的指针
+    struct dictEntry *next; 
+&#125; dictEntry;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">dict</span> <span class="token punctuation">&#123;</span>
+    dictType <span class="token operator">*</span>type<span class="token punctuation">;</span> <span class="token comment">// dict类型，内置不同的hash函数</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>privdata<span class="token punctuation">;</span>     <span class="token comment">// 私有数据，在做特殊hash运算时用</span>
+    dictht ht<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// 一个Dict包含两个哈希表，其中一个是当前数据，另一个一般是空，rehash时使用</span>
+    <span class="token keyword">long</span> rehashidx<span class="token punctuation">;</span>   <span class="token comment">// rehash的进度，-1表示未进行</span>
+    <span class="token class-name">int16_t</span> pauserehash<span class="token punctuation">;</span> <span class="token comment">// rehash是否暂停，1则暂停，0则继续</span>
+<span class="token punctuation">&#125;</span> dict<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ibpu0dwbj30vb0b8ab5.jpg" alt="image-20221126103253031"></p>
+<p>​    我们可以看到Dict中有两个dictht，第一个负责存储值，第二个负责reHash。也就是当节点个数过多时，需要进行扩容，在Java的Map中，当数组中一个链表的长度大于8，就会进行数组扩容，否则查找遍历太慢。这里的原理是类似的。</p>
+<p>​    dictht内部是dictEntry数组，dictEntry含有指向下一个节点的指针。</p>
+<h4 id="Dict扩容"><a href="#Dict扩容" class="headerlink" title="Dict扩容"></a>Dict扩容</h4><p>​    这里还是有Java中Map举例，HashMap默认还有加载因子为0.75，也就是说不等我们把空间使用完，底层就会判断如果<code>当前节点数/容量数</code>大于0.75，会频繁导致Hash碰撞，并且链表长度太长，所以需要扩容。</p>
+<p>​    Dict在每次新增键值对时都会检查负载因子（LoadFactor = used/size） ，满足以下两种情况时会触发哈希表扩容：</p>
+<ul>
+<li>哈希表的 LoadFactor &gt;= 1，并且服务器没有执行 BGSAVE 或者 BGREWRITEAOF 等后台进程；</li>
+<li>哈希表的 LoadFactor &gt; 5 ；</li>
+</ul>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">static int _dictExpandIfNeeded(dict *d)&#123;
+    &#x2F;&#x2F; 如果正在rehash，则返回ok
+    if (dictIsRehashing(d)) return DICT_OK;    &#x2F;&#x2F; 如果哈希表为空，则初始化哈希表为默认大小：4
+    if (d-&gt;ht[0].size &#x3D;&#x3D; 0) return dictExpand(d, DICT_HT_INITIAL_SIZE);
+    &#x2F;&#x2F; 当负载因子（used&#x2F;size）达到1以上，并且当前没有进行bgrewrite等子进程操作
+    &#x2F;&#x2F; 或者负载因子超过5，则进行 dictExpand ，也就是扩容
+    if (d-&gt;ht[0].used &gt;&#x3D; d-&gt;ht[0].size &amp;&amp;
+        (dict_can_resize || d-&gt;ht[0].used&#x2F;d-&gt;ht[0].size &gt; dict_force_resize_ratio)&#123;
+        &#x2F;&#x2F; 扩容大小为used + 1，底层会对扩容大小做判断，实际上找的是第一个大于等于 used+1 的 2^n
+        return dictExpand(d, d-&gt;ht[0].used + 1);
+    &#125;
+    return DICT_OK;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Dict收缩"><a href="#Dict收缩" class="headerlink" title="Dict收缩"></a>Dict收缩</h4><p>Dict除了扩容以外，每次删除元素时，也会对负载因子做检查，当LoadFactor &lt; 0.1 时，会做哈希表收缩：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// t_hash.c # hashTypeDeleted() </span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">dictDelete</span><span class="token punctuation">(</span><span class="token punctuation">(</span>dict<span class="token operator">*</span><span class="token punctuation">)</span>o<span class="token operator">-></span>ptr<span class="token punctuation">,</span> field<span class="token punctuation">)</span> <span class="token operator">==</span> C_OK<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    deleted <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token comment">// 删除成功后，检查是否需要重置Dict大小，如果需要则调用dictResize重置    /* Always check if the dictionary needs a resize after a delete. */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">htNeedsResize</span><span class="token punctuation">(</span>o<span class="token operator">-></span>ptr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">dictResize</span><span class="token punctuation">(</span>o<span class="token operator">-></span>ptr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token comment">// server.c 文件</span>
+<span class="token keyword">int</span> <span class="token function">htNeedsResize</span><span class="token punctuation">(</span>dict <span class="token operator">*</span>dict<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> size<span class="token punctuation">,</span> used<span class="token punctuation">;</span>
+    <span class="token comment">// 哈希表大小</span>
+    size <span class="token operator">=</span> <span class="token function">dictSlots</span><span class="token punctuation">(</span>dict<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// entry数量</span>
+    used <span class="token operator">=</span> <span class="token function">dictSize</span><span class="token punctuation">(</span>dict<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// size > 4（哈希表初识大小）并且 负载因子低于0.1</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>size <span class="token operator">></span> DICT_HT_INITIAL_SIZE <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>used<span class="token operator">*</span><span class="token number">100</span><span class="token operator">/</span>size <span class="token operator">&lt;</span> HASHTABLE_MIN_FILL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token keyword">int</span> <span class="token function">dictResize</span><span class="token punctuation">(</span>dict <span class="token operator">*</span>d<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> minimal<span class="token punctuation">;</span>
+    <span class="token comment">// 如果正在做bgsave或bgrewriteof或rehash，则返回错误</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>dict_can_resize <span class="token operator">||</span> <span class="token function">dictIsRehashing</span><span class="token punctuation">(</span>d<span class="token punctuation">)</span><span class="token punctuation">)</span> 
+        <span class="token keyword">return</span> DICT_ERR<span class="token punctuation">;</span>
+    <span class="token comment">// 获取used，也就是entry个数</span>
+    minimal <span class="token operator">=</span> d<span class="token operator">-></span>ht<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>used<span class="token punctuation">;</span>
+    <span class="token comment">// 如果used小于4，则重置为4</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>minimal <span class="token operator">&lt;</span> DICT_HT_INITIAL_SIZE<span class="token punctuation">)</span>
+        minimal <span class="token operator">=</span> DICT_HT_INITIAL_SIZE<span class="token punctuation">;</span>
+    <span class="token comment">// 重置大小为minimal，其实是第一个大于等于minimal的2^n</span>
+    <span class="token keyword">return</span> <span class="token function">dictExpand</span><span class="token punctuation">(</span>d<span class="token punctuation">,</span> minimal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Dict的ReHash"><a href="#Dict的ReHash" class="headerlink" title="Dict的ReHash"></a>Dict的ReHash</h4><p>​    不管是扩容还是收缩，必定会创建新的哈希表，导致哈希表的size和sizemask变化，而key的查询与sizemask有关。因此必须对哈希表中的每一个key重新计算索引，插入新的哈希表，这个过程称为rehash。过程是这样的：</p>
+<ol>
+<li>计算新hash表的realeSize，值取决于当前要做的是扩容还是收缩：</li>
+</ol>
+<ul>
+<li>如果是扩容，则新size为第一个大于等于dict.ht[0].used + 1的2^n</li>
+<li>如果是收缩，则新size为第一个大于等于dict.ht[0].used的2^n （不得小于4）</li>
+</ul>
+<ol start="2">
+<li>按照新的realeSize申请内存空间，创建dictht，并赋值给dict.ht[1]</li>
+<li>设置dict.rehashidx = 0，标示开始rehash</li>
+<li>将dict.ht[0]中的每一个dictEntry都rehash到dict.ht[1]</li>
+<li>将dict.ht[1]赋值给dict.ht[0]，给dict.ht[1]初始化为空哈希表，释放原来的dict.ht[0]的内存</li>
+</ol>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>如果Key中的节点过多，那一次性进行Rehash就有可能导致主线程阻塞，怎么解决？</p></blockquote>
+<p>将dict.ht[1]赋值给dict.ht[0]，给dict.ht[1]初始化为空哈希表，释放原来的dict.ht[0]的内存</p>
+<ol>
+<li>计算新hash表的realeSize，值取决于当前要做的是扩容还是收缩：</li>
+</ol>
+<ul>
+<li>如果是扩容，则新size为第一个大于等于dict.ht[0].used + 1的2^n</li>
+<li>如果是收缩，则新size为第一个大于等于dict.ht[0].used的2^n （不得小于4）</li>
+</ul>
+<ol start="2">
+<li>按照新的size申请内存空间，创建dictht，并赋值给dict.ht[1]</li>
+<li>设置dict.rehashidx = 0，标示开始rehash</li>
+<li><strong>每次执行新增、查询、修改、删除操作时，都检查一下dict.rehashidx是否大于-1，如果是则将dict.ht[0].table[rehashidx]的entry链表rehash到dict.ht[1]，并且将rehashidx++。直至dict.ht[0]的所有数据都rehash到dict.ht[1]</strong></li>
+<li>将dict.ht[1]赋值给dict.ht[0]，给dict.ht[1]初始化为空哈希表，释放原来的dict.ht[0]的内存</li>
+<li>将rehashidx赋值为-1，代表rehash结束</li>
+<li>在rehash过程中，新增操作，则直接写入ht[1]，查询、修改和删除则会在dict.ht[0]和dict.ht[1]依次查找并执行。这样可以确保ht[0]的数据只减不增，随着rehash最终为空</li>
+</ol>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>总结：</p></blockquote>
+<p>Dict的结构：</p>
+<ul>
+<li>类似java的HashTable，底层是数组加链表来解决哈希冲突</li>
+<li>Dict包含两个哈希表，ht[0]平常用，ht[1]用来rehash</li>
+</ul>
+<p>Dict的伸缩：</p>
+<ul>
+<li>当LoadFactor大于5或者LoadFactor大于1并且没有子进程任务时，Dict扩容</li>
+<li>当LoadFactor小于0.1时，Dict收缩</li>
+<li>扩容大小为第一个大于等于used + 1的2^n</li>
+<li>收缩大小为第一个大于等于used 的2^nDict采用渐进式rehash，每次访问Dict时执行一次rehash</li>
+<li>rehash时ht[0]只减不增，新增操作只在ht[1]执行，其它操作在两个哈希表</li>
+</ul>
+<h3 id="ZipList"><a href="#ZipList" class="headerlink" title="ZipList"></a>ZipList</h3><p>​    ZipList 是一种<strong>特殊的“双端链表”</strong> ，由一系列特殊编码的<strong>连续内存</strong>块组成。可以在<strong>任意一端进行压入/弹出</strong>操作, 并且该操作的时间复杂度为 **O(1)**。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ic7og3jvj30tq0bw3ze.jpg" alt="image-20221126105002059"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ic8fm1plj30rw09rta6.jpg" alt="image-20221126105045389"></p>
+<p>​    ZipList说是特殊的来链表，但实际上并不是通过指针连接的，因为占用内存，所以Entry的结构是：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8icayfrsdj30vb07o3zr.jpg" alt="image-20221126105310737"></p>
+<p>​    因为是一块儿内存，每个节点记录了前一个节点的长度，就可以计算出各个节点的位置。</p>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>这里有一个<strong>连锁更新</strong>（Cascade Update）的问题，但作者并未修改，因为发生的概率极低、</p></blockquote>
+<p>​    假设我们有N个连续的、长度为250~253字节之间的entry，因此entry的previous_entry_length属性用1个字节即可表示，如图所示：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8idymm1vij316e06dgmi.jpg" alt="image-20221126115032201"></p>
+<p>​    现在在头位置插入一个新的节点，长度为254，则原先的头结点的<code>previous_entry_length</code>就会用5个字节来存储，那么该节点本身的长度就超过了254，则后续所有节点都必须更新。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ie0zbr30j31ce06lgmo.jpg" alt="image-20221126115247739"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ie1ey0jmj31c006qq42.jpg" alt="image-20221126115312608"></p>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>总结：</p></blockquote>
+<ol>
+<li>压缩列表的可以看做一种<strong>连续内存</strong>空间的”双向链表”</li>
+<li>列表的节点之间不是通过指针连接，而是记录上一节点和本节点<strong>长度来寻址</strong>，内存占用较低</li>
+<li>如果列表数据过多，导致链表过长，可能影响查询性能</li>
+<li>增或删较大数据时有可能发生<strong>连续更新</strong>问题</li>
+</ol>
+<h3 id="QuickList"><a href="#QuickList" class="headerlink" title="QuickList"></a>QuickList</h3><blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>​    上面我们学习了ZipList，虽然好操作，但因为是连续的空间，所以如果长度太长，也会影响效率，并且申请更多的连续空间，</p></blockquote>
+<p>所以我们必须限制ZipList的长度和entry大小。</p>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>如果ZipList超出上线怎么办？</p></blockquote>
+<p>​    利用分片思想，形成多个ZipList，但分散后又不方便管理，则推出了：QuickList。它是一个双端链表，只不过链表中的每个节点都是一个ZipList。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ie8o2laqj30xo07gt9k.jpg" alt="image-20221126120010880"></p>
+<p>​    为了避免QuickList中的每个ZipList中entry过多，Redis提供了一个配置项：list-max-ziplist-size来限制。</p>
+<ul>
+<li>如果值为正，则代表ZipList的允许的entry个数的最大值</li>
+<li>如果值为负，则代表ZipList的最大内存大小，分5种情况：<ul>
+<li>-1：每个ZipList的内存占用不能超过4kb</li>
+<li>-2：每个ZipList的内存占用不能超过8kb</li>
+<li>-3：每个ZipList的内存占用不能超过16kb</li>
+<li>-4：每个ZipList的内存占用不能超过32kb</li>
+<li>-5：每个ZipList的内存占用不能超过64kb</li>
+</ul>
+</li>
+</ul>
+<p>默认值：<code>config get list-max-ziplist-size</code></p>
+<p>​    除了控制ZipList的大小，QuickList还可以对节点的ZipList做<strong>压缩</strong>。通过配置项list-compress-depth来控制。因为链表一般都是从首尾访问较多，所以首尾是不压缩的。这个参数是控制首尾不压缩的节点个数：</p>
+<ul>
+<li>0：特殊值，代表不压缩</li>
+<li>1：标示QuickList的首尾各有1个节点不压缩，中间节点压缩</li>
+<li>2：标示QuickList的首尾各有2个节点不压缩，中间节点压缩</li>
+<li>以此类推</li>
+</ul>
+<p>默认值：<code>config get list-compress-depth</code></p>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>源码：</p></blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8iecj8qewj30tk0budje.jpg" alt="image-20221126120353527"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8iecz7jujj30vy0eddhb.jpg" alt="image-20221126120419505"></p>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>特点：</p></blockquote>
+<ol>
+<li>是一个节点为ZipList的双端链表</li>
+<li>节点采用ZipList，解决了传统链表的内存占用问题</li>
+<li>控制了ZipList大小，解决连续内存空间申请效率问题</li>
+<li>中间节点可以压缩，进一步节省了内存</li>
+</ol>
+<h3 id="kipList"><a href="#kipList" class="headerlink" title="kipList"></a>kipList</h3><blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>​    原有链表的一个问题，就是查找元素时，需要一个个遍历，每个节点有一个指针指向下一个元素，那能不能多加几个指针？</p></blockquote>
+<p>跳表的结构图：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8iefh0xxjj30y80a3js9.jpg" alt="image-20221126120643605"></p>
+<p>可以看到跳表的一个特性就是有序，如果无序，则多出来的指针没有意义。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8iehdfaioj31do0icgp2.jpg" alt="image-20221126120833282"></p>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>总结：</p></blockquote>
+<ol>
+<li>跳跃表是一个双向链表，每个节点都包含score和ele值</li>
+<li>节点按照score值排序，score值一样则按照ele字典排序</li>
+<li>每个节点都可以包含多层指针，层数是1到32之间的随机数</li>
+<li>不同层指针到下一个节点的跨度不同，层级越高，跨度越大</li>
+<li>增删改查效率与红黑树基本一致，实现却更简单</li>
+</ol>
+<h3 id="RedisObject"><a href="#RedisObject" class="headerlink" title="RedisObject"></a>RedisObject</h3><p>Redis中的任意数据类型<code>(String,List,Set,Hash,ZSet)</code>都会被封装为RedisObject对象。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8iel9ffxvj30r508v765.jpg" alt="image-20221126121217400"></p>
+<h4 id="底层编码方式"><a href="#底层编码方式" class="headerlink" title="底层编码方式"></a>底层编码方式</h4><p>Redis中会根据存储的数据类型不同，选择不同的编码方式，共包含11种不同类型：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8iembds0pj30pw0ce0ud.jpg" alt="image-20221126121318276"></p>
+<h4 id="五种数据类型的底层类型："><a href="#五种数据类型的底层类型：" class="headerlink" title="五种数据类型的底层类型："></a>五种数据类型的底层类型：</h4><table>
+<thead>
+<tr>
+<th align="left"><strong>数据类型</strong></th>
+<th><strong>编码方式</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">OBJ_STRING</td>
+<td>int、embstr、raw</td>
+</tr>
+<tr>
+<td align="left">OBJ_LIST</td>
+<td>LinkedList和ZipList(3.2以前)、QuickList（3.2以后）</td>
+</tr>
+<tr>
+<td align="left">OBJ_SET</td>
+<td>intset、HT</td>
+</tr>
+<tr>
+<td align="left">OBJ_ZSET</td>
+<td>ZipList、HT、SkipList</td>
+</tr>
+<tr>
+<td align="left">OBJ_HASH</td>
+<td>ZipList、HT</td>
+</tr>
+</tbody></table>
+<h2 id="五种数据类型"><a href="#五种数据类型" class="headerlink" title="五种数据类型"></a>五种数据类型</h2><h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p>我们知道底层是通过SDS结构，但不同的SDS长度会使用不同的编码。</p>
+<p>如果存储的是字符串是整数值，大小在Long_MAX范围内，则会使用INT编码，直接将数据保存在RedisObject的ptr指针位置（刚好8字节），<strong>不再需要SDS了</strong>。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ieqz0q53j30k203jdfx.jpg" alt="image-20221126121746597"></p>
+<p>如果存储的SDS长度小于44字节，则会采用EMBSTR编码，此时object head与SDS是一段连续空间。申请内存时只需要调用一次内存分配函数，效率更高。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8iero6hhaj30us02xmxd.jpg" alt="image-20221126121826644"></p>
+<p>否则用的就是raw编码了，SDS单独占一个内存，RedisObject用指针连接</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8iesl4ctqj30uy081t93.jpg" alt="image-20221126121919607"></p>
+<h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>我们可以自己想一想，底层结构中哪个合适?</p></blockquote>
+<p>List操作需要可以从两端插入或弹出，范围读取。</p>
+<p>SDS是字符串（❎），intSet是完整的内存，支持有序，唯一（❎），Dict无法双端操作（❎）</p>
+<p>ZipList：完整内存，双端操作，范围读取（✅）</p>
+<p>QuickList：LinkedList + ZipList，可以从双端访问，内存占用较低，包含多个ZipList，存储上限高（✅）</p>
+<ul>
+<li>在3.2版本之前，Redis采用ZipList和LinkedList来实现List，当元素数量小于512并且元素大小小于64字节时采用ZipList编码，超过则采用LinkedList编码。</li>
+<li>在3.2版本之后，Redis统一采用QuickList来实现List</li>
+</ul>
+<h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><p>Set需要元素唯一（可判断是否元素存在），不保证有序，求交集，并集，差集，也就是对查询效率要求很高</p>
+<p>我们能想到Java中，利用Map实现Set结构，Value存Null，那在Redis中应该也可以，所以Dict(✅)</p>
+<p>IntSet内部是整数数组，不过可以保证唯一，且有序，二分查询也快。当存储的所有数据都是整数，并且元素数量不超过set-max-intset-entries时，Set会采用IntSet编码，以节省内存，IntSet(✅)</p>
+<h3 id="ZSet"><a href="#ZSet" class="headerlink" title="ZSet"></a>ZSet</h3><p>ZSet也就是SortedSet，其中每一个元素都需要指定一个score值和member值。要求：</p>
+<p>可以根据score值排序，member必须唯一，可以根据member查询分数</p>
+<ol>
+<li>那想到第一个应该是Dict结构，key为member，value为score，可以保证member唯一，✅</li>
+<li>然后有分数的就是SkipList，可以排序，并且可以同时存储score和ele值（member）✅</li>
+<li>当元素数量不多时，HT和SkipList的优势不明显，而且更耗内存。因此zset还会采用ZipList结构来节省内存，不过需要同时满足两个条件：✅<ol>
+<li>元素数量小于zset_max_ziplist_entries，默认值128</li>
+<li>每个元素都小于zset_max_ziplist_value字节，默认值64</li>
+</ol>
+</li>
+</ol>
+<blockquote><span class="custom-blockquote-svg"><svg width="24" height="24" viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg" data-reactroot="">
+<path fill="" d="M22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C13.8 22 15.5 21.5 17 20.6L22 22L20.7 17C21.5 15.5 22 13.8 22 12Z" undefined="1"></path>
+<path fill="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z" undefined="1"></path>
+<path fill="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z" undefined="1"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M17 8.5C15.23 8.97 14.07 10.84 14.01 13.27C14 13.33 14 13.4 14 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M9 8.5C7.23 8.97 6.07 10.84 6.01 13.27C6 13.33 6 13.4 6 13.47V13.5"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M15.97 11.5H16.04C17.12 11.5 18 12.38 18 13.47V13.53C18 14.62 17.12 15.5 16.03 15.5H15.96C14.88 15.5 14 14.62 14 13.53V13.46C14 12.38 14.88 11.5 15.97 11.5Z"></path>
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" stroke="" d="M7.97 11.5H8.04C9.12 11.5 10 12.38 10 13.47V13.53C10 14.62 9.12 15.5 8.03 15.5H7.97C6.88 15.5 6 14.62 6 13.53V13.46C6 12.38 6.88 11.5 7.97 11.5Z"></path>
+</svg>
+</span><p>ziplist本身没有排序功能，而且没有键值对的概念，因此需要有zset通过编码实现：</p></blockquote>
+<ol>
+<li>ZipList是连续内存，因此score和element是紧挨在一起的两个entry， element在前，score在后</li>
+<li>score越小越接近队首，score越大越接近队尾，按照score值升序排列</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ifcqek5sj30tz06xt96.jpg" alt="image-20221126123840996"></p>
+<h3 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h3><p>需求：</p>
+<ol>
+<li>键值存储</li>
+<li>根据键获取值</li>
+<li>键唯一</li>
+</ol>
+<p>我们发现与Zset需求很相似</p>
+<ol>
+<li>zset的键是member，值是score；hash的键和值都是任意值</li>
+<li>zset要根据score排序；hash则无需排序</li>
+</ol>
+<p>因此，Hash底层采用的编码与Zset也基本一致，只需要把排序有关的SkipList去掉即可。也就是剩下ZipList和Dict</p>
+<ul>
+<li><p>Hash结构默认采用ZipList编码，用以节省内存。 ZipList中相邻的两个entry 分别保存field和value ✅</p>
+</li>
+<li><p>当数据量较大时，Hash结构会转为HT编码，也就是Dict，触发条件有两个： ✅</p>
+<ul>
+<li>ZipList中的元素数量超过了hash-max-ziplist-entries（默认512）</li>
+<li>ZipList中的任意entry大小超过了hash-max-ziplist-value（默认64字节）</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+</div>
+    <div class="footer" id="footer">
+    <p><h4>Copyright © 2020 | Author: 秦思成 | Theme By <a class="theme-author" target="_blank" rel="noopener" href="https://github.com/Xunzhuo/hexo-theme-coder" style="font-size:14px; color: #969696">Coder</a></h4>
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        <span id="busuanzi_container_site_pv">Page Views: <span id="busuanzi_value_site_pv"></span></span>
+        <span class="post-meta-divider">|</span>
+        <span id="busuanzi_container_site_uv">Unique Visitors: <span id="busuanzi_value_site_uv"></span></span>
+    
+    <label class="el-switch el-switch-blue el-switch-sm" style="vertical-align: sub;">
+        <input type="checkbox" name="switch" id="update_style">
+        <span class="el-switch-style"></span>
+    </label>
+
+    <!--         <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+    document.write(unescape("%3Cspan id='cnzz_stat_icon_1278548644'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D1278548644%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script> -->
+</p>
+</div>
+
+<input type="hidden" id="web_style" value="black">
+<input type="hidden" id="valine_appid" value="NOsswOncKgc8HOxqo9oxIWlX-gzGzoHsz">
+<input type="hidden" id="valine_appKey" value="z1FihjWEbS8uIfUQdmCtK7zz">
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+<script src='//cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+color: #698fca;
+}
+.v .vlist .vcard .vhead .vsys {
+color: #3a3e4a;
+}
+.v .vlist .vcard .vh .vmeta .vat {
+color: #638fd5;
+}
+.v .vlist .vcard .vhead .vnick {
+color: #6ba1ff;
+}
+.v a {
+color: #8696b1;
+}
+.v .vlist .vcard .vhead .vnick:hover {
+color: #669bfc;
+}
+</style>
+    <script type="text/javascript" color="173,174,173" opacity='1' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
