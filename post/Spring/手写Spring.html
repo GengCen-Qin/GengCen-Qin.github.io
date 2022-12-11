@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://www.chengling.cloud/img/default_top_img.jpg">
 <meta property="article:published_time" content="2022-12-07T08:25:06.000Z">
-<meta property="article:modified_time" content="2022-12-08T04:32:22.493Z">
+<meta property="article:modified_time" content="2022-12-10T04:22:51.975Z">
 <meta property="article:author" content="庚辰">
 <meta property="article:tag" content="IOC">
 <meta name="twitter:card" content="summary">
@@ -53,7 +53,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2022-12-08 12:32:22'
+  postUpdate: '2022-12-10 12:22:51'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -142,7 +142,7 @@
       }
     }
     detectApple()
-    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://tva2.sinaimg.cn/large/9bd9b167ly1fzjxy660fij20b40b43yi.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top_img.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">玲辰书斋</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">手写Spring系列：IOC</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-07T08:25:06.000Z" title="发表于 2022-12-07 16:25:06">2022-12-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-12-08T04:32:22.493Z" title="更新于 2022-12-08 12:32:22">2022-12-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Spring/">Spring</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="手写Spring系列：IOC"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h1><p>​    我们学Java的基本上都会使用Spring进行开发，而Spring中最为核心的又是IOC和AOP，接下来的内容是在学习<code>手写Spring渐进式源码实践</code>这本书后的学习总结，看是否我们能开发出一个<code>mini-Spring</code>。因为后期代码会很多，而且基本上都是在前一版的基础上进行扩展。这里我只声明每一章的目标扩展点是啥，具体从Github上获取源码：<a target="_blank" rel="noopener" href="https://github.com/fuzhengwei/book-small-spring">https://github.com/fuzhengwei/book-small-spring</a></p>
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://tva2.sinaimg.cn/large/9bd9b167ly1fzjxy660fij20b40b43yi.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top_img.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">玲辰书斋</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">手写Spring系列：IOC</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-12-07T08:25:06.000Z" title="发表于 2022-12-07 16:25:06">2022-12-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-12-10T04:22:51.975Z" title="更新于 2022-12-10 12:22:51">2022-12-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Spring/">Spring</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="手写Spring系列：IOC"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h1><p>​    我们学Java的基本上都会使用Spring进行开发，而Spring中最为核心的又是IOC和AOP，接下来的内容是在学习<code>手写Spring渐进式源码实践</code>这本书后的学习总结，看是否我们能开发出一个<code>mini-Spring</code>。因为后期代码会很多，而且基本上都是在前一版的基础上进行扩展。这里我只声明每一章的目标扩展点是啥，具体从Github上获取源码：<a target="_blank" rel="noopener" href="https://github.com/fuzhengwei/book-small-spring">https://github.com/fuzhengwei/book-small-spring</a></p>
 <h2 id="第一章：实现一个简单的Spring-Bean容器"><a href="#第一章：实现一个简单的Spring-Bean容器" class="headerlink" title="第一章：实现一个简单的Spring Bean容器"></a>第一章：实现一个简单的Spring Bean容器</h2><p>​    先不深究Spring源码，我就看自己平时使用Spring时的体会，使用Spring时，通过XML配置文件或者通过注解，声明哪些类是需要注入到容器中的，到自己使用时，可以从容器中获取该类对象。那这不就是我们基础中学的Collection或者Map就能实现的操作嘛，因为我需要频繁的从容器中获取指定类对象，所以查询返回的效率需要非常高，那就我们就用Map来实现，先不要想那么多。</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeanFactory</span> <span class="token punctuation">&#123;</span>
 		<span class="token comment">// 用Map来存储Bean</span>
@@ -648,7 +648,7 @@
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">test_proxy_jdk</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token comment">// 被代理对象</span>
     <span class="token class-name">IUserService</span> targetObj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UserService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment">// 获取代理对象</span>
+    <span class="token comment">// 通过反射获取代理对象</span>
     <span class="token class-name">IUserService</span> proxyInstance <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">IUserService</span><span class="token punctuation">)</span> <span class="token class-name">Proxy</span><span class="token punctuation">.</span><span class="token function">newProxyInstance</span><span class="token punctuation">(</span>
             <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getContextClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
             targetObj<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getInterfaces</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
@@ -704,7 +704,7 @@
 <p>​        JDK: 通过反射，效率低，只能对实现接口的类进行代理</p>
 <p>​        Cglib：底层采用ASM字节码生成框架，对接口不受限制，但是无法对final方法进行代理，因为CGLib原理是动态生成被代理类的子类。</p>
 <blockquote>
-<p>现在我们如何将动态代理技术容器Spring容器中形成AOP，面向切面编程：？</p>
+<p>如何将动态代理封装起来，让使用者可以方便的调用，并进行维护与扩展？</p>
 </blockquote>
 <p><strong>切入点表达式解析</strong></p>
 <ol>
@@ -714,12 +714,13 @@
 <li>AspectJExpressPointcut：上述方法的具体实现</li>
 <li>AdvisedSupport：包装切面通知信息，将信息汇总</li>
 </ol>
-<img src="/Users/qinsicheng/Library/Application Support/typora-user-images/image-20221208104758847.png" alt="image-20221208104758847" style="zoom:50%;" />
-
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8yhsb773hj31v60r679b.jpg" alt="image-20221210101153506"></p>
 <p><strong>代理抽象实现（JDK&amp;Cglib）</strong></p>
-<p>通过AdvisedSupport信息实现抽象类：   </p>
+<p>现在一种动态代理的方式，通过AdvisedSupport信息，获取代理对象并返回</p>
 <p>这里指定义接口，具体实现交给子类，经典面向接口</p>
-<p>![image-20221208105159714](/Users/qinsicheng/Library/Application Support/typora-user-images/image-20221208105159714.png)</p>
+<img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8yi2br861j30te0nwgp5.jpg" alt="image-20221210102131448" style="zoom:50%;" />
+
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8yi1qn7p3j315g0hstb7.jpg" alt="image-20221210102057533"></p>
 <blockquote>
 <p>测试：</p>
 </blockquote>
@@ -745,7 +746,7 @@
 
 
 
-<h2 id="第12章：把AOP融入Bean的生命周期"><a href="#第12章：把AOP融入Bean的生命周期" class="headerlink" title="第12章：把AOP融入Bean的生命周期"></a>第12章：把AOP融入Bean的生命周期</h2><p>​        上面我们已经可以通过<code>AopProxy</code>进行代理对象的创建，现在如何加入到Bean的生命周期？这里可以想到可以在bean实例化前找到所有的</p>
+<h2 id="第12章：把AOP融入Bean的生命周期"><a href="#第12章：把AOP融入Bean的生命周期" class="headerlink" title="第12章：把AOP融入Bean的生命周期"></a>第12章：把AOP融入Bean的生命周期</h2><p>​        上面我们已经可以通过<code>AopProxy</code>进行代理对象的创建，现在如何加入到Bean的生命周期？</p>
 <img src="/Users/qinsicheng/Library/Application Support/typora-user-images/image-20221208122149920.png" alt="image-20221208122149920" style="zoom:80%;" />
 
 <img src="/Users/qinsicheng/Library/Application Support/typora-user-images/image-20221208122900579.png" alt="image-20221208122900579" style="zoom:50%;" />
