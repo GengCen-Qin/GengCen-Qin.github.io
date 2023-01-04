@@ -7436,14 +7436,12 @@ Thread.join();<span aria-hidden="true" class="line-numbers-rows"><span></span><s
     <url>//post/Ruby/Ruby%E5%85%83%E7%BC%96%E7%A8%8B.html</url>
     <content><![CDATA[<pre><code>本文需要在了解Ruby基本语法的前提下，进行学习
 </code></pre>
-<blockquote>
-<p>元编程时什么？</p>
-</blockquote>
-<p>​    元编程是编写能在运行时操作语言构件的代码</p>
+<h2 id="元编程是什么？"><a href="#元编程是什么？" class="headerlink" title="元编程是什么？"></a>元编程是什么？</h2><p>​    元编程是编写能在运行时操作语言构件的代码</p>
 <p>​    在我们使用编辑器编写代码后，代码按照我们所写的内容进行编译，运行。在启动后我们无权再对代码进行干涉，而在一些业务场景中，我们想在不修改源代码的前提下，对一个类进行增强，这在Java中也是一个成熟的技术，例如反射，动态代理。但是Java所能给予的操作相比Ruby，就显得格外的严格。</p>
-<p>​    Ruby是一门可以在运行时操作语言构建的工具。语言构建就是我们代码中的各个成员（变量，类，方法）。通俗来说可以使用Ruby在运行时对已有的类进行灵活的修改，例如增减，修改一个方法的定义。实例变量的修改。下面我们使用一些伪代码来进行演示。</p>
+<p>​    Ruby是一门可以在运行时操作语言构建的工具。语言构建就是我们代码中的各个成员（变量，类，方法）。通俗来说可以使用Ruby在运行时对已有的类进行灵活的修改，例如修改一个方法的定义。实例变量的定义，甚至我们可以在运行时创建一个没有的类。下面我们使用一些伪代码来进行演示。</p>
 <p>​    我们想对数据库进行操作，最初我们的想法就是写一个Entity基类，然后由子类继承</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Entity</span>
+  <span class="token comment"># 提供访问器</span>
 	attr_accessor <span class="token symbol">:table</span><span class="token punctuation">,</span><span class="token symbol">:id</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span> table<span class="token punctuation">,</span>id
 		<span class="token variable">@table</span> <span class="token operator">=</span> table
@@ -7485,7 +7483,7 @@ Thread.join();<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 <span class="token comment"># 插入一条数据，简单且方便</span>
 movie <span class="token operator">=</span> <span class="token class-name">Movie</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
 movie<span class="token punctuation">.</span>title <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"猫捉老鼠"</span></span>
-movie<span class="token punctuation">.</span>article <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"相当不错"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+movie<span class="token punctuation">.</span>article <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"相当不错"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    上面的代码看起来是可以解决问题，但如果一张表的字段特别多，我都需要定义到Movie类中吗？能不能用更少的代码解决问题？我们使用<code>Active Record</code>类库操作：</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Movie</span> <span class="token operator">&lt;</span> ActiveRecord<span class="token double-colon punctuation">::</span>Base
@@ -7528,25 +7526,23 @@ obj <span class="token operator">=</span> <span class="token class-name">MyClass
 <span class="token comment"># 输出当前对象是哪个类的实例</span>
 obj<span class="token punctuation">.</span><span class="token keyword">class</span>   <span class="token comment"># => MyClass</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>如果可以用Ruby解释器查看obj对象内部，我们可以发现什么？</p>
+<p>​    如果可以用Ruby解释器查看obj对象内部，我们可以发现什么？ 内部只有一个@v实例变量，而且仅属于obj。my_method并不属于obj，而是在MyClass中定义，这也是为什么类实例可以共享类的实例方法的原因</p>
 <h4 id="实例变量"><a href="#实例变量" class="headerlink" title="实例变量"></a>实例变量</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">obj<span class="token punctuation">.</span>my_method
 p obj<span class="token punctuation">.</span>instance_variables <span class="token comment"># => [:@v]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p>与Java不同，Ruby中对象类和他的实例变量没有任何关系，当你赋值创建一个实例变量时，它就出现了，如果你不使用<code>obj.my_method</code>，这个实例就没有<code>@v</code></p>
+<p>​    与Java不同，Ruby中对象类和他的实例变量没有任何关系，当你赋值创建一个实例变量时，它就出现了，如果你不使用<code>obj.my_method</code>，这个实例就没有<code>@v</code></p>
 <h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 查看实例拥有哪些方法，因为每个类实例都是继承了Object类，所以会继承很多的方法</span>
 p obj<span class="token punctuation">.</span>methods
 <span class="token comment"># 这里用正则筛选一下</span>
 p obj<span class="token punctuation">.</span>methods<span class="token punctuation">.</span>grep<span class="token punctuation">(</span><span class="token regex-literal"><span class="token regex">/my/</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>一个对象内部其实只包含了自身的实例变量和对自身类的引用，方法并不在对象中，而在类中。这就是同一类的实例共享方法，但不共享实例变量的原因。</p>
+<p>​    一个对象内部其实只包含了自身的实例变量和对自身类的引用，方法并不在对象中，而在类中。这就是同一类的实例共享方法，但不共享实例变量的原因。</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># String实例的方法</span>
 p <span class="token builtin">String</span><span class="token punctuation">.</span>instance_methods
 <span class="token comment"># String实例方法+类方法</span>
 p <span class="token builtin">String</span><span class="token punctuation">.</span>methods
 <span class="token comment"># String忽略继承的方法</span>
 p <span class="token builtin">String</span><span class="token punctuation">.</span>instance_methods<span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
 
 <h4 id="类的真相-1"><a href="#类的真相-1" class="headerlink" title="类的真相"></a>类的真相</h4><p>​    在Ruby中类本身其实也是对象，是另一个类的实例。</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># String类实际上是Class类的一个实例</span>
@@ -7560,14 +7556,14 @@ p <span class="token builtin">Class</span><span class="token punctuation">.</spa
 <p>​    这里看到Class的实例方法有四个，其中new是我们最常用的，allocate是new方法的支撑方法，而superclass与我们Java中熟悉的继承有关，找到他的父类是谁？</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">p <span class="token builtin">String</span><span class="token punctuation">.</span>superclass  <span class="token comment"># String的父类：Object</span>
 p <span class="token builtin">Object</span><span class="token punctuation">.</span>superclass  <span class="token comment"># Object的父类：BasicObject</span>
-p BasicObject<span class="token punctuation">.</span>superclass <span class="token comment"># BasicObject的父类：nil 空</span>
+p BasicObject<span class="token punctuation">.</span>superclass <span class="token comment"># BasicObject的父类：nil 空  到头了</span>
 
 p <span class="token builtin">Class</span><span class="token punctuation">.</span>superclass   <span class="token comment"># Class的父类是 Module</span>
 p <span class="token builtin">Module</span><span class="token punctuation">.</span>superclass  <span class="token comment"># Module的父类是 Object</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    可以看到Class是继承了Module，并自身定义了实例化的操作。所以他们看起来那么像。</p>
 <p>​    每个类最终继承与BasicObject，而每个类又是Class类的实例。</p>
-<h4 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h4><p>​    任何大写字母开头的引用，都代表着常亮，而常量一般指不会修改的东西，在Ruby中常亮也可以看做是变量，而过你修改，编译器会发出警告，但仍然会进行修改。常量与变量最大的区别在于作用域的不同。</p>
+<h4 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h4><p>​    任何大写字母开头的引用，都代表着常亮，而常量一般指不会修改的东西，在Ruby中常亮也可以看做是变量，而当你修改，编译器会发出警告，但仍然会进行修改。常量与变量最大的区别在于作用域的不同。</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
 	MyConstant <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Outer constant"</span></span>
 	<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
@@ -7595,11 +7591,10 @@ p MyModule<span class="token double-colon punctuation">::</span>MyClass<span cla
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
 mc <span class="token operator">=</span> <span class="token constant">M</span><span class="token double-colon punctuation">::</span><span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
-mc<span class="token punctuation">.</span>hi
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+mc<span class="token punctuation">.</span>hi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="方法查找"><a href="#方法查找" class="headerlink" title="方法查找"></a>方法查找</h4><p>​    这里有两个概念：接收者和祖先链</p>
-<p>比如说上面的代码 mc.hi ,其中mc就是方法的接受者，在执行这个方法前需要先找到它，所以先到接收者中去找该方法，如果没有则找他的父类或者是引入的Module中寻找，而接收者，引入模块儿，父类共同构成了祖先链。</p>
+<p>比如说上面的代码 mc.hi ,其中mc就是方法的接受者，在执行这个方法前需要先找到这个方法的定义，所以先到接收者中去找该方法，如果没有则找他的父类或者是引入的Module中寻找，而接收者，接受者内引入模块儿，父类共同构成了祖先链。</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">M1</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">m1_method</span></span>
 		<span class="token string-literal"><span class="token string">"m1.method"</span></span>
@@ -7625,34 +7620,73 @@ p <span class="token constant">AC</span><span class="token punctuation">.</span>
 <p>如果在祖先链中多次引入一个module，会怎么样？</p>
 </blockquote>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">M1</span><span class="token punctuation">;</span> <span class="token keyword">end</span>
+p <span class="token constant">M1</span><span class="token punctuation">.</span>ancestors  <span class="token comment"># => [M1]</span>
 <span class="token keyword">module</span> <span class="token class-name">M2</span>
 	<span class="token keyword">include</span> <span class="token constant">M1</span>
 <span class="token keyword">end</span>
+p <span class="token constant">M2</span><span class="token punctuation">.</span>ancestors  <span class="token comment"># => [M2, M1]</span>
 <span class="token keyword">module</span> <span class="token class-name">M3</span>
 	<span class="token keyword">prepend</span> <span class="token constant">M1</span>
 	<span class="token keyword">include</span> <span class="token constant">M2</span>
 <span class="token keyword">end</span>
-<span class="token comment"># [M1, M3, M2]</span>
-p <span class="token constant">M3</span><span class="token punctuation">.</span>ancestors<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+p <span class="token constant">M3</span><span class="token punctuation">.</span>ancestors  <span class="token comment"># => [M1, M3, M2]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>这里是M3先进行操作的，然后当执行到M2时，发现M1已经在祖先链中，则该指令不会操作。</p>
-<h4 id="Kernel模块儿"><a href="#Kernel模块儿" class="headerlink" title="Kernel模块儿"></a>Kernel模块儿</h4><p>在Ruby中我们常常使用<code>print</code>，就好像所有对对象都有print方法一样。但实际上这些方法来着<code>Kernel</code>模块儿私有实例方法，因为Object引入了Kernel，所以每个对象都可以调用Kernel方法，也叫做内核方法，我们当然也可以自己加入自己的方法</p>
+<h4 id="Kernel模块儿"><a href="#Kernel模块儿" class="headerlink" title="Kernel模块儿"></a>Kernel模块儿</h4><p>​    在Ruby中我们常常使用<code>print</code>，就好像所有对象都有print方法一样。但实际上这些方法来着<code>Kernel</code>模块儿私有实例方法，因为Object引入了Kernel，所以每个对象都可以调用Kernel方法，也叫做内核方法，我们当然也可以自己加入自己的方法</p>
+<blockquote>
+<p>这里说明一下为什么，我们在顶级作用域下写的函数，代码可以直接运行？</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">p <span class="token keyword">self</span>   <span class="token comment"># => main</span>
+p <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span>  <span class="token comment"># => Object</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>​    顶级作用域下，实际上是self指向main实例对象，main又是Object的子类，所以继承Object的实例方法，所以我们在顶级作用域下调用 print 方法，是调用Object::Kernel#print 方法。</p>
 <h4 id="执行方法"><a href="#执行方法" class="headerlink" title="执行方法"></a>执行方法</h4><blockquote>
 <p>当我们找到了该方法，如何去执行呢？</p>
 </blockquote>
 <p>比如我们现在找到了该方法：</p>
-<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
-  temp <span class="token operator">=</span> <span class="token variable">@x</span> <span class="token operator">+</span> <span class="token number">1</span>
-  my_other_method<span class="token punctuation">(</span>temp<span class="token punctuation">)</span>
-<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span>
+		<span class="token variable">@x</span> <span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">end</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
+	  p <span class="token keyword">self</span>   <span class="token comment"># => #&lt;MyClass:0x000000010dcdb320 @x=1> self为obj</span>
+	  temp <span class="token operator">=</span> <span class="token variable">@x</span> <span class="token operator">+</span> <span class="token number">1</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span>my_method  <span class="token comment"># obj调用my_method时，obj为当前对象self</span>
+p <span class="token keyword">self</span>         <span class="token comment"># => main , 在顶级作用域下，调用 p ,接受者为main对象，main为当前对象</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
 <p>请问：@x是属于哪个对象的，my_other_method属于哪个对象？</p>
 </blockquote>
-<p>​    一般情况下，会将最初方法的接收者作为当前对象，也就是self，所有实例变量和方法都属于self，所有没有明确指定接受者的实际上都指向self，除非转而调用其他对象的方法，则self就会转为这个对象。</p>
+<p>​    一般情况下，会将最初方法的接收者作为当前对象，也就是作为self，所有实例变量和方法都属于self，如果没有明确指定接受者的实际上都指向self，除非转而调用其他对象的方法，则self就会转为这个对象。</p>
+<blockquote>
+<p>Ruby中当前对象的转换与作用域的转化是很绕的，需要好好理一下</p>
+</blockquote>
 <blockquote>
 <p>Ruby中 private 修饰的方法，不能明确指定接受者来调用私有方法，只能通过隐性的接受者self调用。</p>
 </blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hi</span></span>
+		p <span class="token string-literal"><span class="token string">"Hi "</span></span>
+	<span class="token keyword">end</span>
+
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">Hello</span></span>
+		<span class="token comment"># 这里Hello 调用 私有方法hello ，使用的隐藏当前对象,也就是MyClass的实例对象</span>
+		hello
+	<span class="token keyword">end</span>
+
+	<span class="token keyword">private</span>
+
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hello</span></span> 
+		p <span class="token string-literal"><span class="token string">"hello"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span>hi     <span class="token comment"># 正常调用</span>
+obj<span class="token punctuation">.</span>Hello  <span class="token comment"># 正常调用</span>
+obj<span class="token punctuation">.</span>hello  <span class="token comment"># 无法调用，因为private方法不能指定接收者调用，只能隐性调用</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h4 id="顶层上下文"><a href="#顶层上下文" class="headerlink" title="顶层上下文"></a>顶层上下文</h4><blockquote>
 <p>如果没有调用任何方法，那这时谁是self呢？</p>
 </blockquote>
@@ -7662,22 +7696,24 @@ p <span class="token keyword">self</span>
 p <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>在Ruby程序运行时，Ruby解释器创建一个名为main对象作为当前对象，这个对象有时被称为顶层上下文。</p>
-<h4 id="细化"><a href="#细化" class="headerlink" title="细化"></a>细化</h4><p>​    在前面我们使用了猴子补丁对原有的类进行修改，但这一操作是全局性的，如果把控不好，会导致许多隐性的Bug，所以Ruby又引入了<code>细化(refinement)</code>,起到同样的作用，但是限制作用域。</p>
+<h4 id="细化"><a href="#细化" class="headerlink" title="细化"></a>细化</h4><p>​    在前面我们使用了猴子补丁对原有的类进行修改，但这一操作是全局性的，如果把控不好，会导致许多隐性的Bug，所以Ruby又引入了<code>细化(refinement)</code>,起到同样的作用，但是可以限制作用域。</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">StringAppend</span>
+  <span class="token comment"># 喜欢 String 这里标准类库，传入一个Block</span>
 	refine <span class="token builtin">String</span> <span class="token keyword">do</span>
+    <span class="token comment"># 在Block内，定义一个append_txt方法</span>
 		<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">append_txt</span></span>
 			to_s <span class="token operator">+</span> <span class="token string-literal"><span class="token string">".txt"</span></span>
 		<span class="token keyword">end</span>
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
 <span class="token keyword">module</span> <span class="token class-name">StringStuff</span>
-<span class="token comment"># 这时候定义好，并未生效，需要主动启动</span>
+	<span class="token comment"># 上面定义好，并未生效，需要主动启动 using</span>
 	using StringAppend
 	<span class="token comment"># 这里正常执行</span>
 	p <span class="token string-literal"><span class="token string">"alibaba"</span></span><span class="token punctuation">.</span>append_txt
 <span class="token keyword">end</span>
-<span class="token comment"># 这里就会报错</span>
-p <span class="token string-literal"><span class="token string">"taobao"</span></span><span class="token punctuation">.</span>append_txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token comment"># 这里就会报错，所以通过细化，可以控制修改的访问范围，不会使全局都看到这个修改</span>
+p <span class="token string-literal"><span class="token string">"taobao"</span></span><span class="token punctuation">.</span>append_txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    细化只在两种场合有效：</p>
 <ol>
@@ -7702,14 +7738,15 @@ p <span class="token string-literal"><span class="token string">"taobao"</span><
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
 
+<span class="token comment"># 在顶级上下文中使用using</span>
 using MyClassRefinement
 
 obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span> 
 obj<span class="token punctuation">.</span>my_method  <span class="token comment"># => new method</span>
-obj<span class="token punctuation">.</span>other_method <span class="token comment"># => old method</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+obj<span class="token punctuation">.</span>other_method <span class="token comment"># => old method</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>这里虽然使用了喜欢，但当其他方法调用细化方法，还是会调用之前定义的代码，如果直接调用细化方法，则修改为细化内容。</p>
-<h2 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h2><p>​    在Ruby这种动态语言中，方法的调用是极为灵活的，并不会在编译器就爆出各种错误，比方说我定义一个User类，我想调用hi方法，我并没有定义，但这并不妨碍我编写代码，我甚至可以说我去找hi方法，发现没有这个方法，最终我向这个类中添加我想要的方法在运行期间。这给了我们更多的操作空间，这将是我们要学习的。</p>
+<p>这里虽然使用了细化，但当其他实例方法调用细化方法，还是会调用之前定义的代码，如果直接调用细化方法，则修改为细化内容。</p>
+<h2 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h2><p>​    在Ruby这种动态语言中，方法的调用是极为灵活的，并不会在编译器就爆出各种错误，比方说我定义一个User类，我想调用hi方法，我并没有定义hi方法，但这并不妨碍我编写代码，我甚至可以说我去找hi方法，发现没有这个方法，最终我向这个类中添加我想要的方法在运行期间。这给了我们更多的操作空间，这将是我们要学习的。</p>
 <blockquote>
 <p>现在我们有一个老的系统需要我们重构，老板要求系统自动为超过99美金的开销天添加标记</p>
 </blockquote>
@@ -7735,6 +7772,7 @@ ds<span class="token punctuation">.</span>get_mouse_price<span class="token punc
 
 <p>我们现在需要将数据源封装起来，每个computer为一个对象，并为每个组件定义通用的方法</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Computer</span>
+  <span class="token comment"># data_source 就是上面的DS对象</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>computer_id<span class="token punctuation">,</span>data_source<span class="token punctuation">)</span>
 		<span class="token variable">@id</span> <span class="token operator">=</span> computer_id
 		<span class="token variable">@data_source</span> <span class="token operator">=</span> data_source
@@ -7757,17 +7795,17 @@ ds<span class="token punctuation">.</span>get_mouse_price<span class="token punc
 	<span class="token keyword">end</span>
 
 	<span class="token comment"># ... 类似操作</span>
-<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    我们可以看到 mouse 和 cpu 就有大量的代码重复，如果后面还需要加其他的，则会让代码臃肿且冗余。</p>
-<p>​    我们有两种办法进行重构优化：动态方法 ，method_missing</p>
+<p>​    我们有两种办法进行重构优化：<code>动态方法</code> ，<code>method_missing</code></p>
 <h3 id="动态方法"><a href="#动态方法" class="headerlink" title="动态方法"></a>动态方法</h3><h4 id="动态调用方法"><a href="#动态调用方法" class="headerlink" title="动态调用方法"></a>动态调用方法</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">method</span></span><span class="token punctuation">(</span>content<span class="token punctuation">)</span>
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
 obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
 obj<span class="token punctuation">.</span>method <span class="token string-literal"><span class="token string">"Hello World"</span></span>
-<span class="token comment"># 动态派发和上面普通调用的结果是一样的</span>
+<span class="token comment"># 动态派发和上面普通调用的结果是一样的, 将 obj.method 替换为 obj.send(:method)</span>
 obj<span class="token punctuation">.</span>send<span class="token punctuation">(</span><span class="token symbol">:method</span><span class="token punctuation">,</span><span class="token string-literal"><span class="token string">"Hello World"</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
@@ -7778,9 +7816,10 @@ obj<span class="token punctuation">.</span>send<span class="token punctuation">(
 <p>这里使用<code>:method</code>，而不是”method”,实际上是一样的</p>
 </blockquote>
 <p><code>obj.send(&quot;method&quot;,&quot;Hello World&quot;)</code></p>
-<p>​    :method 表示的是一个Symbol符号，”method”则是一个String字符串，一般在元编程我们常常使用Symbol，因为Symbol是不可变的。字符串是可变的。</p>
+<p>​    :method 表示的是一个Symbol符号</p>
+<p>​    “method”则是一个String字符串，一般在元编程我们常常使用Symbol，因为Symbol是不可变的。字符串是可变的。</p>
 <h4 id="动态定义方法"><a href="#动态定义方法" class="headerlink" title="动态定义方法"></a>动态定义方法</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
-	<span class="token comment"># 这里就是定义了一个实例方法</span>
+	<span class="token comment"># 这里就是定义了一个实例方法 将 def my_method 替换为 define_method :my_method，参数部分，通过Block传递</span>
 	<span class="token keyword">define_method</span> <span class="token symbol">:my_method</span> <span class="token keyword">do</span> <span class="token operator">|</span>my_arg<span class="token operator">|</span>
 		my_arg <span class="token operator">*</span> <span class="token number">3</span>
 	<span class="token keyword">end</span>
@@ -7808,6 +7847,7 @@ obj<span class="token punctuation">.</span>my_method <span class="token number">
 	<span class="token keyword">end</span>
 
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">companent</span></span><span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+    <span class="token comment"># 这里使用了动态调用方法</span>
 		info <span class="token operator">=</span> <span class="token variable">@data_source</span><span class="token punctuation">.</span>send<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"get_</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">_info"</span></span><span class="token punctuation">,</span><span class="token variable">@id</span><span class="token punctuation">)</span>
 		price <span class="token operator">=</span> <span class="token variable">@data_source</span><span class="token punctuation">.</span>send<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"get_</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">_price"</span></span><span class="token punctuation">,</span><span class="token variable">@id</span><span class="token punctuation">)</span>
 		result <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">: </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">info</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> : (</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">price</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">)"</span></span>
@@ -7815,17 +7855,17 @@ obj<span class="token punctuation">.</span>my_method <span class="token number">
 		<span class="token keyword">return</span> result
 	<span class="token keyword">end</span>
 	<span class="token comment"># ... 类似操作</span>
-<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    我们使用动态派发的方式，抽离出一个公共组件，其他配件可以直接使用，代码量减少的多</p>
-<p>​    我们再用动态方法去试着重构一下代码    </p>
+<p>​    我们再用动态定义方法去试着重构一下代码    </p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Computer</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>computer_id<span class="token punctuation">,</span>data_source<span class="token punctuation">)</span>
 		<span class="token variable">@id</span> <span class="token operator">=</span> computer_id
 		<span class="token variable">@data_source</span> <span class="token operator">=</span> data_source
 	<span class="token keyword">end</span>
 
-	<span class="token comment"># 这里定义一个类方法</span>
+	<span class="token comment"># 这里定义一个类方法，这里的self指向的是Computer类常量</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">define_companent</span></span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> 
 		<span class="token comment"># 根据传入的Symbol，创建相应的方法</span>
 		<span class="token keyword">define_method</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token keyword">do</span>
@@ -7836,7 +7876,7 @@ obj<span class="token punctuation">.</span>my_method <span class="token number">
 			<span class="token keyword">return</span> result
 		<span class="token keyword">end</span>
 	<span class="token keyword">end</span>
-	
+	<span class="token comment">## 这里主动调用 并动态创建对应的方法</span>
 	define_companent <span class="token symbol">:mouse</span>
 	define_companent <span class="token symbol">:cpu</span>
 	define_companent <span class="token symbol">:keyboard</span>
@@ -7849,6 +7889,7 @@ obj<span class="token punctuation">.</span>my_method <span class="token number">
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>computer_id<span class="token punctuation">,</span>data_source<span class="token punctuation">)</span>
 		<span class="token variable">@id</span> <span class="token operator">=</span> computer_id
 		<span class="token variable">@data_source</span> <span class="token operator">=</span> data_source
+    <span class="token comment"># 主动根据DS中给定的访问方法，创建访问方法，而不需要我们再去手动控制</span>
 		data_source<span class="token punctuation">.</span>methods<span class="token punctuation">.</span>grep<span class="token punctuation">(</span><span class="token operator">/</span><span class="token operator">^</span>get_<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token operator">*</span><span class="token punctuation">)</span>_info$<span class="token operator">/</span> <span class="token operator">|</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 			<span class="token comment"># 被正则表达式匹配到的方法，会依次调用这里传递的块儿，并将内容封装到 $1 全局变量中</span>
 			Computer<span class="token punctuation">.</span>define_companent $<span class="token number">1</span>
@@ -7864,7 +7905,7 @@ obj<span class="token punctuation">.</span>my_method <span class="token number">
 			<span class="token keyword">return</span> result
 		<span class="token keyword">end</span>
 	<span class="token keyword">end</span>
-<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    我们在初始化方法中加入几场代码就可以让代码更加简洁。</p>
 <h3 id="method-missing方法"><a href="#method-missing方法" class="headerlink" title="method_missing方法"></a>method_missing方法</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">User</span>
@@ -7885,7 +7926,7 @@ obj<span class="token punctuation">.</span>hi<span aria-hidden="true" class="lin
 		<span class="token variable">@id</span> <span class="token operator">=</span> computer_id
 		<span class="token variable">@data_source</span> <span class="token operator">=</span> data_source
 	<span class="token keyword">end</span>
-
+	<span class="token comment"># name 为 调用的方法名，args 表示参数 ，*表示接受所有的参数,封装为一个数组</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">method_miss</span></span><span class="token punctuation">(</span>name<span class="token punctuation">,</span><span class="token operator">*</span>args<span class="token punctuation">)</span>
 		<span class="token comment"># 判断@data_source是否有这个方法？如果没有则调用super.method_miss,也就是未找到该方法</span>
 		<span class="token keyword">super</span> <span class="token keyword">if</span> <span class="token operator">!</span><span class="token variable">@data_source</span><span class="token punctuation">.</span>respond_to<span class="token operator">?</span><span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"get_</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">_info"</span></span><span class="token punctuation">)</span>
@@ -7904,11 +7945,20 @@ obj<span class="token punctuation">.</span>hi<span aria-hidden="true" class="lin
 </blockquote>
 <p>​    在每次覆写respond_to?时都应该同时覆写respond_to_missing?方法</p>
 <h4 id="const-missing方法"><a href="#const-missing方法" class="headerlink" title="const_missing方法"></a>const_missing方法</h4><p>​    如果对于一个常量的引用发现找不到，则会默认调用<code>const_missing</code>方法，将常量名作为一个符号进行传递。</p>
-<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span> 
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Module</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">const_missing</span></span><span class="token punctuation">(</span>const_name<span class="token punctuation">)</span>
-		p <span class="token string-literal"><span class="token string">"未找到 </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">const_name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> 常量，调用MyClass的const_missing方法"</span></span>
+		<span class="token keyword">case</span> const_name
+		<span class="token keyword">when</span> <span class="token symbol">:Task</span>
+			p <span class="token string-literal"><span class="token string">"我们已经更新了，请访问 Rake::Task"</span></span>
+		<span class="token keyword">when</span> <span class="token symbol">:FileTask</span>
+			p <span class="token string-literal"><span class="token string">"我们已经更新了，请访问 Rake::FileTask"</span></span>
+		<span class="token keyword">end</span>
 	<span class="token keyword">end</span>
-<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">end</span>
+<span class="token comment"># main是Object的实例，Object是Class的实例，Class的父类是Module，所以当我们使用猴子补丁修改</span>
+<span class="token comment"># Module#const_missing时，main对象是继承到这个方法的。</span>
+<span class="token comment"># 我们想要访问Task常量，发现并不存在，则触发了const_missing(const_name)</span>
+task_class <span class="token operator">=</span> Task  <span class="token comment"># => "我们已经更新了，请访问 Rake::Task"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    在Rake中就有使用，为了兼容老版本的Task和新版本的Rake::Task。 </p>
 <h4 id="method-missing隐藏Bug"><a href="#method-missing隐藏Bug" class="headerlink" title="method_missing隐藏Bug"></a>method_missing隐藏Bug</h4><blockquote>
@@ -7949,14 +7999,17 @@ p number_of<span class="token punctuation">.</span>Bob
 p number_of<span class="token punctuation">.</span>Frank	<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="白板类"><a href="#白板类" class="headerlink" title="白板类"></a>白板类</h3><blockquote>
-<p>​    比如说上面的 number_of.display 我们希望调用 method_missing 方法，但实际上可能调用了Object.display方法，这是因为我们从Object类中继承了大量的方法，所以时常导致幽灵方法与继承方法的重复。</p>
+<p>​    比如说上面的 number_of.display 我们希望实际调用 method_missing 方法，但实际上可能调用了Object.display方法，这是因为我们从Object类中继承了大量的方法，所以时常导致幽灵方法与继承方法的重复。</p>
 </blockquote>
 <p>​    如果实例存在继承方法，则幽灵方法是失效的。我们有两个办法：</p>
 <ol>
 <li>删除继承来的方法</li>
-<li>写一个白班类，也就是很干净了的类</li>
+<li>写一个白板类，也就是很干净了的类</li>
 </ol>
-<h4 id="BasicObject"><a href="#BasicObject" class="headerlink" title="BasicObject"></a>BasicObject</h4><p>​    BasicObject是Object的父类，其中定义的实例方法很少，所以我们可以让现有的类继承BasicObject，从而可以避免继承Object类的方法，这是最简单的白班类实现方法</p>
+<h4 id="BasicObject"><a href="#BasicObject" class="headerlink" title="BasicObject"></a>BasicObject</h4><p>​    BasicObject是Object的父类，其中定义的实例方法很少，所以我们可以让现有的类继承BasicObject，从而可以避免继承Object类的方法，这是最简单的白板类实现方法</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># [:__send__, :!, :instance_eval, :==, :instance_exec, :!=, :equal?, :__id__]</span>
+p BasicObject<span class="token punctuation">.</span>instance_methods<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <h4 id="删除方法"><a href="#删除方法" class="headerlink" title="删除方法"></a>删除方法</h4><ol>
 <li>Module#undef_method  删除所有的方法，包括继承的</li>
 <li>Module#remove_method 只删除接受者自己的方法</li>
@@ -7964,13 +8017,16 @@ p number_of<span class="token punctuation">.</span>Frank	<span aria-hidden="true
 <p>所以我们最终可以选择让Roulette 继承 BasicObject，或者删除指定方法</p>
 <h4 id="对比动态方法与幽灵方法"><a href="#对比动态方法与幽灵方法" class="headerlink" title="对比动态方法与幽灵方法"></a>对比动态方法与幽灵方法</h4><p>​    幽灵方法更容易出现隐性Bug，所以能使用动态方法，尽量使用动态方法，除非不得不使用时，才去使用，记住如果重写 response_to? ，也要重新 response_to_missing?</p>
 <h2 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h2><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
+  <span class="token comment"># 这里是my_method的作用域</span>
 	x <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Hi"</span></span>
 	<span class="token keyword">yield</span> <span class="token string-literal"><span class="token string">"World"</span></span>
 <span class="token keyword">end</span>
+<span class="token comment"># 这里是顶级上下文的作用域</span>
 x <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Hello"</span></span>
 my_method <span class="token keyword">do</span> <span class="token operator">|</span>variable<span class="token operator">|</span>
+  <span class="token comment"># 这里Block内绑定的 x ，是当前对象self的 x ，和被传入的方法 my_method 内定义的x没有关系</span>
 	puts <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">x</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">variable</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>  <span class="token comment">#=> Hello World</span>
-<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>上面我们定义了一个Block，并传入给my_method，这里我们发现Block绑定了一个x变量，x变量属于外部定义的，my_method内部定义的x，对于块儿内是不可见的。</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
@@ -8002,7 +8058,7 @@ obj<span class="token punctuation">.</span>my_method
 p local_variables  <span class="token comment"># => [:v1, :obj]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>最初在顶层作用域 定义 v1 = 1</p>
-<p>定义class MyClass，切换作用域，一旦切换作用域，绑定也会修改，v1对于 MyClass内部域是不可见的，在其内部定义了一个方法和v2，因为定义的函数并未执行，所以并未切换到新的域中。</p>
+<p>定义class MyClass，切换作用域，一旦切换作用域，绑定也会修改，v1对于MyClass内部域是不可见的，在其内部定义了一个方法和v2，因为定义的函数并未执行，所以并未切换到新的域中。</p>
 <p>当MyClass定义完毕，再次切换回顶级作用域。</p>
 <blockquote>
 <p>全局变量与顶级实例变量</p>
@@ -8030,9 +8086,9 @@ p <span class="token variable">@var</span><span aria-hidden="true" class="line-n
 <p>这里定义一个顶级上下文中的实例变量，当main对象扮演self的角色，就可以访问到顶级实例变量，但如果进入其他对象作为self，则无法访问到</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token variable">@var</span> <span class="token operator">=</span> <span class="token number">1</span>
 <span class="token keyword">class</span> <span class="token class-name">MyClass</span>
-<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
-	<span class="token variable">@var</span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"this is not top level @var"</span></span>
-<span class="token keyword">end</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
+    <span class="token variable">@var</span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"this is not top level @var"</span></span>
+  <span class="token keyword">end</span>
 <span class="token keyword">end</span> 
 obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
 p obj<span class="token punctuation">.</span>my_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
@@ -8047,7 +8103,7 @@ p obj<span class="token punctuation">.</span>my_method<span aria-hidden="true" c
 </ol>
 <p>每个关键字对应一个作用域门</p>
 <blockquote>
-<p>现在看到每个作用域有独立的空间，如果想要变量穿越作用域该如何操作</p>
+<p>现在看到每个作用域有独立的空间，如果想要变量穿越作用域该如何操作？</p>
 </blockquote>
 <h3 id="扁平化作用域"><a href="#扁平化作用域" class="headerlink" title="扁平化作用域"></a>扁平化作用域</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">var <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Success"</span></span>
 <span class="token keyword">class</span> <span class="token class-name">MyClass</span>
@@ -8075,10 +8131,11 @@ obg<span class="token punctuation">.</span>my_method<span aria-hidden="true" cla
 
 <p>​    如果两个作用域挤压在一起，我们通常简称为 扁平作用域</p>
 <h3 id="共享作用域"><a href="#共享作用域" class="headerlink" title="共享作用域"></a>共享作用域</h3><blockquote>
-<p>​        如果想在一组方法之间共享一个变量，但又不想别的方法访问到这个变量，就可以把这些方法定义在该变量所在的扁平作用域</p>
+<p>​    如果想在一组方法之间共享一个变量，但又不想别的方法访问到这个变量，就可以把这些方法定义在该变量所在的扁平作用域</p>
 </blockquote>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
 	share <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token comment"># 使用内核方法，调用 define_method 来定义函数，而又不用切换域</span>
 	Kernel<span class="token punctuation">.</span>send <span class="token symbol">:define_method</span><span class="token punctuation">,</span><span class="token symbol">:counter</span> <span class="token keyword">do</span>
 		share
 	<span class="token keyword">end</span>
@@ -8089,7 +8146,7 @@ obg<span class="token punctuation">.</span>my_method<span aria-hidden="true" cla
 my_method
 p counter 
 inc <span class="token number">4</span>
-p counter<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+p counter<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="上下文探针（instance-eval）"><a href="#上下文探针（instance-eval）" class="headerlink" title="上下文探针（instance_eval）"></a>上下文探针（instance_eval）</h3><p>这里我们学习一个新的方法：<code>instance_eval</code>,它能打开接受者的作用域，并对其进行操作</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
@@ -8118,10 +8175,11 @@ obj<span class="token punctuation">.</span>instance_eval <span class="token punc
 <span class="token keyword">class</span> <span class="token class-name">D</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">twisted_method</span></span>
 		<span class="token variable">@y</span> <span class="token operator">=</span> <span class="token number">2</span>
+    <span class="token comment"># 在执行下面代码之前，self为D.new，一旦执行下面的代码，C.new为self，@x在C.new中定义了，@y则没有</span>
 		<span class="token class-name">C</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>instance_eval <span class="token punctuation">&#123;</span><span class="token string-literal"><span class="token string">"@x : </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content"><span class="token variable">@x</span></span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> , @y : </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content"><span class="token variable">@y</span></span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">&#125;</span>
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
-p <span class="token class-name">D</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>twisted_method  <span class="token comment"># => "@x : 1 , @y : "</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+p <span class="token class-name">D</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>twisted_method  <span class="token comment"># => "@x : 1 , @y : "</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    这里输出发现，@y并未访问到， 可是上面的调用代码在同一个扁平作用域，原来是因为instance_eval将C.new对象变为当前对象self，调用者的实例变量就落在了作用域外了，所以访问不到为：nil，该如何操作呢？</p>
 <h4 id="instance-exec"><a href="#instance-exec" class="headerlink" title="instance_exec"></a>instance_exec</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">D</span>
@@ -8146,11 +8204,12 @@ obj<span class="token punctuation">.</span>instance_eval <span class="token keyw
 
 <h3 id="可调用对象"><a href="#可调用对象" class="headerlink" title="可调用对象"></a>可调用对象</h3><p>​    目前我们使用的Block是直接执行的，我们需要让Block变为对象，可以进行打包传递，调用，我们看一下有哪些打包代码的方式。</p>
 <ol>
-<li>proc , 将Block转为对象</li>
+<li>proc , 将Block转为Proc对象</li>
 <li>lambda ，属于proc的变种</li>
 <li>使用方法</li>
 </ol>
-<h4 id="Proc对象"><a href="#Proc对象" class="headerlink" title="Proc对象"></a>Proc对象</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">inc <span class="token operator">=</span> <span class="token class-name">Proc</span><span class="token punctuation">.</span><span class="token keyword">new</span> <span class="token punctuation">&#123;</span><span class="token operator">|</span>x<span class="token operator">|</span> x <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">&#125;</span>
+<h4 id="Proc对象"><a href="#Proc对象" class="headerlink" title="Proc对象"></a>Proc对象</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 将Block打包为Proc</span>
+inc <span class="token operator">=</span> <span class="token class-name">Proc</span><span class="token punctuation">.</span><span class="token keyword">new</span> <span class="token punctuation">&#123;</span><span class="token operator">|</span>x<span class="token operator">|</span> x <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">&#125;</span>
 p inc<span class="token punctuation">.</span>call <span class="token number">2</span>
 
 inc_ <span class="token operator">=</span> proc <span class="token punctuation">&#123;</span><span class="token operator">|</span>x<span class="token operator">|</span> x <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">&#125;</span>
@@ -8160,7 +8219,7 @@ obj <span class="token operator">=</span> lambda <span class="token punctuation"
 p obj<span class="token punctuation">.</span>call <span class="token number">2</span>
 
 obj_ <span class="token operator">=</span> <span class="token operator">-</span><span class="token operator">></span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>x <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">&#125;</span>
-p obj_<span class="token punctuation">.</span>call <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+p obj_<span class="token punctuation">.</span>call <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="amp-操作符"><a href="#amp-操作符" class="headerlink" title="&amp;操作符"></a>&amp;操作符</h4><p>​    在调用方法时，我们为其传递一个Block，可通过yield进行执行，但是如果我们想将这个Block封装起来，延迟调用，该如何操作</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 这里&amp;block将Block封装为Proc</span>
@@ -8185,8 +8244,8 @@ my_method<span class="token punctuation">(</span><span class="token string-liter
 <li>参数校验不同</li>
 <li>return定义不同</li>
 </ol>
-<p>​        参数校验是指：Lambda中定义两个入参，如果你没传递，或者传递多了，则会报错，如果是Proc定义两个入参，如果没传递，则变量为nil，如果传递多了，多余部分也不会使用。Lambda更严格一些</p>
-<p>​        return定义不同：Lambda中使用return，表示从Lambda表达式中返回，而Proc表示从定义Proc的作用域中返回</p>
+<p>​    参数校验是指：Lambda中定义两个入参，如果你没传递，或者传递多了，则会报错，如果是Proc定义两个入参，如果没传递，则变量为nil，如果传递多了，多余部分也不会使用。Lambda更严格一些</p>
+<p>​    return定义不同：Lambda中使用return，表示从Lambda表达式中返回，而Proc表示从定义Proc的作用域中返回</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
 	p <span class="token operator">=</span> <span class="token class-name">Proc</span><span class="token punctuation">.</span><span class="token keyword">new</span> <span class="token punctuation">&#123;</span><span class="token keyword">return</span> <span class="token number">10</span><span class="token punctuation">&#125;</span>
 	result <span class="token operator">=</span> p<span class="token punctuation">.</span>call  <span class="token comment"># 这里调用完，就退出定义p的作用域，所以下面执行不到</span>
@@ -8195,9 +8254,683 @@ my_method<span class="token punctuation">(</span><span class="token string-liter
 
 p my_method <span class="token comment"># => 10 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<h4 id="Metthod对象"><a href="#Metthod对象" class="headerlink" title="Metthod对象"></a>Metthod对象</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span>
+		<span class="token variable">@v</span> <span class="token operator">=</span> <span class="token number">100</span>
+	<span class="token keyword">end</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
+		<span class="token variable">@v</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+<span class="token comment"># 通过Kernel#method方法</span>
+mobj <span class="token operator">=</span> obj<span class="token punctuation">.</span>method <span class="token symbol">:my_method</span>
+
+p mobj<span class="token punctuation">.</span><span class="token keyword">class</span>  <span class="token comment"># => Method</span>
+p mobj<span class="token punctuation">.</span>call
+mobj<span class="token punctuation">.</span>to_proc  <span class="token comment"># 将Method转为Proc</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>Method和Proc有什么区别？</p>
+</blockquote>
+<p>lambda在定义它的作用域执行</p>
+<p>Method对象会在自身所在的对象的作用域执行</p>
+<h4 id="自由方法"><a href="#自由方法" class="headerlink" title="自由方法"></a>自由方法</h4><p>​    听名字感觉是一个脱离类，模块儿的一个方法，可以使用<code>Module#unbind</code>将一个方法转为自由方法，也可以使用<code>Module#instance_method</code>获取一个自由方法</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
+		<span class="token number">42</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+unbound <span class="token operator">=</span> MyModule<span class="token punctuation">.</span>instance_method<span class="token punctuation">(</span><span class="token symbol">:my_method</span><span class="token punctuation">)</span>
+p unbound<span class="token punctuation">.</span><span class="token keyword">class</span>  <span class="token comment"># => UnboundMethod</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    自由方法并不能脱离对象执行，所以我们可以把他再绑定到一个对象中，使之再次成为Method对象，可以使用<code>UnboundMethod#bind</code>进行绑定，从某个类中分离出来的UnboundMethod，只能绑定在该类或者子类的对象上，模块儿中分离的自由方法则可以自由处置。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
+		<span class="token number">42</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+unbound <span class="token operator">=</span> MyModule<span class="token punctuation">.</span>instance_method<span class="token punctuation">(</span><span class="token symbol">:my_method</span><span class="token punctuation">)</span>
+p unbound<span class="token punctuation">.</span><span class="token keyword">class</span>  <span class="token comment"># => UnboundMethod</span>
+
+<span class="token builtin">String</span><span class="token punctuation">.</span>send <span class="token symbol">:define_method</span><span class="token punctuation">,</span><span class="token symbol">:another_method</span><span class="token punctuation">,</span>unbound
+p <span class="token string-literal"><span class="token string">"abc"</span></span><span class="token punctuation">.</span>another_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
-<h3 id="编写领域专属语言（DSL）"><a href="#编写领域专属语言（DSL）" class="headerlink" title="编写领域专属语言（DSL）"></a>编写领域专属语言（DSL）</h3>]]></content>
+
+<h2 id="类定义"><a href="#类定义" class="headerlink" title="类定义"></a>类定义</h2><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">result <span class="token operator">=</span> <span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">self</span>
+<span class="token keyword">end</span>
+p result  <span class="token comment"># => MyClass</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    定义类或模块儿时，内本身充当当前对象self的角色，因为类和模块儿也是对象，所以可以充当self，这里我们引入一个相关的概念：当前类</p>
+<h3 id="当前类"><a href="#当前类" class="headerlink" title="当前类"></a>当前类</h3><blockquote>
+<p>至今为止，有几个概念混杂在一起，当前对象，当前类，当前作用域</p>
+</blockquote>
+<p>​    如果程序在哪个位置，都会有一个当前对象self，同样也总是有一个当前类或模块儿的存在，定义一个方法时，这个方法将成为当前类的一个实例方法。</p>
+<p>​    self可以获取当前对象，但是Ruby中并没有相应的方法获取当前类的引用，我们这里有几个规则</p>
+<ol>
+<li>在程序的顶层，当前类为Object，这是main对象所属的类(这就是在顶层定义方法会成为Object实例方法的原因)</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 这里定义的是private实例方法，当前类为Object，所以子类也会继承到这个方法</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">say_hello</span></span>
+	p <span class="token string-literal"><span class="token string">"Hello World"</span></span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">User</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hi</span></span>
+		say_hello
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+obj <span class="token operator">=</span> <span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+<span class="token comment"># 这里是可以调用成功的</span>
+obj<span class="token punctuation">.</span>hi  
+say_hello
+obj<span class="token punctuation">.</span>send <span class="token symbol">:say_hello</span>
+<span class="token comment"># 这里无法调用</span>
+obj<span class="token punctuation">.</span>say_hello  <span class="token comment"># 因为say_hello是一个私有方法</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="2">
+<li>在一个方法中，当前类就是当前对象的类，比如我们在一个函数中定义另一个函数，这个内部定义的函数属于当前对象的类</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">User</span>
+	<span class="token comment"># 这里一旦执行，当前类为User</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span> 
+		<span class="token comment"># 这里定义的函数生效，并属于User，</span>
+		<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">two</span></span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span>one
+p User<span class="token punctuation">.</span>instance_methods<span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>  <span class="token comment"># => [:one, :two]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="3">
+<li>当使用class或者module打开一个类时，这个类成为当前类</li>
+</ol>
+<blockquote>
+<p>如果我们想将类为参数，动态的给类添加一个实例方法，我们该如何操作</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">add_method_to</span></span><span class="token punctuation">(</span>a_class<span class="token punctuation">)</span>
+  <span class="token comment"># TODO : 在 a_class上定义方法 m()</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>这里我们引入class_eval方法</p>
+<h4 id="class-eval方法"><a href="#class-eval方法" class="headerlink" title="class_eval方法"></a>class_eval方法</h4><p>Module#class_eval方法会在一个已存在类的上下文中执行一个块儿。这听起来和<code>obj.instance_eval</code>很像。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">add_method_to</span></span><span class="token punctuation">(</span>a_class<span class="token punctuation">)</span>
+  a_class<span class="token punctuation">.</span>class_eval <span class="token keyword">do</span>
+    <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">m</span></span><span class="token punctuation">;</span> <span class="token string-literal"><span class="token string">'Hello'</span></span><span class="token punctuation">;</span> <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+add_method_to <span class="token builtin">String</span>
+<span class="token string-literal"><span class="token string">"abc"</span></span><span class="token punctuation">.</span>m<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol>
+<li><p>Module#class_eval 会同时修改self和当前类，所以可以定义方法</p>
+</li>
+<li><p>Object#instance_eval 只修改self</p>
+</li>
+</ol>
+<p>​    Module#class_eval功能和class类似，但更强大，因为class关键字传入 常量，而Module#class_eval，只要是类即可使用。</p>
+<p>​    class也是作用域门，会切换作用域，而Module#class_eval则是扁平作用域可以引入外部变量</p>
+<blockquote>
+<p>Module#class_eval 也有 class_exec 可以接收额外的代码块作为参数</p>
+</blockquote>
+<h3 id="类实例变量"><a href="#类实例变量" class="headerlink" title="类实例变量"></a>类实例变量</h3><blockquote>
+<p>这里需要声明，类实例变量 和 类实例化对象的实例变量是不同的</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token comment"># 这里当前类为MyClass，self也为MyClass，这里定义@my_var实例变量，所属MyClass的</span>
+	<span class="token variable">@my_var</span> <span class="token operator">=</span> <span class="token number">100</span>
+	<span class="token comment"># 定义MyClass的read方法，一个指向MyClass的类方法，访问@my_var 是可以的</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">read</span></span><span class="token punctuation">;</span> <span class="token variable">@my_var</span><span class="token punctuation">;</span> <span class="token keyword">end</span>
+	<span class="token comment"># 定义MyClass的实例方法write，这里的@my_var 和 外面的@my_var 并不是一个变量，作用域不同</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">write</span></span><span class="token punctuation">;</span> <span class="token variable">@my_var</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token keyword">end</span>
+	<span class="token comment"># 这里一样，是访问不到外部的@my_var,除非调用write方法，给类的对象创建一个@my_var</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">read</span></span><span class="token punctuation">;</span> <span class="token variable">@my_var</span><span class="token punctuation">;</span> <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span> 
+p obj<span class="token punctuation">.</span>read  <span class="token comment"># nil</span>
+obj<span class="token punctuation">.</span>write <span class="token comment"># 定义 @my_var = 2</span>
+p obj<span class="token punctuation">.</span>read  <span class="token comment"># @my_var = 2</span>
+p MyClass<span class="token punctuation">.</span>read <span class="token comment"># @my_var = 100</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    Ruby解释器假定所有的实例变量都属于当前对象self，在类定义时也如此。</p>
+<blockquote>
+<p>一个类实例变量只可以被类本身所访问，而不能被类的实例或子类所访问到</p>
+</blockquote>
+<h4 id="类变量"><a href="#类变量" class="headerlink" title="类变量"></a>类变量</h4><p>​    如果想在类中定义变量，可被子类或者实例对象访问到，可以使用类变量，它更像是Java中的静态变量.</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">C</span>
+	<span class="token variable">@@var</span> <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">end</span>
+<span class="token keyword">class</span> <span class="token class-name">D</span> <span class="token operator">&lt;</span> <span class="token constant">C</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hi</span></span>
+	 	<span class="token variable">@@var</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">D</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+p obj<span class="token punctuation">.</span>hi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>需要注意一点，盲目的使用类变量也会有问题</p>
+</blockquote>
+<p>​    不允许在顶级上下文中定义类变量，因为main对象所属Object类，定义类变量，则所有Object子类都会继承这个类变量，也就有修改类变量的可能，在最新的Ruby编译器中已经对这个行为禁止，并爆出错误</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token variable">@@var</span> <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">class</span> <span class="token class-name">User</span>
+	<span class="token variable">@@var</span> <span class="token operator">=</span> <span class="token number">2</span>
+<span class="token keyword">end</span>
+p <span class="token variable">@@var</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>这里再回顾一下Ruby中的操作符</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">p <span class="token boolean">false</span> <span class="token operator">||</span> <span class="token boolean">true</span>  <span class="token comment"># 一个为真则为真</span>
+p <span class="token boolean">false</span> <span class="token operator">&amp;&amp;</span> <span class="token boolean">true</span>  <span class="token comment"># 一个为假都为假</span>
+p <span class="token keyword">nil</span> <span class="token operator">||</span> <span class="token string-literal"><span class="token string">"a"</span></span>     <span class="token comment"># 除了 nil 和 false，其他都为真</span>
+p <span class="token string-literal"><span class="token string">"a"</span></span> <span class="token operator">||</span> <span class="token keyword">nil</span>     <span class="token comment"># || 遇到真则返回</span>
+p <span class="token string-literal"><span class="token string">"a"</span></span> <span class="token operator">||</span> <span class="token string-literal"><span class="token string">'b'</span></span>
+
+p <span class="token keyword">nil</span> <span class="token operator">&amp;&amp;</span> <span class="token string-literal"><span class="token string">"a"</span></span>     <span class="token comment"># &amp;&amp; 遇到假则返回</span>
+p <span class="token string-literal"><span class="token string">"a"</span></span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">nil</span>
+p <span class="token string-literal"><span class="token string">"a"</span></span> <span class="token operator">&amp;&amp;</span> <span class="token string-literal"><span class="token string">"b"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>类对象是否可以访问到类实例变量</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token comment"># 这里@var 属于 MyClass，因为MyClass也是一个对象</span>
+	<span class="token variable">@var</span> <span class="token operator">=</span> <span class="token number">1</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">get</span></span>
+		<span class="token comment"># 这里访问，self为类的对象，作用域分离</span>
+		<span class="token variable">@var</span>
+	<span class="token keyword">end</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">get</span></span>
+		<span class="token variable">@var</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+p <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>get  <span class="token comment"># 无法访问到</span>
+p MyClass<span class="token punctuation">.</span>get      <span class="token comment"># 正常输出 1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>obj.instance.eval 改变obj为self，如果在Block内定义实例变量，则该实例变量属于obj</p>
+<p>Class.class_eval 改变Class为self，同时改变当前类，定义实例变量属于这个类</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">get</span></span>
+		<span class="token variable">@var</span> 
+	<span class="token keyword">end</span>
+
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">get</span></span>
+		<span class="token variable">@var</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+MyClass<span class="token punctuation">.</span>class_eval <span class="token keyword">do</span> 
+	<span class="token variable">@var</span> <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">end</span>
+
+p MyClass<span class="token punctuation">.</span>get  <span class="token comment"># => 1</span>
+p <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>get  <span class="token comment"># => nil</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="单件方法"><a href="#单件方法" class="headerlink" title="单件方法"></a>单件方法</h3><blockquote>
+<p>我们现在想要修改一个类的实例方法有三种办法</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 1.0 猴子补丁</span>
+<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 2.0 细化</span>
+<span class="token keyword">module</span> <span class="token class-name">MyClass_Plus</span>
+  refine MyClass <span class="token keyword">do</span>
+		<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">two</span></span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 3.0 单件方法</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token class-name">obj</span><span class="token punctuation">.</span><span class="token function">tree</span></span>
+  <span class="token comment"># 方法体</span>
+<span class="token keyword">end</span>
+obj<span class="token punctuation">.</span>tree<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>单件方法我们可以看到是在对象上操作， 定义的函数也只针对这个对象，其他对象并没有这个方法，所以叫做单件方法</p>
+<h4 id="类方法的真相"><a href="#类方法的真相" class="headerlink" title="类方法的真相"></a>类方法的真相</h4><p>​    类方法的实质是一个类的单件方法，因为类也是一个对象，给类定义单件方法，就是类方法。</p>
+<h4 id="类宏"><a href="#类宏" class="headerlink" title="类宏"></a>类宏</h4><p>​    Ruby中的对象是没有属性的，对外只提供方法。所以在最初我们访问对象的实例变量时，可以写get，set方法，但是这会很麻烦，所以我们使用<code>Module#attr_accessor :var</code>访问器，这也叫做类宏</p>
+<h3 id="单件类"><a href="#单件类" class="headerlink" title="单件类"></a>单件类</h3><blockquote>
+<p>提问：单件方法，类方法的信息是保存在哪里？</p>
+</blockquote>
+<p>​    首先不在对象中，因为只有类和模块儿可以定义方法</p>
+<p>​    其次也不在类中，因为无法在类的对象中共享，它们就好像是一个独立个体，存在与某个与当前类有关的地方，这个地方就是单件类，负责存储单件方法。</p>
+<blockquote>
+<p>那我们该如何访问到单间类内？如何看到它？</p>
+</blockquote>
+<p>两种方式：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+single_class <span class="token operator">=</span> <span class="token keyword">class</span> <span class="token operator">&lt;&lt;</span> obj
+	<span class="token comment"># 返回单件类</span>
+	<span class="token keyword">self</span>
+<span class="token keyword">end</span>
+p single_class  <span class="token comment"># => #&lt;Class:#&lt;MyClass:0x0000000108beb5c8>></span>
+p single_class<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token comment"># => Class</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+<span class="token comment"># #&lt;Class:#&lt;MyClass:0x00000001051f3a78>></span>
+p obj<span class="token punctuation">.</span>singleton_class
+other <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+<span class="token comment"># #&lt;Class:#&lt;MyClass:0x00000001051f3578>></span>
+p other<span class="token punctuation">.</span>singleton_class<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    单件类只有一个实例，且无法被继承，单件方法就定义在单件类中</p>
+<h4 id="单件类-和-方法查找"><a href="#单件类-和-方法查找" class="headerlink" title="单件类 和 方法查找"></a>单件类 和 方法查找</h4><blockquote>
+<p>单件类的超类是什么？</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+<span class="token comment"># #&lt;Class:#&lt;MyClass:0x00000001051f3a78>></span>
+p obj<span class="token punctuation">.</span>singleton_class
+<span class="token comment"># 对象的单件类的超类 就是 对象的所属类</span>
+p obj<span class="token punctuation">.</span>singleton_class<span class="token punctuation">.</span>superclass  <span class="token comment"># => MyClass</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>单件类是否在祖先链中，因为这涉及到方法的查找</p>
+</blockquote>
+<p>​    单件类是存在于祖先链中的，而且单件类的超类为对象的所属类，所以在祖先链中排在当前类之前。方法查找也是按照这个顺序进行查找的。所以对象访问方法时，是先在单件类中访问，然后再去当前类中访问。</p>
+<blockquote>
+<p>单件类的超类就是超类的单件类</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">D</span>
+<span class="token keyword">end</span>
+<span class="token keyword">class</span> <span class="token class-name">E</span> <span class="token operator">&lt;</span> <span class="token constant">D</span>
+<span class="token keyword">end</span>
+
+p <span class="token constant">D</span><span class="token punctuation">.</span>singleton_class   <span class="token comment"># => #&lt;Class:D></span>
+p <span class="token constant">E</span><span class="token punctuation">.</span>singleton_class   <span class="token comment"># => #&lt;Class:E></span>
+p <span class="token constant">D</span><span class="token punctuation">.</span>singleton_class<span class="token punctuation">.</span>superclass  <span class="token comment"># => #&lt;Class:Object></span>
+p <span class="token constant">E</span><span class="token punctuation">.</span>singleton_class<span class="token punctuation">.</span>superclass  <span class="token comment"># => #&lt;Class:D></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>上面的定义看起来有点儿绕，Ruby为何这样设计？</p>
+</blockquote>
+<p>​    因为这样就可以在子类中调用父类的类方法</p>
+<p>​    <img src="/Users/qinsicheng/Library/Application Support/typora-user-images/image-20230103164540176.png" alt="image-20230103164540176" style="zoom:80%;" /></p>
+<h4 id="七条规则"><a href="#七条规则" class="headerlink" title="七条规则"></a>七条规则</h4><ol>
+<li>对象：要么是普通对象，要么是模块儿</li>
+<li>模块：可以是普通模块，一个类或一个单件类</li>
+<li>方法：存在与一个模块中，通常定义在类中</li>
+<li>对象都有自己真正的类，要么是普通类，要么是单件类</li>
+<li>除了BasicObject没有超类，其他的类都有一个祖先</li>
+<li>一个对象的单件类的超类，就是这对象的类</li>
+<li>一个类的单件类的超类，就是这个类的超类的单件类</li>
+<li>调用一个方法时，Ruby先找到接收者真的类，再向上进入祖先链</li>
+</ol>
+<h4 id="类方法的语法"><a href="#类方法的语法" class="headerlink" title="类方法的语法"></a>类方法的语法</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 1</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token function">one</span></span> <span class="token punctuation">;</span> <span class="token keyword">end</span>
+<span class="token comment"># 2</span>
+<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">two</span></span> <span class="token punctuation">;</span> <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 3</span>
+<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">class</span> <span class="token operator">&lt;&lt;</span> <span class="token keyword">self</span>
+		<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">three</span></span> <span class="token punctuation">;</span><span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="单件类-和-instance-eval方法"><a href="#单件类-和-instance-eval方法" class="headerlink" title="单件类 和 instance_eval方法"></a>单件类 和 instance_eval方法</h4><p>​    之前我们说<code>instance_eval</code>修改self，实际上也修改当前类为接收者的单件类。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">s1 <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"abc"</span></span>
+
+s1<span class="token punctuation">.</span>instance_eval <span class="token keyword">do</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">swoosh</span></span><span class="token operator">!</span>
+		reverse
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+p s1<span class="token punctuation">.</span>swoosh<span class="token operator">!</span>   <span class="token comment"># => cba</span>
+s2 <span class="token operator">=</span> <span class="token string-literal"><span class="token string">'qsc'</span></span>  
+p s2<span class="token punctuation">.</span>respond_to<span class="token operator">?</span><span class="token punctuation">(</span><span class="token symbol">:swoosh!</span><span class="token punctuation">)</span>  <span class="token comment"># => false</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="类扩展"><a href="#类扩展" class="headerlink" title="类扩展"></a>类扩展</h3><blockquote>
+<p>​    我们之前再module中定义方法，在类中<code>include和pretend</code>，将模块儿方法转为类的实例方法，那我们是否可以将module中的方法转为类的类方法？</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		p <span class="token string-literal"><span class="token string">"Hello World"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token comment"># 在单件类中引入module，self所指MyClass，所以继承的方法为MyClass的类方法，</span>
+	<span class="token keyword">class</span> <span class="token operator">&lt;&lt;</span> <span class="token keyword">self</span>
+		<span class="token keyword">include</span> MyModule
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+MyClass<span class="token punctuation">.</span>my_method  <span class="token comment"># => "Hello World"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​        这称为类扩展</p>
+<h4 id="对象扩展"><a href="#对象扩展" class="headerlink" title="对象扩展"></a>对象扩展</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		p <span class="token string-literal"><span class="token string">"Hello World"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+<span class="token keyword">class</span> <span class="token operator">&lt;&lt;</span> obj
+	<span class="token comment"># 单件类所属obj，所以引入的方法，会作为对象的单件方法</span>
+	<span class="token keyword">include</span> MyModule
+<span class="token keyword">end</span>
+obj<span class="token punctuation">.</span>my_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    这称为对象扩展</p>
+<blockquote>
+<p>类扩展，对象扩展 因为用的很多，所以Ruby提供了<code>Object#extend</code>方法</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		p <span class="token string-literal"><span class="token string">"Hello World"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">extend</span> MyModule
+<span class="token keyword">end</span>
+MyClass<span class="token punctuation">.</span>my_method
+
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span><span class="token keyword">extend</span> MyModule
+obj<span class="token punctuation">.</span>my_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="方法包装器"><a href="#方法包装器" class="headerlink" title="方法包装器"></a>方法包装器</h3><blockquote>
+<p>如何在原有函数不修改的前提下，对方法做增强，在此之前我们介绍一些新的东西</p>
+</blockquote>
+<h4 id="方法别名"><a href="#方法别名" class="headerlink" title="方法别名"></a>方法别名</h4><p>​    <code>alias_method :new_method_name , :old_method_name</code> 对方法起一个别名</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span>
+		p <span class="token string-literal"><span class="token string">"Hello one"</span></span>
+	<span class="token keyword">end</span>
+	alias_method <span class="token symbol">:two</span><span class="token punctuation">,</span><span class="token symbol">:one</span>
+<span class="token keyword">end</span>
+
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span>one
+obj<span class="token punctuation">.</span>two<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre><code> 定义方法时，并不是修改这个方法，而是定义一个新的方法，并将之前存在的方法名从新绑定，只要老方法还存在一个绑定，就仍可调用
+</code></pre>
+<h4 id="环绕别名"><a href="#环绕别名" class="headerlink" title="环绕别名"></a>环绕别名</h4><ol>
+<li>给方法定义一个别名</li>
+<li>重定义这个方法</li>
+<li>新方法中调用老的方法</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span> 
+		p <span class="token string-literal"><span class="token string">"Hello one"</span></span>
+	<span class="token keyword">end</span>
+
+	alias_method <span class="token symbol">:two</span><span class="token punctuation">,</span><span class="token symbol">:one</span>
+
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span>
+		two
+		p <span class="token string-literal"><span class="token string">"Hello I am new one"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span>one
+obj<span class="token punctuation">.</span>two<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="更多方法包装器"><a href="#更多方法包装器" class="headerlink" title="更多方法包装器"></a>更多方法包装器</h4><ol>
+<li>细化：使用细化，可以从新定义方法，如果定义重名方法，使用super则可调用到原先的内容</li>
+<li>Module#prepend：因为会将引入module放入当前类的祖父链位置的前面，所以也会覆盖掉当前类中定义的方法，使用super则可调用到原先的内容</li>
+</ol>
+<h3 id="测试：打破数据规律"><a href="#测试：打破数据规律" class="headerlink" title="测试：打破数据规律"></a>测试：打破数据规律</h3><blockquote>
+<p>让 1 + 1 = 3</p>
+</blockquote>
+<p>绝大部分Ruby操作符实际上是方法， 例如整数的+只是名为Fixnum#+方法的语法糖，编写1+1时。实际上为：<code>1.+(1)</code>。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Fixnum</span>
+	alias_method <span class="token symbol">:old_plus</span> <span class="token punctuation">,</span> <span class="token operator">:</span><span class="token operator">+</span>
+
+	<span class="token keyword">def</span> <span class="token operator">+</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+		<span class="token keyword">self</span><span class="token punctuation">.</span>old_plus<span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">.</span>old_plus<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+p <span class="token number">1</span><span class="token operator">+</span><span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>务必要慎用这种能力</p>
+<h2 id="编写代码的代码"><a href="#编写代码的代码" class="headerlink" title="编写代码的代码"></a>编写代码的代码</h2><h3 id="Kernel-eval"><a href="#Kernel-eval" class="headerlink" title="Kernel#eval"></a>Kernel#eval</h3><p>​    前面我们学习了：<code>instance_eval , class_eval</code>,现在我要学习<code>Kernel#eval</code>方法，它的作用是执行一段<strong>代码字符串</strong></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 执行 "p 123" 这段字符串，p 123表示输出 123 </span>
+eval <span class="token string-literal"><span class="token string">"p 123"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>​    代码字符串也可以访问局部变量</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">var <span class="token operator">=</span> <span class="token number">1</span>
+eval <span class="token string-literal"><span class="token string">"p var"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Binding-绑定对象"><a href="#Binding-绑定对象" class="headerlink" title="Binding 绑定对象"></a>Binding 绑定对象</h3><p>​    Binding是用一个对象表示完整的作用域，可以使用eval方法在这个Binding对象所携带的作用域中执行代码，Kernel#binding方法可以用来常见Binding对象</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_thod</span></span>
+    <span class="token variable">@x</span> <span class="token operator">=</span> <span class="token number">1</span>
+    <span class="token comment"># 返回binding</span>
+    binding
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>my_thod<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    可以把Binding对象看作是一个闭包，它只包含作用域而不包含代码，对于eval方法，可以传递一个Binding对象作为额外参数，代码可以在这个Binding对象所携带的作用域中执行</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">eval <span class="token string-literal"><span class="token string">"p @x"</span></span> <span class="token punctuation">,</span> obj<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>​    Ruby还定义了一个预定义常量<code>TOPLEVEL_BINDING</code>,它表示顶级作用域的Binding对象。可以在程序任务地方访问到。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">eval <span class="token string-literal"><span class="token string">"self"</span></span><span class="token punctuation">,</span><span class="token constant">TOPLEVEL_BINDING</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>​    其中在我们最早使用Ruby时都使用过<code>irb</code>,其实就是解析控制台或者文件输入，再把每一行代码传递给eval方法执行，这种类型的程序有时被称为<code>代码处理器</code></p>
+<p>​    eval方法后面三个为可选参数，statement代表执行语句，@binding表示所在作用域，file表示文件，line表示执行行号,这对于查找问题时比较方便</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">eval<span class="token punctuation">(</span>statement<span class="token punctuation">,</span><span class="token variable">@binding</span><span class="token punctuation">,</span>file<span class="token punctuation">,</span>line<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="对比代码字符串-与-块"><a href="#对比代码字符串-与-块" class="headerlink" title="对比代码字符串 与 块"></a>对比代码字符串 与 块</h3><p>eval 只能执行代码字符串</p>
+<p>Instance_eval，class_eval 可以执行Block，也能执行代码字符串</p>
+<p>一般能使用Block，就使用Block</p>
+<h4 id="eval麻烦"><a href="#eval麻烦" class="headerlink" title="eval麻烦"></a>eval麻烦</h4><ol>
+<li>不能利用编辑器的功能特性，例如高亮</li>
+<li>难以阅读与修改</li>
+<li>错误隐藏到执行期</li>
+<li>安全性！！！</li>
+</ol>
+<h4 id="代码注入"><a href="#代码注入" class="headerlink" title="代码注入"></a>代码注入</h4><p>​    这里用Java操作SQL时，遇到的SQL注入问题为例，就是我们在执行SQL前，如果SQL使用字符串拼接，如果用户传递恶意参数，就会导致SQL注入问题，代码注入也是类似的。</p>
+<h4 id="防止代码注入"><a href="#防止代码注入" class="headerlink" title="防止代码注入"></a>防止代码注入</h4><p>​    有些人会禁用eval方法，毕竟可以找到替换的方式，Ruby也提供了更安全的方法</p>
+<h4 id="污染对象和安全级别"><a href="#污染对象和安全级别" class="headerlink" title="污染对象和安全级别"></a>污染对象和安全级别</h4><p>​    Ruby会自动把不安全对象标记为污染对象，比如：Web表单，文件，命令行读取，可以通过<code>obj.tainted?</code> 来判断</p>
+<h4 id="安全级别"><a href="#安全级别" class="headerlink" title="安全级别"></a>安全级别</h4><p>​    可以通过给$SAFE全局变量赋值来实现，一共有四个级别</p>
+<p>0 ： 随意操作</p>
+<p>1 ： 拒绝执行污染字符串</p>
+<p>2 ： 禁止绝大多数与文件相关的操作</p>
+<p>3 ： 每个创建对象都为被污染</p>
+<p>​    为了谨慎使用安全级别，可以为eval方法创建一个可控环境，也称为<strong>沙盒</strong>，比如在一个块儿内，执行eval方法。</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>​    写一个attr_accessor类宏类似的方法，attr_checked，与访问器类似，但是会对属性进行校验，attr_checked 可以接受属性名和代码块，代码块用来进行校验，如果是对属性赋值，判断Block中是否为true，如果为false则报错。需求通过一组代码进行展示</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"test/unit"</span></span>
+<span class="token keyword">class</span> <span class="token class-name">Person</span><span class="token punctuation">;</span><span class="token keyword">end</span>
+<span class="token keyword">class</span> <span class="token class-name">TestCheckedAttribute</span> <span class="token operator">&lt;</span> Test<span class="token double-colon punctuation">::</span>Unit<span class="token double-colon punctuation">::</span>TestCase
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">setup</span></span>
+		add_checked_attribute<span class="token punctuation">(</span>Person<span class="token punctuation">,</span><span class="token symbol">:age</span><span class="token punctuation">)</span>
+		<span class="token variable">@bob</span> <span class="token operator">=</span> <span class="token class-name">Person</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+	<span class="token keyword">end</span>
+
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">test_accept_vaild_values</span></span>
+		<span class="token variable">@bob</span><span class="token punctuation">.</span>age <span class="token operator">=</span> <span class="token number">20</span>
+		assert_equal <span class="token number">20</span><span class="token punctuation">,</span><span class="token variable">@bob</span><span class="token punctuation">.</span>age
+	<span class="token keyword">end</span>
+
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">test_refuses_nil_values</span></span>
+		assert_raises RuntimeError<span class="token punctuation">,</span><span class="token string-literal"><span class="token string">"Invalid attribute"</span></span> <span class="token keyword">do</span>
+			<span class="token variable">@bob</span><span class="token punctuation">.</span>age <span class="token operator">=</span> <span class="token keyword">nil</span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">test_refuses_false_values</span></span>
+		assert_raises RuntimeError<span class="token punctuation">,</span><span class="token string-literal"><span class="token string">"Invalid attribute"</span></span> <span class="token keyword">do</span>
+			<span class="token variable">@bob</span><span class="token punctuation">.</span>age <span class="token operator">=</span> <span class="token boolean">false</span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 这里是我们负责编写的代码 ， klass表示一个类对象，attribute表示需要给该类加入属性</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">add_checked_attribute</span></span><span class="token punctuation">(</span>klass<span class="token punctuation">,</span>attribute<span class="token punctuation">)</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<ol>
+<li>使用eval进行快速的单元测试</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 先定义一个函数，利用eval方法执行字符串代码</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">add_checked_attribute</span></span><span class="token punctuation">(</span>klass<span class="token punctuation">,</span>attribute<span class="token punctuation">)</span>
+	eval "
+	  <span class="token comment"># 打开类</span>
+		<span class="token keyword">class</span> <span class="token comment">#&#123;klass&#125;</span>
+			<span class="token comment"># 根据参数生成，get，set方法</span>
+			<span class="token keyword">def</span> <span class="token comment">#&#123;attribute&#125;=(value)</span>
+				<span class="token keyword">raise</span> <span class="token string-literal"><span class="token string">'Invalid attribute'</span></span> <span class="token keyword">unless</span> value
+				@<span class="token comment">#&#123;attribute&#125; = value</span>
+			<span class="token keyword">end</span>
+
+			<span class="token keyword">def</span> <span class="token comment">#&#123;attribute&#125;()</span>
+				@<span class="token comment">#&#123;attribute&#125;</span>
+			<span class="token keyword">end</span>
+		<span class="token keyword">end</span>
+	"
+<span class="token keyword">end</span>
+<span class="token comment"># 这里对String添加属性my_attr</span>
+add_checked_attribute<span class="token punctuation">(</span><span class="token builtin">String</span><span class="token punctuation">,</span><span class="token symbol">:my_attr</span><span class="token punctuation">)</span>
+obj <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"a"</span></span>
+obj<span class="token punctuation">.</span>my_attr <span class="token operator">=</span> <span class="token number">123</span>
+p obj<span class="token punctuation">.</span>my_attr<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="2">
+<li>重构add_checked_attribute方法，把eval方法使用Ruby方法替换掉</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">add_checked_attribute</span></span><span class="token punctuation">(</span>klass<span class="token punctuation">,</span>attribute<span class="token punctuation">)</span>
+	<span class="token comment"># 这里使用class_eval打开类的作用域，替换eval，因为替换后无法使用</span>
+	<span class="token comment"># class，因为class关键字无法接受使用参数作为类名</span>
+	klass<span class="token punctuation">.</span>class_eval <span class="token keyword">do</span>
+		<span class="token comment"># 使用扁平作用域，使用define_method 替换 def，因为这里方法名也是动态的</span>
+		<span class="token keyword">define_method</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">="</span></span> <span class="token keyword">do</span> <span class="token operator">|</span>value<span class="token operator">|</span>
+			<span class="token keyword">raise</span> <span class="token string-literal"><span class="token string">"Invalid attribute"</span></span> <span class="token keyword">unless</span> value
+      <span class="token comment"># 这里通过Object#instance_variable_* 方法来操作实例比变量</span>
+			instance_variable_set<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"@</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span>value<span class="token punctuation">)</span>
+		<span class="token keyword">end</span>
+		<span class="token keyword">define_method</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span> <span class="token keyword">do</span>
+			instance_variable_get<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"@</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+add_checked_attribute<span class="token punctuation">(</span><span class="token builtin">String</span><span class="token punctuation">,</span><span class="token symbol">:my_attr</span><span class="token punctuation">)</span>
+obj <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"a"</span></span>
+obj<span class="token punctuation">.</span>my_attr <span class="token operator">=</span> <span class="token number">123</span>
+p obj<span class="token punctuation">.</span>my_attr<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="3">
+<li>完成通过一个Block来校验属性，</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">add_checked_attribute</span></span><span class="token punctuation">(</span>klass<span class="token punctuation">,</span>attribute<span class="token punctuation">,</span><span class="token operator">&amp;</span>validation<span class="token punctuation">)</span>
+	klass<span class="token punctuation">.</span>class_eval <span class="token keyword">do</span>
+		<span class="token keyword">define_method</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">=&#125;"</span></span> <span class="token keyword">do</span> <span class="token operator">|</span>value<span class="token operator">|</span>
+			<span class="token keyword">raise</span> <span class="token string-literal"><span class="token string">"Invalid attribute"</span></span> <span class="token keyword">unless</span> validation<span class="token punctuation">.</span>call<span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+			instance_variable_set <span class="token string-literal"><span class="token string">"@</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span>value
+		<span class="token keyword">end</span>
+		<span class="token keyword">define_method</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span> <span class="token keyword">do</span>
+			instance_variable_get <span class="token string-literal"><span class="token string">"@</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="4">
+<li>内核方法改造成一个类宏，让它对所有的类定义中都可用，我们试着在class或module中定义，并且我们不需要再指类对象，通过self即可读取到</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Class</span>
+  <span class="token comment"># 这样所有对象都有拥有这个方法了</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">attr_checked</span></span><span class="token punctuation">(</span>attribute<span class="token punctuation">,</span><span class="token operator">&amp;</span>validation<span class="token punctuation">)</span>
+		<span class="token keyword">define_method</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">="</span></span> <span class="token keyword">do</span> <span class="token operator">|</span>value<span class="token operator">|</span>
+			<span class="token keyword">raise</span> <span class="token string-literal"><span class="token string">"Invalid attribute"</span></span> <span class="token keyword">unless</span> validation<span class="token punctuation">.</span>call<span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+			instance_variable_set<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"@</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span>value<span class="token punctuation">)</span>
+		<span class="token keyword">end</span>
+		<span class="token keyword">define_method</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span> 
+			instance_variable_get<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"@</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="钩子方法"><a href="#钩子方法" class="headerlink" title="钩子方法"></a>钩子方法</h4><p>​    也就是在代码运行中，有各种事件，我们可以利用事件进行操作，这个就叫做钩子方法</p>
+<ol>
+<li>类被继承时触犯</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">String</span>
+  <span class="token comment"># inherited方法为Class的实例方法，我们可以进行覆写操作</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">inherited</span></span><span class="token punctuation">(</span>subclass<span class="token punctuation">)</span>
+    p <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content"><span class="token keyword">self</span></span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> was inherited by </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">subclass</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="2">
+<li>模块儿被引入</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">M1</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">included</span></span><span class="token punctuation">(</span>othermod<span class="token punctuation">)</span>
+    p <span class="token string-literal"><span class="token string">"M1 was included into </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">othermod</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token keyword">module</span> <span class="token class-name">M2</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">prepended</span></span><span class="token punctuation">(</span>othermod<span class="token punctuation">)</span>
+    p <span class="token string-literal"><span class="token string">"M2 was prepended to </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">othermod</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token keyword">class</span> <span class="token class-name">C</span>
+  <span class="token keyword">include</span> <span class="token constant">M1</span>
+  <span class="token keyword">prepend</span> <span class="token constant">M2</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="3">
+<li>模块儿新增方法事件</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">M</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">method_added</span></span><span class="token punctuation">(</span>method<span class="token punctuation">)</span>
+    p <span class="token string-literal"><span class="token string">"New method: M#</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">method</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+  <span class="token keyword">end</span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span><span class="token punctuation">;</span><span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<blockquote>
+<p>我们现在需要保证，引入CheckedAttributes的类才运行使用<code>attr_checked</code></p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">CheckedAttributes</span>
+	<span class="token comment"># 当类include CheckedAttributes 时被触发</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">included</span></span><span class="token punctuation">(</span>base<span class="token punctuation">)</span>
+		<span class="token comment"># 将类extend ClassMethods，也就是转为base类的类方法</span>
+		base<span class="token punctuation">.</span><span class="token keyword">extend</span> ClassMethods
+	<span class="token keyword">end</span>
+
+	<span class="token keyword">module</span> <span class="token class-name">ClassMethods</span>
+		<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">attr_checked</span></span><span class="token punctuation">(</span>attribute<span class="token punctuation">,</span><span class="token operator">&amp;</span>validation<span class="token punctuation">)</span>
+			<span class="token keyword">define_method</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">="</span></span> <span class="token keyword">do</span> <span class="token operator">|</span>value<span class="token operator">|</span>
+				<span class="token keyword">raise</span> <span class="token string-literal"><span class="token string">"Invalid attribute"</span></span> <span class="token keyword">unless</span> validation<span class="token punctuation">.</span>call<span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+				instance_variable_set<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"@</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">,</span>value<span class="token punctuation">)</span>
+			<span class="token keyword">end</span>
+			<span class="token keyword">define_method</span> <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span> 
+				instance_variable_get<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"@</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">attribute</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+			<span class="token keyword">end</span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>​    这里我们编写了自己的类宏，并使用了钩子方法。我们已经可以所使用的对象为所欲为，剩下的就交给我们不断的实践。后面我们将开启Rails之旅。</p>
+]]></content>
       <tags>
         <tag>Ruby</tag>
       </tags>
