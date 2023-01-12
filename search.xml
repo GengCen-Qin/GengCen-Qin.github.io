@@ -9088,9 +9088,9 @@ RubyGems Environment:
 <span class="token comment"># 这里我们可以通过命令来自动生成，熟悉后也可以自己直接创建文件</span>
 <span class="token comment"># 之后我们还需要再Routes文件中，添加对应的路由</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>![image-20230105103851476](/Users/qinsicheng/Library/Application Support/typora-user-images/image-20230105103851476.png)</p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230105103851476.png" alt="image-20230105103851476"></p>
 <p>​    上图是用户请求，Rails响应的大致流程，请求进入，先通过路由判断进入哪个Controller的哪个action，每个action可以对应一个view，数据在action内生成，在view页面中进行使用，view 与 Controller共享实例变量。当然现在也已经流行前后端分离，使用Rails只提供API</p>
-<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p>![image-20221228102118474](/Users/qinsicheng/Library/Application Support/typora-user-images/image-20221228102118474.png)</p>
+<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221228102118474.png" alt="image-20221228102118474"></p>
 <ul>
 <li>app：MVC和各类前端资源</li>
 <li>bin：操作命令</li>
@@ -9240,7 +9240,10 @@ $ rails turbo:install stimulus:install<span aria-hidden="true" class="line-numbe
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">//= require jquery</span>
 <span class="token comment">//= require jquery_ujs</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<h2 id="Session-使用"><a href="#Session-使用" class="headerlink" title="Session 使用"></a>Session 使用</h2><h2 id="Filter-过滤器"><a href="#Filter-过滤器" class="headerlink" title="Filter 过滤器"></a>Filter 过滤器</h2><p>​    在一般用户登陆操作，或者用户请求追踪，可以使用</p>
+<h2 id="Session-使用"><a href="#Session-使用" class="headerlink" title="Session 使用"></a>Session 使用</h2><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 这里是将当前用户的id报错到session中</span>
+session<span class="token punctuation">[</span><span class="token symbol">:user_id</span><span class="token punctuation">]</span> <span class="token operator">=</span> user<span class="token punctuation">.</span>id<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="Filter-过滤器"><a href="#Filter-过滤器" class="headerlink" title="Filter 过滤器"></a>Filter 过滤器</h2><p>​    在一般用户登陆操作，或者用户请求追踪，可以使用</p>
 <ul>
 <li>before_filter       在action之前执行 , rails 5 以后的版本 before_filter 已更新为 before_action</li>
 <li>around_filter       在action前后执行</li>
@@ -9676,7 +9679,7 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 <li>命名空间：以module的方式组织，比如按照模块儿划分</li>
 </ul>
 <p>​    这里我们可以将一些公共函数写入BaseController，再将业务类继承BaseController，以达到方法公用，比如我们写一个Session模块儿</p>
-<p>![image-20230107194458907](/Users/qinsicheng/Library/Application Support/typora-user-images/image-20230107194458907.png)</p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230107194458907.png" alt="image-20230107194458907"></p>
 <h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><blockquote>
 <p>params</p>
 </blockquote>
@@ -9685,10 +9688,6 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 <p>session</p>
 </blockquote>
 <p>​    通过session记录当前用户信息: <code>session[:user_id]</code></p>
-<blockquote>
-<p>cookies</p>
-</blockquote>
-<p>​    cookie数据</p>
 <blockquote>
 <p>render</p>
 </blockquote>
@@ -9794,6 +9793,93 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 <li>belongs_to : 一对一</li>
 <li>has_and_belongs_to_many : 多对多</li>
 </ul>
+<h2 id="Rails-测试"><a href="#Rails-测试" class="headerlink" title="Rails 测试"></a>Rails 测试</h2><p>Ruby自带有MiniTest</p>
+<p>集成测试：</p>
+<ul>
+<li>RSpec</li>
+<li>Capybara</li>
+</ul>
+<h2 id="Rails-跨域问题"><a href="#Rails-跨域问题" class="headerlink" title="Rails 跨域问题"></a>Rails 跨域问题</h2><p><a href="https://blog.csdn.net/topswim/article/details/79311592">https://blog.csdn.net/topswim/article/details/79311592</a></p>
+<h2 id="Rails-移植与回调"><a href="#Rails-移植与回调" class="headerlink" title="Rails 移植与回调"></a>Rails 移植与回调</h2><p>​    主要负责数据库版本管理，进行数据库迁移或回调</p>
+<ul>
+<li><p>Migrations （ActiveRecord gem）</p>
+</li>
+<li><p>使用：</p>
+<ul>
+<li>rails g model 模型名         生成model文件与移植文件</li>
+<li>rails g migration 文件名     生成移植文件，比如对原有数据表做修改，文件名最好可表示意义<ul>
+<li><code>add_column :数据表 ,:字段名 ,字段类型</code></li>
+<li>也可以使用rails g migration 查看参数</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Rake </p>
+<ul>
+<li>rails  db:migrate    根据移植文件，向数据库中操作，每次更新到最新的数据库版本</li>
+<li>rails  db:rollback   回退移植文件，这里我们也可以控制具体操作</li>
+<li>rails  db:migrate:status   查看数据库状态</li>
+<li>rake -T  查看rake所有的命令</li>
+<li>rake db:version   查看当前数据库版本</li>
+<li>migrate文件内其实是把整个环境加载进来，所以我们也可以直接对数据进行操作</li>
+<li>Rake db:rollback step=2 向后回滚两个版本</li>
+</ul>
+<blockquote>
+<p>永远不要修改已经提交的migration！！！</p>
+</blockquote>
+<h2 id="Callback"><a href="#Callback" class="headerlink" title="Callback"></a>Callback</h2></li>
+</ul>
+<p>​    在增删改查的操作上添加的回调事件，在执行增删改查的时候同步触发一些逻辑</p>
+<blockquote>
+<p>回调触发分类</p>
+</blockquote>
+<ol>
+<li>Create an Object</li>
+<li>Updating an Object</li>
+<li>Destorying an Object</li>
+<li>finding an Object</li>
+</ol>
+<h3 id="Create回调"><a href="#Create回调" class="headerlink" title="Create回调"></a>Create回调</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112192554270.png" alt="image-20230112192554270" style="zoom:80%;" />
+
+<p>​    顺序也是严格按照图中的顺序执行。这些方法也都是类方法，可直接指定：<code>before_save :update_username</code></p>
+<blockquote>
+<p>需要注意：after_save 是已经存储到数据库了，但并未提交，如果在after_save针对模型又做出修改，不能再使用 self.save ,因为会触发死循环。</p>
+</blockquote>
+<h3 id="Update回调"><a href="#Update回调" class="headerlink" title="Update回调"></a>Update回调</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193429505.png" alt="image-20230112193429505" style="zoom:80%;" />
+
+<h3 id="Destroy回调"><a href="#Destroy回调" class="headerlink" title="Destroy回调"></a>Destroy回调</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193459198.png" alt="image-20230112193459198" style="zoom:80%;" />
+
+<h3 id="Find回调"><a href="#Find回调" class="headerlink" title="Find回调"></a>Find回调</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193533698.png" alt="image-20230112193533698" style="zoom:80%;" />
+
+<h3 id="触发callback的方法"><a href="#触发callback的方法" class="headerlink" title="触发callback的方法"></a>触发callback的方法</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193615984.png" alt="image-20230112193615984" style="zoom:80%;" />
+
+<h3 id="触发after-find-（基本不使用）"><a href="#触发after-find-（基本不使用）" class="headerlink" title="触发after_find （基本不使用）"></a>触发after_find （基本不使用）</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193716012.png" alt="image-20230112193716012" style="zoom:80%;" />
+
+<h3 id="跳过callback的触发方法"><a href="#跳过callback的触发方法" class="headerlink" title="跳过callback的触发方法"></a>跳过callback的触发方法</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193746758.png" alt="image-20230112193746758" style="zoom:80%;" />
+
+<h3 id="Callback参数"><a href="#Callback参数" class="headerlink" title="Callback参数"></a>Callback参数</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">User</span> ActiveRecord<span class="token double-colon punctuation">::</span>Base
+  before_save <span class="token symbol">:update_username</span><span class="token punctuation">,</span><span class="token symbol">unless</span><span class="token symbol">:proc</span> <span class="token punctuation">&#123;</span><span class="token operator">|</span>user<span class="token operator">|</span> user<span class="token punctuation">.</span>evil<span class="token operator">?</span><span class="token punctuation">&#125;</span>
+  <span class="token comment">#or</span>
+  before_save <span class="token symbol">:update_username</span><span class="token punctuation">,</span><span class="token symbol">if</span><span class="token symbol">:proc</span> <span class="token punctuation">&#123;</span><span class="token operator">|</span>user<span class="token operator">|</span> <span class="token operator">!</span>user<span class="token punctuation">.</span>evil<span class="token operator">?</span><span class="token punctuation">&#125;</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Rails-事务"><a href="#Rails-事务" class="headerlink" title="Rails 事务"></a>Rails 事务</h2><p>​    在Rails中对事务的支持，自动将模型的<code>save,destory,回调</code>封装到一个事务中</p>
+<blockquote>
+<p>如何操作？</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># will trigger rollback</span>
+<span class="token comment"># 这里Blog可以是类，或者是一个实例对象，都可以操作事务</span>
+Blog<span class="token punctuation">.</span>transaction <span class="token keyword">do</span>
+  <span class="token comment"># save！如果失败，都会爆出异常</span>
+  blog<span class="token punctuation">.</span>save<span class="token operator">!</span>
+<span class="token keyword">end</span>
+<span class="token comment"># will also trigger rollback</span>
+Blog<span class="token punctuation">.</span>transaction <span class="token keyword">do</span>
+  <span class="token comment">#...  主动抛出异常</span>
+  <span class="token keyword">raise</span> <span class="token string-literal"><span class="token string">'error'</span></span>
+<span class="token keyword">end</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 ]]></content>
       <categories>
         <category>Ruby</category>
