@@ -9032,9 +9032,32 @@ p obj<span class="token punctuation">.</span>my_attr<span aria-hidden="true" cla
       </tags>
   </entry>
   <entry>
-    <title>Ruby On Rails</title>
+    <title></title>
     <url>//post/Ruby/Ruby%20On%20Rails.html</url>
-    <content><![CDATA[<h1 id="Ruby-On-Rails"><a href="#Ruby-On-Rails" class="headerlink" title="Ruby On Rails"></a>Ruby On Rails</h1><p>​    Rails可以理解为一个快速构建Web应用的框架，本身基于Ruby开发，拥有很强的灵活性。</p>
+    <content><![CDATA[<p>title: Ruby On Rails<br>date: 2023-1-12 08:03:04<br>tags: Rails<br>categories: Ruby</p>
+<h1 id="Ruby-On-Rails"><a href="#Ruby-On-Rails" class="headerlink" title="Ruby On Rails"></a>Ruby On Rails</h1><h2 id="编辑器"><a href="#编辑器" class="headerlink" title="编辑器"></a>编辑器</h2><p>​    一般如果电脑内存够，我们通常会使用RubyMine来进行开发，里面有各类辅助功能帮助我们编码，但用久了后发现，这类重型的编辑器，过于占用内存，而且加载时间长，所以也推荐使用更轻量型的编辑器：</p>
+<ol>
+<li>sublime text   一个老款的编辑器，插件库丰富，使用方便</li>
+<li>vscode  微软出品编辑器，需要的功能也可以通过插件和快捷键完成</li>
+</ol>
+<blockquote>
+<p>Ruby语法提示与调试功能</p>
+</blockquote>
+<ol>
+<li>下载插件：Ruby</li>
+</ol>
+<blockquote>
+<p>这里我将介绍如何vscode 使用代码整理功能：</p>
+</blockquote>
+<ol>
+<li>下载插件：Rufo - Ruby formatter</li>
+<li>打开<code>setting.json</code>设置：</li>
+</ol>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"rufo.exe"</span><span class="token operator">:</span> <span class="token string">"rufo"</span><span class="token punctuation">,</span>  <span class="token comment">// can be an absolute path</span>
+<span class="token property">"rufo.useBundler"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>​    如果你才使用Ruby没多久，建议还是使用RubyMine，毕竟方便</p>
+<h2 id="基础介绍"><a href="#基础介绍" class="headerlink" title="基础介绍"></a>基础介绍</h2><p>​    Rails可以理解为一个快速构建Web应用的框架，本身基于Ruby开发，拥有很强的灵活性。</p>
 <blockquote>
 <p>如何下载与使用Rails？      这里的前提是你已经下载好了Ruby</p>
 </blockquote>
@@ -9070,9 +9093,16 @@ RubyGems Environment:
 <li>ruby项目依赖一系列的ruby gems，<strong>bundler</strong>是一个管理构建工具，bundle本身也是一个gem，可以理解为Maven</li>
 <li>gemfile是描述gem之间依赖的文件，定义从哪个源找到这些gem，使用哪个版本</li>
 </ul>
-<h2 id="博客项目"><a href="#博客项目" class="headerlink" title="博客项目"></a>博客项目</h2><blockquote>
-<p>我们使用 <code>rails new blog</code> ，创建一个blog项目。</p>
+<blockquote>
+<p>快速创建一个博客项目：</p>
 </blockquote>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 自动生成一个叫blog的Rails项目，你也可以通过使用 rails new --help 查看可以使用的参数</span>
+rails new blog
+<span class="token comment"># 生成一个只提供API的后端接口项目</span>
+rails new blog <span class="token parameter variable">--api</span>
+<span class="token comment"># 生成一个最小，干净的Rails项目（第一种方式创建的Rails项目会自动设定许多内容，例如路由，建议初学者使用这个命令）</span>
+rails new blog <span class="token parameter variable">--minimal</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>​    这里可能会报错，显示：<code>infind_spec_for_exe&#39;: can&#39;t find gem bundler (= 2.4.1) with executable bundle</code> 错误信息。</p>
 <p>​    这里我们可以查看gem内部是否有合格的bundler</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gem list <span class="token parameter variable">--local</span>   <span class="token comment"># 查看本地gem 管理集合</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -9080,29 +9110,12 @@ RubyGems Environment:
 <p>​    如果发现bundler的版本与报错信息不符合，我们可以下载一个新的版本的bundler。</p>
 <p>​    一切OK后，就可以从新执行：<code>rails new blog</code>创建一个新的项目。</p>
 <blockquote>
-<p>国内情况下，bundler install会很慢，我们可以修改源，在Gemfile中</p>
+<p>国内情况下，bundler install会很慢，我们可以修改源，可以查看网上的文章进行修改</p>
 </blockquote>
-<p>​    我们可以发现Rails项目遵从的是 MVC的架构，我们如果需要改变显示页面，就需要同时修改这几处内容：Controller，View，Model</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">rails generate/g controller Welcome index  
-<span class="token comment"># 创建一个包含“index”动作的“Welcome”控制器,并且附带生成index行为的视图view</span>
-<span class="token comment"># 这里我们可以通过命令来自动生成，熟悉后也可以自己直接创建文件</span>
-<span class="token comment"># 之后我们还需要再Routes文件中，添加对应的路由</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230105103851476.png" alt="image-20230105103851476"></p>
-<p>​    上图是用户请求，Rails响应的大致流程，请求进入，先通过路由判断进入哪个Controller的哪个action，每个action可以对应一个view，数据在action内生成，在view页面中进行使用，view 与 Controller共享实例变量。当然现在也已经流行前后端分离，使用Rails只提供API</p>
-<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221228102118474.png" alt="image-20221228102118474"></p>
-<ul>
-<li>app：MVC和各类前端资源</li>
-<li>bin：操作命令</li>
-<li>config：路由配置</li>
-<li>db：数据配置</li>
-<li>lib：自定义组件</li>
-<li>log：日志</li>
-<li>publi：静态资源</li>
-<li>test：测试</li>
-<li>Gemfile：所有的gem依赖和版本</li>
-</ul>
-<h2 id="引入Bootstrap"><a href="#引入Bootstrap" class="headerlink" title="引入Bootstrap"></a>引入Bootstrap</h2><p>方便我们定义页面布局和组件，官网：<a href="https://getbootstrap.com/docs/5.3/getting-started/download/#rubygems">https://getbootstrap.com/docs/5.3/getting-started/download/#rubygems</a></p>
+<p>​    剩下的请自行查看Ruby中国社区的文章，简单的创建一个博客项目，该项目内容为：熟悉Rails文件目录，如果操作数据进行crud操作，如果开发对应的视图。Rails本身其实是一个全栈开发项目。但也可以做前后端分类，只提供基本的接口</p>
+<p>​    博客创建地址：<a href="https://ruby-china.github.io/rails-guides/getting_started.html">https://ruby-china.github.io/rails-guides/getting_started.html</a></p>
+<h2 id="引入Bootstrap"><a href="#引入Bootstrap" class="headerlink" title="引入Bootstrap"></a>引入Bootstrap</h2><p>​    方便我们定义页面布局和组件，如果你是做前后端分离这里可以不看了。</p>
+<p>官网：<a href="https://getbootstrap.com/docs/5.3/getting-started/download/#rubygems">https://getbootstrap.com/docs/5.3/getting-started/download/#rubygems</a></p>
 <p>文档说明：<a href="https://blog.csdn.net/chunyanquan1444/article/details/101030667">https://blog.csdn.net/chunyanquan1444/article/details/101030667</a></p>
 <blockquote>
 <p>当然我们也可以引入一些更轻量型的CSS库</p>
@@ -9110,7 +9123,8 @@ RubyGems Environment:
 <pre class="line-numbers language-erb" data-language="erb"><code class="language-erb"><span class="token comment">&lt;!--引入简单的css样式,application.html.erb文件中--></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.simplecss.org/simple.min.css<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<h2 id="引入数据库"><a href="#引入数据库" class="headerlink" title="引入数据库"></a>引入数据库</h2><ol>
+<h2 id="引入数据库"><a href="#引入数据库" class="headerlink" title="引入数据库"></a>引入数据库</h2><p>​    这里我们以操作Mysql为例，因为Rails本身对常用的数据库都有支持，我们只修改配置信息，对象基本操作其实都是不变的，这样我们可以很容易的迁移到其他的数据库，而不需要修改我们的业务代码</p>
+<ol>
 <li>Gemfile 引入： <code>gem &quot;mysql2&quot;</code></li>
 <li>bundle 下载依赖，记住每次下载新的依赖后，都需要重启应用刷新</li>
 <li>修改<code>config/database.yml</code>文件</li>
@@ -9136,7 +9150,8 @@ RubyGems Environment:
   <span class="token key atrule">&lt;&lt;</span><span class="token punctuation">:</span> <span class="token important">*default</span>
   <span class="token key atrule">database</span><span class="token punctuation">:</span> ruby_production<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="创建模型"><a href="#创建模型" class="headerlink" title="创建模型"></a>创建模型</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">rails g model User  <span class="token comment"># 自动创建User模型</span>
+<h2 id="创建模型"><a href="#创建模型" class="headerlink" title="创建模型"></a>创建模型</h2><p>​    这里我们将数据库中的一张表与一个模型相对应，和Java的Spring中Model是一样的</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">rails g model User  <span class="token comment"># 自动创建User模型</span>
       <span class="token comment"># 以下是该命令生成的文件</span>
       invoke  active_record
         <span class="token comment"># 创建的可移植文件</span>
@@ -9149,7 +9164,7 @@ RubyGems Environment:
         create      test/fixtures/users.yml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
-<p>模型是单数的，数据库表为复数的，自动创建users表</p>
+<p>​    这是一个迁移文件，也就是说我们现在Rails中定义整张表的结构，等完成后，通过指令在数据库中创建会修改这张表，这里我们看到文件的前面有一个时间戳，也就说Rails操作数据库是有版本控制的</p>
 </blockquote>
 <p>修改<code>db/migrate/20221228104215_create_users.rb</code></p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">CreateUsers</span> <span class="token operator">&lt;</span> ActiveRecord<span class="token double-colon punctuation">::</span>Migration<span class="token punctuation">[</span><span class="token number">7.0</span><span class="token punctuation">]</span>
@@ -9167,8 +9182,8 @@ RubyGems Environment:
 <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>移植到数据库，也就是根据上面的文件，在数据库中创建对应的表</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">rake db:create   <span class="token comment"># 创建对应的数据库</span>
-rake db:migrate  <span class="token comment"># 会讲上面的定义的users表结构创建到数据库中</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">rake db:create   <span class="token comment"># 创建对应的数据库表</span>
+rake db:migrate  <span class="token comment"># 会将上面的定义的users表结构创建到数据库中</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>在routes文件中定义资源，使用<code>resources :users</code>,会自动生成该资源的各种访问规则</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">resources :users  <span class="token comment"># 这里使用模型的复数</span>
@@ -9250,10 +9265,8 @@ session<span class="token punctuation">[</span><span class="token symbol">:user_
 <li>after_filter        在action之后执行</li>
 </ul>
 <p>​    本质上只是定义了一个过滤方法，通过Filter过滤器控制在哪个action上使用</p>
+<h2 id="Routes学习"><a href="#Routes学习" class="headerlink" title="Routes学习"></a>Routes学习</h2><p>​    我们设定路径的请求对应哪个控制下的哪个方法，进行返回，和Spring中的ResquestMapping类似</p>
 <blockquote>
-<p>数据表分页gem：will-paginate </p>
-</blockquote>
-<h2 id="Routes学习"><a href="#Routes学习" class="headerlink" title="Routes学习"></a>Routes学习</h2><blockquote>
 <p>自定义路由：</p>
 </blockquote>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 可以在 params[:id] 来获取id ，例如：/users/1 , parmas[:id] = 1，这里的请求是指使用 UsersController中的show</span>
@@ -9465,8 +9478,6 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 </blockquote>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">mount AdminApp<span class="token punctuation">,</span> <span class="token symbol">at</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'/admin'</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-
-
 <h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><blockquote>
 <p>这一章主要讲解Rails传统前后端一体方案的View中的Helper方法，如果要采用前后端分离，这一章就不用太大的精力</p>
 </blockquote>
@@ -9656,19 +9667,7 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-
-
-<h2 id="CSRF-Token"><a href="#CSRF-Token" class="headerlink" title="CSRF Token"></a>CSRF Token</h2><p>​    是一种攻击方式，比如使用img标签，当页面请求时会自动get请求地址，或者在HTML页面中注入js攻击</p>
-<blockquote>
-<p>解决：</p>
-</blockquote>
-<ol>
-<li>使用规范的HTTP请求</li>
-<li>Authentity_token Rails自带</li>
-<li>过滤器</li>
-<li>资源限制</li>
-</ol>
-<h2 id="Rails中的AJAX"><a href="#Rails中的AJAX" class="headerlink" title="Rails中的AJAX"></a>Rails中的AJAX</h2><p>​    这里需要使用<code>gem &#39;jquery_rails&#39;</code></p>
+<h3 id="Rails中的AJAX"><a href="#Rails中的AJAX" class="headerlink" title="Rails中的AJAX"></a>Rails中的AJAX</h3><p>​    这里需要使用<code>gem &#39;jquery_rails&#39;</code></p>
 <h2 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h2><p>​    所属<code>actionpack gem</code>,ActionController::Base`</p>
 <blockquote>
 <p>使用</p>
@@ -9693,10 +9692,10 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 </blockquote>
 <p>​    组织 HTTP Response</p>
 <blockquote>
-<p>Redirect_to</p>
+<p>redirect_to</p>
 </blockquote>
 <p>​    请求重定向</p>
-<p>这些方法均可在Controller与View中使用</p>
+<p>​    这些方法均可在Controller与View中使用</p>
 <h3 id="类方法"><a href="#类方法" class="headerlink" title="类方法"></a>类方法</h3><blockquote>
 <p>Filter</p>
 </blockquote>
@@ -9709,8 +9708,18 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 <p>Helper_method</p>
 </blockquote>
 <p>​    将方法设定为Controller与View均可使用</p>
-<h3 id="Rails-logger"><a href="#Rails-logger" class="headerlink" title="Rails.logger"></a>Rails.logger</h3><p>​    打印日志：<code>Rails.logger.info &quot;Information&quot;</code></p>
-<h3 id="ExceptHon"><a href="#ExceptHon" class="headerlink" title="ExceptHon"></a>ExceptHon</h3><p>​    统一捕捉异常</p>
+<h3 id="日志：Rails-logger"><a href="#日志：Rails-logger" class="headerlink" title="日志：Rails.logger"></a>日志：Rails.logger</h3><p>​    这里info可以改为其他级别</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">Rails<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>info <span class="token string-literal"><span class="token string">"Information"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="ExceptHandle"><a href="#ExceptHandle" class="headerlink" title="ExceptHandle"></a>ExceptHandle</h3><p>​    统一捕捉异常</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">ApplicationController</span> <span class="token operator">&lt;</span> ActionController<span class="token double-colon punctuation">::</span>Base
+	rescue_from ActiveRecord<span class="token double-colon punctuation">::</span>RecordNotFound<span class="token punctuation">,</span> <span class="token symbol">with</span><span class="token operator">:</span> <span class="token symbol">:record_not_found</span>
+    
+  <span class="token keyword">private</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">record_not_found</span></span>
+    render plain<span class="token operator">:</span> <span class="token string-literal"><span class="token string">"404 Not Found"</span></span><span class="token punctuation">,</span><span class="token symbol">status</span><span class="token operator">:</span> <span class="token number">404</span>
+  <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="Session重构"><a href="#Session重构" class="headerlink" title="Session重构"></a>Session重构</h3><blockquote>
 <p>使用独立命名空间创建Module</p>
 </blockquote>
@@ -9765,7 +9774,7 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
   <span class="token keyword">end</span>
 <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="ModelBasic"><a href="#ModelBasic" class="headerlink" title="ModelBasic"></a>ModelBasic</h2><h3 id="conventions-（约定）"><a href="#conventions-（约定）" class="headerlink" title="conventions （约定）"></a>conventions （约定）</h3><p>​    Model（单数） 数据表（复数），这里并不是单纯加个s，因为Person复数，表名为：People</p>
+<h2 id="ModelBasic"><a href="#ModelBasic" class="headerlink" title="ModelBasic"></a>ModelBasic</h2><h3 id="conventions-（约定）"><a href="#conventions-（约定）" class="headerlink" title="conventions （约定）"></a>conventions （约定）</h3><p>​    Model（单数） 数据表（复数），这里并不是单纯加个s，因为Person复数，表名为：people</p>
 <p>​    class User      -&gt; 表：users</p>
 <p>​    class Person  -&gt; people</p>
 <p>​    class Blog      -&gt; blogs</p>
@@ -9773,9 +9782,34 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 <p>默认创建：id , creat_at , update_at 字段</p>
 </blockquote>
 <p>​    这里如果是使用生成器生成，想要修改表名，需修改：Model中指定：self.table_name=”” 和 migrate 移植文件</p>
+<h3 id="分页操作"><a href="#分页操作" class="headerlink" title="分页操作"></a>分页操作</h3><p>官方网址：<a href="https://ddnexus.github.io/pagy/">https://ddnexus.github.io/pagy/</a></p>
+<ol>
+<li>Gemfile添加：`gem ‘pagy’, ‘~&gt; 6.0’ </li>
+<li>下载依赖：<code>bundle</code></li>
+<li> 在ApplicationController 中引入,这样所有的子类都能使用该方法了</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">ApplicationController</span> <span class="token operator">&lt;</span> ActionController<span class="token double-colon punctuation">::</span><span class="token constant">API</span>
+    <span class="token keyword">include</span> Pagy<span class="token double-colon punctuation">::</span>Backend
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<ol start="4">
+<li>在业务控制器中使用</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">UsersController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">page</span></span>
+    page <span class="token operator">=</span> params<span class="token punctuation">[</span><span class="token symbol">:page</span><span class="token punctuation">]</span>
+    per <span class="token operator">=</span> params<span class="token punctuation">[</span><span class="token symbol">:per</span><span class="token punctuation">]</span>
+    <span class="token comment"># 这里page(数据集合 , 分页的参数)，这里返回的一个数组，@pagy表示分页的参数新股</span>
+    <span class="token comment"># @records 表示分页后的数据</span>
+    <span class="token variable">@pagy</span><span class="token punctuation">,</span> <span class="token variable">@records</span> <span class="token operator">=</span> pagy<span class="token punctuation">(</span>User<span class="token punctuation">.</span>all<span class="token punctuation">,</span><span class="token symbol">page</span><span class="token symbol">:page</span><span class="token punctuation">,</span><span class="token symbol">items</span><span class="token symbol">:per</span><span class="token punctuation">)</span>
+    render json<span class="token operator">:</span> <span class="token punctuation">&#123;</span><span class="token string-literal"><span class="token string">"records"</span></span><span class="token operator">=></span><span class="token variable">@records</span><span class="token punctuation">,</span><span class="token string-literal"><span class="token string">"count"</span></span><span class="token operator">=></span><span class="token variable">@pagy</span><span class="token punctuation">.</span>count<span class="token punctuation">&#125;</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    这里我们可以按照需求将返回的Json任意组合</p>
 <h3 id="crud操作"><a href="#crud操作" class="headerlink" title="crud操作"></a>crud操作</h3><h4 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h4><ul>
-<li><code>Where()</code></li>
-<li><code>Find_by()</code></li>
+<li><code>where()</code></li>
+<li><code>find_by()</code></li>
 <li><code>first()</code></li>
 <li><code>where().order().limit()</code></li>
 </ul>
@@ -9787,19 +9821,23 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 <h4 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h4><ul>
 <li><code>user.destory()</code></li>
 </ul>
-<h4 id="Associations"><a href="#Associations" class="headerlink" title="Associations"></a>Associations</h4><h5 id="关联关系："><a href="#关联关系：" class="headerlink" title="关联关系："></a>关联关系：</h5><ul>
+<h4 id="Associations关联关系"><a href="#Associations关联关系" class="headerlink" title="Associations关联关系"></a>Associations关联关系</h4><ul>
 <li>has_many : 一对多，多对多</li>
 <li>has_one   ：一对一</li>
 <li>belongs_to : 一对一</li>
 <li>has_and_belongs_to_many : 多对多</li>
 </ul>
-<h2 id="Rails-测试"><a href="#Rails-测试" class="headerlink" title="Rails 测试"></a>Rails 测试</h2><p>Ruby自带有MiniTest</p>
+<h3 id="Rails批量删除"><a href="#Rails批量删除" class="headerlink" title="Rails批量删除"></a>Rails批量删除</h3><h1 id="待完成"><a href="#待完成" class="headerlink" title="待完成"></a>待完成</h1><h2 id="Rails-测试"><a href="#Rails-测试" class="headerlink" title="Rails 测试"></a>Rails 测试</h2><p>Ruby自带有MiniTest</p>
 <p>集成测试：</p>
 <ul>
 <li>RSpec</li>
 <li>Capybara</li>
 </ul>
 <h2 id="Rails-跨域问题"><a href="#Rails-跨域问题" class="headerlink" title="Rails 跨域问题"></a>Rails 跨域问题</h2><p><a href="https://blog.csdn.net/topswim/article/details/79311592">https://blog.csdn.net/topswim/article/details/79311592</a></p>
+<ol>
+<li>Gemfile： <code>gem &#39;rack-cors&#39;, :require =&gt; &#39;rack/cors&#39;</code></li>
+<li></li>
+</ol>
 <h2 id="Rails-移植与回调"><a href="#Rails-移植与回调" class="headerlink" title="Rails 移植与回调"></a>Rails 移植与回调</h2><p>​    主要负责数据库版本管理，进行数据库迁移或回调</p>
 <ul>
 <li><p>Migrations （ActiveRecord gem）</p>
@@ -9880,12 +9918,32 @@ Blog<span class="token punctuation">.</span>transaction <span class="token keywo
 <span class="token keyword">end</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<h2 id="Rails-分页"><a href="#Rails-分页" class="headerlink" title="Rails 分页"></a>Rails 分页</h2><p>推荐使用：<a href="https://ddnexus.github.io/pagy/docs/how-to/">https://ddnexus.github.io/pagy/docs/how-to/</a></p>
+<ol>
+<li>下载gem</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">gem <span class="token string-literal"><span class="token string">'pagy'</span></span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">'~> 6.0'</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ol start="2">
+<li>全局引入</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">ApplicationController</span> <span class="token operator">&lt;</span> ActionController<span class="token double-colon punctuation">::</span><span class="token constant">API</span>
+  <span class="token keyword">include</span> Pagy<span class="token double-colon punctuation">::</span>Backend
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<ol start="3">
+<li>组件使用</li>
+</ol>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">StudentsController</span> <span class="token operator">&lt;</span> ApplicationController
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">search</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token variable">@pagy</span><span class="token punctuation">,</span> <span class="token variable">@records</span> <span class="token operator">=</span> pagy<span class="token punctuation">(</span>Student<span class="token punctuation">.</span>all<span class="token punctuation">,</span><span class="token punctuation">&#123;</span><span class="token string-literal"><span class="token string">"page"</span></span><span class="token symbol">:params</span><span class="token punctuation">[</span><span class="token symbol">:page</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token string-literal"><span class="token string">"items"</span></span><span class="token symbol">:params</span><span class="token punctuation">[</span><span class="token symbol">:size</span><span class="token punctuation">]</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    render json<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token string-literal"><span class="token string">"count"</span></span><span class="token operator">=></span><span class="token variable">@pagy</span><span class="token punctuation">.</span>count<span class="token punctuation">,</span>
+      <span class="token string-literal"><span class="token string">"data"</span></span><span class="token operator">=></span><span class="token variable">@records</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 ]]></content>
-      <categories>
-        <category>Ruby</category>
-      </categories>
-      <tags>
-        <tag>Rails</tag>
-      </tags>
   </entry>
 </search>
