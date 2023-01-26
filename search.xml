@@ -9356,10 +9356,9 @@ p obj<span class="token punctuation">.</span>my_attr<span aria-hidden="true" cla
       </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>Ruby On Rails</title>
     <url>//post/Ruby/Ruby%20On%20Rails.html</url>
-    <content><![CDATA[<p>title: Ruby On Rails<br>date: 2023-1-12 08:03:04<br>tags: Rails<br>categories: Ruby</p>
-<h1 id="Ruby-On-Rails"><a href="#Ruby-On-Rails" class="headerlink" title="Ruby On Rails"></a>Ruby On Rails</h1><h2 id="编辑器"><a href="#编辑器" class="headerlink" title="编辑器"></a>编辑器</h2><p>​    一般如果电脑内存够，我们通常会使用RubyMine来进行开发，里面有各类辅助功能帮助我们编码，但用久了后发现，这类重型的编辑器，过于占用内存，而且加载时间长，所以也推荐使用更轻量型的编辑器：</p>
+    <content><![CDATA[<h1 id="Ruby-On-Rails"><a href="#Ruby-On-Rails" class="headerlink" title="Ruby On Rails"></a>Ruby On Rails</h1><h2 id="编辑器"><a href="#编辑器" class="headerlink" title="编辑器"></a>编辑器</h2><p>​    一般如果电脑内存够，我们通常会使用RubyMine来进行开发，里面有各类辅助功能帮助我们编码，但用久了后发现，这类重型的编辑器，过于占用内存，而且加载时间长，所以也推荐使用更轻量型的编辑器：</p>
 <ol>
 <li>sublime text   一个老款的编辑器，插件库丰富，使用方便</li>
 <li>vscode  微软出品编辑器，需要的功能也可以通过插件和快捷键完成</li>
@@ -10269,5 +10268,11 @@ Blog<span class="token punctuation">.</span>transaction <span class="token keywo
 <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 ]]></content>
+      <categories>
+        <category>Ruby</category>
+      </categories>
+      <tags>
+        <tag>Rails</tag>
+      </tags>
   </entry>
 </search>
