@@ -8100,32 +8100,58 @@ p BasicObject<span class="token punctuation">.</span>instance_methods<span aria-
 </ol>
 <p>所以我们最终可以选择让<code>Roulette 继承 BasicObject</code>，或者删除指定方法</p>
 <h4 id="对比动态方法与幽灵方法"><a href="#对比动态方法与幽灵方法" class="headerlink" title="对比动态方法与幽灵方法"></a>对比动态方法与幽灵方法</h4><p>​    幽灵方法更容易出现隐性Bug，所以能使用动态方法，尽量使用动态方法，除非不得不使用时，才去使用，记住如果重写 response_to? ，也要重新 response_to_missing?</p>
-<h2 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h2><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
-  <span class="token comment"># 这里是my_method的作用域</span>
-	x <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Hi"</span></span>
-	<span class="token keyword">yield</span> <span class="token string-literal"><span class="token string">"World"</span></span>
+<h2 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h2><blockquote>
+<p>学习路线</p>
+</blockquote>
+<ul>
+<li>代码块的基础知识</li>
+<li>作用域的基础知识：用代码块携带变量穿越作用域</li>
+<li>通过传递块给<code>instance_eval</code>方法来控制作用域</li>
+<li>怎么把块转换为Proc和Lambda这样的可调用对象，供以后调用</li>
+</ul>
+<h3 id="代码块基础知识"><a href="#代码块基础知识" class="headerlink" title="代码块基础知识"></a>代码块基础知识</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">a_method</span></span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span> 
+  a<span class="token operator">+</span> <span class="token keyword">yield</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>
 <span class="token keyword">end</span>
-<span class="token comment"># 这里是顶级上下文的作用域</span>
-x <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Hello"</span></span>
-my_method <span class="token keyword">do</span> <span class="token operator">|</span>variable<span class="token operator">|</span>
-  <span class="token comment"># 这里Block内绑定的 x ，是当前对象self的 x ，和被传入的方法 my_method 内定义的x没有关系</span>
-	puts <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">x</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">variable</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>  <span class="token comment">#=> Hello World</span>
-<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+a_method<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token operator">|</span>x<span class="token punctuation">,</span>y<span class="token operator">|</span> <span class="token punctuation">(</span>x<span class="token operator">+</span>y<span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">3</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>上面我们定义了一个Block，并传入给my_method，这里我们发现Block绑定了一个x变量，x变量属于self对象的，my_method内部定义的x，对于块儿内是不可见的。</p>
+<p>​    代码块可以用大括号定义，也可以使用<code>do...end</code>关键字定义，通常如果一行的块使用大括号，而多行的块使用<code>do...end</code></p>
+<p>​    块可以有自己的参数，比如上面的例子中的x和y，可以像调用方法那样为块提供参数，</p>
+<p>​    可以通过<code>Kernel#block_given?</code>查看是否传达快，如果没有，调用yield则会报错</p>
+<h3 id="代码块是闭包"><a href="#代码块是闭包" class="headerlink" title="代码块是闭包"></a>代码块是闭包</h3><blockquote>
+<p>代码块可以把变量带出原来的作用域</p>
+<p>代码块不能孤立的运行，它需要一个执行环境：局部变量，实例变量，self等</p>
+<p>可以运行的代码由两部分组成：代码本身  和   一组绑定</p>
+<p>当我们定义一个block时，它将获取到环境中的绑定，当block被传给一个方法时，他会带着这些绑定一起进入该方法</p>
+</blockquote>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
-	<span class="token keyword">yield</span>
+  x <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Good"</span></span>
+  <span class="token keyword">yield</span> <span class="token string-literal"><span class="token string">"cruel"</span></span>
 <span class="token keyword">end</span>
-num <span class="token operator">=</span> <span class="token number">1</span>
-my_method <span class="token keyword">do</span>
-	num <span class="token operator">+=</span> <span class="token number">1</span>
-	arg <span class="token operator">=</span> <span class="token number">2</span>
-<span class="token keyword">end</span>
-p num  <span class="token comment"># 这里正常输出 => 2</span>
-p arg  <span class="token comment"># 这里无法输出，引入Block内定义的变量，作用域仅局限在内部，外部不可见</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>所以Block也叫做闭包，可以引用外部self的变量，Block内定义的变量仅局限于Block内</p>
-<h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><p>不论是Java，Python，Ruby都会有作用域的概念，就好像是单独的一个作用空间，一个领地，在这里有专属的局部变量</p>
+x <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Bad"</span></span>
+my_method <span class="token punctuation">&#123;</span><span class="token operator">|</span>y<span class="token operator">|</span> p <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">x</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> , </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">y</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> World"</span></span><span class="token punctuation">&#125;</span>  <span class="token comment"># => "Bad , cruel World"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里我们调用my_method时，创建了一个block，并获取顶层上下文中的x变量，而my_method中定义的x变量对于block是不可见的，也可以在block中定义额外的绑定，但这些绑定在block结束时就消失了。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">just_yield</span></span>
+  <span class="token keyword">yield</span>
+<span class="token keyword">end</span>
+
+top_leval_var <span class="token operator">=</span> <span class="token number">1</span>
+
+just_yield <span class="token keyword">do</span>
+  top_leval_var <span class="token operator">+=</span> <span class="token number">1</span>
+  local_to_block <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">end</span>
+
+p top_leval_var     <span class="token comment"># => 2</span>
+p local_to_block    <span class="token comment"># => error!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    基于这些特性，人们喜欢把代码块称为<strong>闭包</strong>，换句话说：代码块可以获取局部绑定，并一直带着他们</p>
+<blockquote>
+<p>如何使用闭包呢？</p>
+</blockquote>
+<p>​    这里我们需要了解绑定寄居的地方——作用域，需要判断程序在哪里切换了作用域，作用域的作用有哪些？</p>
+<h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><p>​    不论是Java，Python，Ruby都会有作用域的概念，就好像是单独的一个作用空间，一个领地，在这里有专属的局部变量</p>
 <h3 id="切换作用域"><a href="#切换作用域" class="headerlink" title="切换作用域"></a>切换作用域</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">v1 <span class="token operator">=</span> <span class="token number">1</span>  <span class="token comment"># 顶层作用域</span>
 <span class="token keyword">class</span> <span class="token class-name">MyClass</span>  <span class="token comment"># 类作用域</span>
 	v2 <span class="token operator">=</span> <span class="token number">2</span>
@@ -8185,7 +8211,7 @@ p obj<span class="token punctuation">.</span>my_method<span aria-hidden="true" c
 <li>类定义 class</li>
 <li>模块儿定义 module</li>
 </ol>
-<p>每个关键字对应一个作用域门</p>
+<p>每个关键字对应一个作用域门，各个作用域中的变量相互隔离</p>
 <blockquote>
 <p>现在看到每个作用域有独立的空间，如果想要变量在作用域之间传递，该如何操作？</p>
 </blockquote>
@@ -8204,16 +8230,14 @@ p obj<span class="token punctuation">.</span>my_method<span aria-hidden="true" c
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">var <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"Success"</span></span>
 <span class="token comment"># 使用Class.new 切换 class关键字，避免切换作用域</span>
 MyClass <span class="token operator">=</span> <span class="token class-name">Class</span><span class="token punctuation">.</span><span class="token keyword">new</span> <span class="token keyword">do</span> 
-	<span class="token comment"># 这里想访问到var</span>
 	p var
   <span class="token comment"># 使用动态定义方法，替换def关键字，避免切换作用域</span>
 	<span class="token keyword">define_method</span> <span class="token symbol">:my_method</span> <span class="token keyword">do</span>
-		<span class="token comment"># 这里想访问到var</span>
 		p var
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
 obg <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span> 
-obg<span class="token punctuation">.</span>my_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+obg<span class="token punctuation">.</span>my_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    如果两个作用域挤压在一起，我们通常简称为 扁平作用域</p>
 <h3 id="共享作用域"><a href="#共享作用域" class="headerlink" title="共享作用域"></a>共享作用域</h3><blockquote>
@@ -8223,6 +8247,7 @@ obg<span class="token punctuation">.</span>my_method<span aria-hidden="true" cla
   <span class="token comment"># 这里是一个局部变量，希望仅被几个方法访问到</span>
 	share <span class="token operator">=</span> <span class="token number">0</span>
   <span class="token comment"># 使用内核方法，调用 define_method 来定义函数，而又不用切换域，这样这几个方法就可以访问到变量</span>
+  <span class="token comment"># 也可以只用 define_method :counter do</span>
 	Kernel<span class="token punctuation">.</span>send <span class="token symbol">:define_method</span><span class="token punctuation">,</span><span class="token symbol">:counter</span> <span class="token keyword">do</span>
 		share
 	<span class="token keyword">end</span>
@@ -8230,12 +8255,16 @@ obg<span class="token punctuation">.</span>my_method<span aria-hidden="true" cla
 		share <span class="token operator">+=</span> x
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">other_method</span></span>
+  <span class="token comment"># 这里则无法再访问到share</span>
+  share
+<span class="token keyword">end</span>
 my_method
-p counter 
+p counter   <span class="token comment"># => 0</span>
 inc <span class="token number">4</span>
-p counter<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+p counter   <span class="token comment"># => 4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="上下文探针（instance-eval）"><a href="#上下文探针（instance-eval）" class="headerlink" title="上下文探针（instance_eval）"></a>上下文探针（instance_eval）</h3><p>这里我们学习一个新的方法：<code>instance_eval</code>,它能打开接收者的作用域，将当前对象self转为方接收者，并对其进行操作</p>
+<h3 id="上下文探针（instance-eval）"><a href="#上下文探针（instance-eval）" class="headerlink" title="上下文探针（instance_eval）"></a>上下文探针（instance_eval）</h3><p>这里我们学习一个新的方法：<code>BasicObject#instance_eval</code>,它在一个对象的上下文中执行block，运行时，代码块的接收者将会成为self</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span>
 		<span class="token variable">@v</span> <span class="token operator">=</span> <span class="token number">1</span>
@@ -8248,10 +8277,11 @@ obj<span class="token punctuation">.</span>instance_eval <span class="token keyw
   <span class="token comment"># 输出的实例变量也是属于self的</span>
 	p <span class="token variable">@v</span>
 <span class="token keyword">end</span>
+<span class="token comment"># 上下文探针结束后，self又变回了 main </span>
 <span class="token comment"># 这里 下面三行代码都处在扁平作用域，所以Block可以使用局部变量v，并访问到obj中的实例变量</span>
 v <span class="token operator">=</span> <span class="token number">2</span>
 obj<span class="token punctuation">.</span>instance_eval <span class="token punctuation">&#123;</span><span class="token variable">@v</span> <span class="token operator">=</span> v<span class="token punctuation">&#125;</span>
-obj<span class="token punctuation">.</span>instance_eval <span class="token punctuation">&#123;</span>p <span class="token variable">@v</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+obj<span class="token punctuation">.</span>instance_eval <span class="token punctuation">&#123;</span>p <span class="token variable">@v</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
 <p>这里需要注意一个点：instance_eval会将接收者变为当前对象self。而调用者的<strong>实例变量</strong>就落在作用域范围外，如果不了解，就会出现Bug，例如：</p>
@@ -8271,7 +8301,10 @@ obj<span class="token punctuation">.</span>instance_eval <span class="token punc
 <span class="token keyword">end</span>
 p <span class="token class-name">D</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>twisted_method  <span class="token comment"># => "@x : 1 , @y : "</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>​    这里输出发现，@y并未访问到， 可是上面的调用代码在同一个扁平作用域，原来是因为instance_eval将C.new对象变为当前对象self，调用者的实例变量就落在了作用域外了，所以访问不到为：nil，该如何操作呢？</p>
+<p>​    这里输出发现，@y并未访问到， 可是上面的调用代码在同一个扁平作用域，原来是因为instance_eval将C.new对象变为当前对象self，调用者的实例变量就落在了作用域外了，所以访问不到为：nil。</p>
+<blockquote>
+<p>这里使用 instance_exec 来解决传递参数的问题</p>
+</blockquote>
 <h4 id="instance-exec"><a href="#instance-exec" class="headerlink" title="instance_exec"></a>instance_exec</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">D</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">twisted_method</span></span>
 		<span class="token variable">@y</span> <span class="token operator">=</span> <span class="token number">2</span>
@@ -8280,28 +8313,19 @@ p <span class="token class-name">D</span><span class="token punctuation">.</span
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="洁净室"><a href="#洁净室" class="headerlink" title="洁净室"></a>洁净室</h3><p>​    有时我们只想创建一个执行块儿的对象，这样的对象称为<code>洁净室</code>，洁净室最好继承BasicObject，变为白板类，因为当切换self后，Block调用实例方法可能会与Block所处作用域方法冲突</p>
-<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 子类继承Object，并继承了hello方法</span>
-<span class="token keyword">class</span> <span class="token class-name">CleanRoom</span>
-  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">current_temperature</span></span>
-  <span class="token keyword">end</span>
-  <span class="token comment"># 这里我们进行重定义操作</span>
-  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hello</span></span>
-  	<span class="token comment"># 这里访问到的是 p "Hello World"</span>
-  	<span class="token keyword">super</span>
-  	p <span class="token string-literal"><span class="token string">"I am King"</span></span>
+<h3 id="洁净室"><a href="#洁净室" class="headerlink" title="洁净室"></a>洁净室</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">CleanRoom</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">current_temp</span></span>
+    <span class="token number">18</span>
   <span class="token keyword">end</span>
 <span class="token keyword">end</span>
-<span class="token comment"># 这里在顶级上下文中定义了方法，其实是所属Object的实例方法</span>
-<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">hello</span></span>
-	p <span class="token string-literal"><span class="token string">"Hello World"</span></span>
-<span class="token keyword">end</span>
-obj <span class="token operator">=</span> <span class="token class-name">CleanRoom</span><span class="token punctuation">.</span><span class="token keyword">new</span>
-obj<span class="token punctuation">.</span>instance_eval <span class="token keyword">do</span>
-  <span class="token comment"># 这里self为obj，所以Block是去self中找hello方法，如果没有，则去祖先连中查找</span>
-  hello
-<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+clean_room <span class="token operator">=</span> <span class="token class-name">CleanRoom</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+clean_room<span class="token punctuation">.</span>instance_eval <span class="token keyword">do</span>
+  <span class="token keyword">if</span> current_temp <span class="token operator">&lt;</span> <span class="token number">20</span>
+    p <span class="token string-literal"><span class="token string">"wear a jacket"</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<p>​    洁净室只是一个用来执行块的环境，它提供若干有用的方法供代码块调用，比如本例中的<code>current_temperature</code>方法，然而一个理想的洁净室应该是没有实例变量和方法的，因为这可能与block从环境中带来的名字冲突，因此BasicObject的实例往往用来充当洁净室，因为它是白板类，几乎没什么方法。</p>
 <h3 id="可调用对象"><a href="#可调用对象" class="headerlink" title="可调用对象"></a>可调用对象</h3><p>​    目前我们使用的Block是直接执行的，我们需要让Block变为对象，可以进行打包传递，调用，我们看一下有哪些打包代码的方式。</p>
 <ol>
 <li>proc , 将Block转为Proc对象</li>
@@ -8357,7 +8381,16 @@ my_method<span class="token punctuation">(</span><span class="token string-liter
 
 p my_method <span class="token comment"># => 10 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="Metthod对象"><a href="#Metthod对象" class="headerlink" title="Metthod对象"></a>Metthod对象</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">my_method</span></span>
+	p <span class="token operator">=</span> lambda <span class="token punctuation">&#123;</span><span class="token keyword">return</span> <span class="token number">10</span><span class="token punctuation">&#125;</span>
+	result <span class="token operator">=</span> p<span class="token punctuation">.</span>call
+	<span class="token keyword">return</span> result <span class="token operator">*</span> <span class="token number">2</span>  
+<span class="token keyword">end</span>
+
+p my_method <span class="token comment"># => 20 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="Lambda和Proc对比"><a href="#Lambda和Proc对比" class="headerlink" title="Lambda和Proc对比"></a>Lambda和Proc对比</h4><p>​    整体而言，Lambda更直观，它更像一个方法，对参数数量校验严格，在调用return时，只是从代码中返回。</p>
+<h4 id="Method对象"><a href="#Method对象" class="headerlink" title="Method对象"></a>Method对象</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
 	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span>
 		<span class="token variable">@v</span> <span class="token operator">=</span> <span class="token number">100</span>
 	<span class="token keyword">end</span>
@@ -8366,7 +8399,7 @@ p my_method <span class="token comment"># => 10 </span><span aria-hidden="true" 
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
 obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
-<span class="token comment"># 通过Kernel#method方法，将obj中的方法转为一个Method对象</span>
+<span class="token comment"># 通过Kernel#method方法，将obj中的方法转为一个Method对象 ！！！ </span>
 mobj <span class="token operator">=</span> obj<span class="token punctuation">.</span>method <span class="token symbol">:my_method</span>
 
 p mobj<span class="token punctuation">.</span><span class="token keyword">class</span>  <span class="token comment"># => Method</span>
@@ -8377,7 +8410,7 @@ mobj<span class="token punctuation">.</span>to_proc  <span class="token comment"
 <blockquote>
 <p>Method和Proc有什么区别？</p>
 </blockquote>
-<p>lambda 在定义它的作用域执行</p>
+<p>lambda 在定义它的作用域执行，block是一个闭包</p>
 <p>Method 对象会在自身所在的对象的作用域执行，因为Method是所属对象的</p>
 <h4 id="自由方法"><a href="#自由方法" class="headerlink" title="自由方法"></a>自由方法</h4><p>​    听名字感觉是一个脱离类，模块儿的一个方法，可以使用<code>Module#unbind</code>将一个方法转为自由方法，也可以使用<code>Module#instance_method</code>获取一个自由方法</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
@@ -8396,12 +8429,219 @@ p unbound<span class="token punctuation">.</span><span class="token keyword">cla
 <span class="token keyword">end</span>
 unbound <span class="token operator">=</span> MyModule<span class="token punctuation">.</span>instance_method<span class="token punctuation">(</span><span class="token symbol">:my_method</span><span class="token punctuation">)</span>
 p unbound<span class="token punctuation">.</span><span class="token keyword">class</span>  <span class="token comment"># => UnboundMethod</span>
-<span class="token comment"># 这里直接在String中定义 新的方法，使用UnboundMethod</span>
+<span class="token comment"># 这里在String中定义新的方法，以前我们会传递一个Block，这里我们直接像参数一眼进行传递</span>
 <span class="token builtin">String</span><span class="token punctuation">.</span>send <span class="token symbol">:define_method</span><span class="token punctuation">,</span><span class="token symbol">:another_method</span><span class="token punctuation">,</span>unbound
 p <span class="token string-literal"><span class="token string">"abc"</span></span><span class="token punctuation">.</span>another_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<h3 id="编写领域专属语言（DSL）"><a href="#编写领域专属语言（DSL）" class="headerlink" title="编写领域专属语言（DSL）"></a>编写领域专属语言（DSL）</h3><blockquote>
+<p>编写一个监视工具，如果发生不正常状况，进行消息通知，比如：</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 定义一个事件，传达一个事件描述，如果传递的代码块为true，则进行事件描述通知，如果为false，则不通知</span>
+event <span class="token string-literal"><span class="token string">"we're earning wade of money"</span></span> <span class="token keyword">do</span>
+    <span class="token comment"># 这里从数据库中获取数据</span>
+    recent_orders <span class="token operator">=</span> <span class="token number">10000</span>
+    recent_orders <span class="token operator">></span> <span class="token number">5000</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<h4 id="第一个领域专用语言"><a href="#第一个领域专用语言" class="headerlink" title="第一个领域专用语言"></a>第一个领域专用语言</h4><blockquote>
+<p>我们进行第一版的设计，只要让这个程序每隔几分钟运行一次</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 这里需要将加载路径添加，否则load会报错</span>
+<span class="token variable">$LOAD_PATH</span><span class="token punctuation">.</span>unshift<span class="token punctuation">(</span><span class="token builtin">File</span><span class="token punctuation">.</span>dirname<span class="token punctuation">(</span>__FILE__<span class="token punctuation">)</span><span class="token punctuation">)</span> 
 
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">event</span></span><span class="token punctuation">(</span>description<span class="token punctuation">)</span>
+    p description <span class="token keyword">if</span> <span class="token keyword">yield</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 加载后，所有事件将会执行</span>
+load <span class="token string-literal"><span class="token string">'events.rb'</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 这个文件就定义所有的事件</span>
+event <span class="token string-literal"><span class="token string">"i am test can i get the right result: false"</span></span> <span class="token keyword">do</span>
+    <span class="token boolean">false</span>
+<span class="token keyword">end</span>
+event <span class="token string-literal"><span class="token string">"i am test can i get the right result: true"</span></span> <span class="token keyword">do</span>
+    <span class="token boolean">true</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="共享事件"><a href="#共享事件" class="headerlink" title="共享事件"></a>共享事件</h4><blockquote>
+<p>共享事件：是否能让两个独立的事件访问同一个变量？ （使用<strong>扁平作用域</strong>）</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">monthly_sales</span></span>
+    <span class="token number">100</span>  <span class="token comment"># 从数据库获取的</span>
+<span class="token keyword">end</span>
+
+target_sales <span class="token operator">=</span> <span class="token number">101</span> 
+
+event <span class="token string-literal"><span class="token string">"monthly sales are suspiciously"</span></span> <span class="token keyword">do</span>
+    monthly_sales <span class="token operator">></span> target_sales
+<span class="token keyword">end</span>
+
+event <span class="token string-literal"><span class="token string">"monthly sales are abysmally low"</span></span> <span class="token keyword">do</span>
+    monthly_sales <span class="token operator">&lt;</span> target_sales
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="改良的DSL"><a href="#改良的DSL" class="headerlink" title="改良的DSL"></a>改良的DSL</h4><blockquote>
+<p>这里我们将方法和临时变量直接定义在顶级作用域中，这是不合适的，应该进行封装与优化，希望是下面的效果</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">setup <span class="token keyword">do</span>
+    puts <span class="token string-literal"><span class="token string">"Setting up sky"</span></span>
+    <span class="token variable">@sky_height</span> <span class="token operator">=</span> <span class="token number">100</span>
+<span class="token keyword">end</span>
+
+setup <span class="token keyword">do</span>
+    puts <span class="token string-literal"><span class="token string">"Setting up mountains"</span></span>
+    <span class="token variable">@mountains_height</span> <span class="token operator">=</span> <span class="token number">200</span>
+<span class="token keyword">end</span>
+
+event <span class="token string-literal"><span class="token string">"the sky is falling"</span></span> <span class="token keyword">do</span>
+    <span class="token variable">@sky_height</span> <span class="token operator">&lt;</span> <span class="token number">200</span>
+<span class="token keyword">end</span>
+
+event <span class="token string-literal"><span class="token string">"its getting closer"</span></span> <span class="token keyword">do</span>
+    <span class="token variable">@sky_height</span> <span class="token operator">&lt;</span> <span class="token variable">@mountains_height</span>
+<span class="token keyword">end</span>
+
+event <span class="token string-literal"><span class="token string">"whoops ... too late"</span></span> <span class="token keyword">do</span>
+    <span class="token variable">@sky_height</span> <span class="token operator">&lt;</span> <span class="token number">0</span>
+<span class="token keyword">end</span>
+
+<span class="token comment"># 我们可以自由的混合事件和setup代码块，DSL还是会检测事件，在每次执行事件前都会运行所有的setup，我们希望运行后的结果为：</span>
+<span class="token string-literal"><span class="token string">"Setting up sky"</span></span>
+<span class="token string-literal"><span class="token string">"Setting up mountains"</span></span>
+
+<span class="token string-literal"><span class="token string">"the sky is falling"</span></span>
+
+<span class="token string-literal"><span class="token string">"Setting up sky"</span></span>
+<span class="token string-literal"><span class="token string">"Setting up mountains"</span></span>
+
+<span class="token string-literal"><span class="token string">"its getting closer"</span></span>
+
+<span class="token string-literal"><span class="token string">"Setting up sky"</span></span>
+<span class="token string-literal"><span class="token string">"Setting up mountains"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>setup应该给@开头的变量赋值，事件可以读取这些变量，这样后面写代码就会干净的多</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">p <span class="token string-literal"><span class="token string">"main对象的实例变量：</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content"><span class="token keyword">self</span><span class="token punctuation">.</span>instance_variables</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+
+<span class="token variable">$LOAD_PATH</span><span class="token punctuation">.</span>unshift<span class="token punctuation">(</span><span class="token builtin">File</span><span class="token punctuation">.</span>dirname<span class="token punctuation">(</span>__FILE__<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">event</span></span><span class="token punctuation">(</span>description<span class="token punctuation">)</span>
+    <span class="token comment"># 每次执行block前，先load数据获取文件，我们在其中定义一些实例变量，当加载后，该实例变量归属于main对象，这里是扁平作用域，所以可以被事件感知到</span>
+    load <span class="token string-literal"><span class="token string">'setup.rb'</span></span>
+    p description <span class="token keyword">if</span> <span class="token keyword">yield</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">setup</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">yield</span>
+<span class="token keyword">end</span>
+
+load <span class="token string-literal"><span class="token string">'events.rb'</span></span>
+<span class="token comment"># 在 load 后，加载文件中</span>
+p <span class="token string-literal"><span class="token string">"main对象的实例变量：</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content"><span class="token keyword">self</span><span class="token punctuation">.</span>instance_variables</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>专门在一个文件中定义实例数据</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">setup <span class="token keyword">do</span>
+    puts <span class="token string-literal"><span class="token string">"Setting up sky"</span></span>
+    <span class="token variable">@sky_height</span> <span class="token operator">=</span> <span class="token number">100</span>
+<span class="token keyword">end</span>
+
+setup <span class="token keyword">do</span>
+    puts <span class="token string-literal"><span class="token string">"Setting up mountains"</span></span>
+    <span class="token variable">@mountains_height</span> <span class="token operator">=</span> <span class="token number">200</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>新需求：要求按照特定的顺序执行块和事件</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token variable">$LOAD_PATH</span><span class="token punctuation">.</span>unshift<span class="token punctuation">(</span><span class="token builtin">File</span><span class="token punctuation">.</span>dirname<span class="token punctuation">(</span>__FILE__<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">setup</span></span><span class="token punctuation">(</span><span class="token operator">&amp;</span>block<span class="token punctuation">)</span>
+    <span class="token variable">@setups</span> <span class="token operator">&lt;&lt;</span> block
+<span class="token keyword">end</span>
+
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">event</span></span><span class="token punctuation">(</span>description<span class="token punctuation">,</span><span class="token operator">&amp;</span>block<span class="token punctuation">)</span>
+    <span class="token variable">@events</span> <span class="token operator">&lt;&lt;</span> <span class="token punctuation">&#123;</span><span class="token symbol">:description</span><span class="token operator">=></span>description<span class="token punctuation">,</span><span class="token symbol">:condition</span><span class="token operator">=></span>block<span class="token punctuation">&#125;</span>
+<span class="token keyword">end</span>
+
+<span class="token variable">@setups</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token variable">@events</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+<span class="token comment"># 这里所有的event已经被保存，所有的setup也保存好了</span>
+load <span class="token string-literal"><span class="token string">'events.rb'</span></span>
+
+<span class="token variable">@events</span><span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>event<span class="token operator">|</span>
+    <span class="token variable">@setups</span><span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>setup<span class="token operator">|</span>
+        setup<span class="token punctuation">.</span>call
+    <span class="token keyword">end</span>
+    puts <span class="token string-literal"><span class="token string">"ALERT: </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">event<span class="token punctuation">[</span><span class="token symbol">:description</span><span class="token punctuation">]</span></span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span> <span class="token keyword">if</span> event<span class="token punctuation">[</span><span class="token symbol">:condition</span><span class="token punctuation">]</span><span class="token punctuation">.</span>call
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="消除全局变量"><a href="#消除全局变量" class="headerlink" title="消除全局变量"></a>消除<strong>全局</strong>变量</h4><blockquote>
+<p>新需求：@events 和 @setups 为顶级实例变量，但其实也是全局变量的变形，安全性有限，我们能不能消除他们，这里我们使用共享作用域</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">lambda <span class="token punctuation">&#123;</span>
+    setups <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    events <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    Kernel<span class="token punctuation">.</span>send <span class="token symbol">:define_method</span><span class="token punctuation">,</span><span class="token symbol">:setup</span> <span class="token keyword">do</span> <span class="token operator">|</span><span class="token operator">&amp;</span>block<span class="token operator">|</span>
+        setups <span class="token operator">&lt;&lt;</span> block
+    <span class="token keyword">end</span>
+
+    Kernel<span class="token punctuation">.</span>send <span class="token symbol">:define_method</span><span class="token punctuation">,</span><span class="token symbol">:event</span> <span class="token keyword">do</span> <span class="token operator">|</span>description<span class="token punctuation">,</span><span class="token operator">&amp;</span>block<span class="token operator">|</span>
+        events <span class="token operator">&lt;&lt;</span> <span class="token punctuation">&#123;</span><span class="token symbol">:description</span><span class="token operator">=></span>description<span class="token punctuation">,</span><span class="token symbol">:condition</span><span class="token operator">=></span>block<span class="token punctuation">&#125;</span>
+    <span class="token keyword">end</span>
+
+    Kernel<span class="token punctuation">.</span>send <span class="token symbol">:define_method</span><span class="token punctuation">,</span><span class="token symbol">:each_setup</span> <span class="token keyword">do</span> <span class="token operator">|</span><span class="token operator">&amp;</span>block<span class="token operator">|</span>
+        setups<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>setup<span class="token operator">|</span>
+            block<span class="token punctuation">.</span>call setup
+        <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+
+    Kernel<span class="token punctuation">.</span>send <span class="token symbol">:define_method</span><span class="token punctuation">,</span><span class="token symbol">:each_event</span> <span class="token keyword">do</span> <span class="token operator">|</span><span class="token operator">&amp;</span>block<span class="token operator">|</span>
+        events<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>event<span class="token operator">|</span>
+            block<span class="token punctuation">.</span>call event
+        <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">.</span>call
+
+load <span class="token string-literal"><span class="token string">"events.rb"</span></span>
+
+each_event <span class="token keyword">do</span> <span class="token operator">|</span>event<span class="token operator">|</span>
+    each_setup <span class="token keyword">do</span> <span class="token operator">|</span>setup<span class="token operator">|</span>
+        setup<span class="token punctuation">.</span>call
+    <span class="token keyword">end</span>
+    puts <span class="token string-literal"><span class="token string">"ALERT: </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">event<span class="token punctuation">[</span><span class="token symbol">:description</span><span class="token punctuation">]</span></span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span> <span class="token keyword">if</span> event<span class="token punctuation">[</span><span class="token symbol">:condition</span><span class="token punctuation">]</span><span class="token punctuation">.</span>call
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​    这里我们使用lambda来定义一个block，在内部定义setups 和 events，在Kernel中定义方法，这些方法能访问到block中的代码块，而其他方法则无法访问到，这样就可以保证，消除全局变量，但代码看起来更复杂了似乎</p>
+<h4 id="添加一个洁净室"><a href="#添加一个洁净室" class="headerlink" title="添加一个洁净室"></a>添加一个洁净室</h4><blockquote>
+<p>在目前的版本中，事件可以修改其他事件共享的顶层实例变量，我们需要在setup中定义共享变量，而不是在事件中</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">event <span class="token string-literal"><span class="token string">"define a shared variable"</span></span> <span class="token keyword">do</span>
+    <span class="token variable">@x</span> <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">end</span>
+
+event <span class="token string-literal"><span class="token string">"define a shared variable"</span></span> <span class="token keyword">do</span>
+    <span class="token variable">@x</span> <span class="token operator">=</span> <span class="token variable">@x</span> <span class="token operator">+</span> <span class="token number">1</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>改进方案，使用Object作为白板类，使用上线文探针执行block，这样每个event都是独立的，这里我们没有使用BasicObject充当白板类，因为里面缺少一些基本的方法：puts</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">each_event <span class="token keyword">do</span> <span class="token operator">|</span>event<span class="token operator">|</span>
+    env <span class="token operator">=</span> <span class="token class-name">Object</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+    each_setup <span class="token keyword">do</span> <span class="token operator">|</span>setup<span class="token operator">|</span>
+        env<span class="token punctuation">.</span>instance_eval <span class="token operator">&amp;</span>setup
+    <span class="token keyword">end</span>
+    puts <span class="token string-literal"><span class="token string">"ALERT: </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">event<span class="token punctuation">[</span><span class="token symbol">:description</span><span class="token punctuation">]</span></span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span> <span class="token keyword">if</span> env<span class="token punctuation">.</span>instance_eval <span class="token operator">&amp;</span><span class="token punctuation">(</span>event<span class="token punctuation">[</span><span class="token symbol">:condition</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ul>
+<li>作用域门 和 Ruby管理作用域的方式</li>
+<li>利用扁平作用域 和共享作用域 让绑定穿越作用域</li>
+<li>在对象的作用域中执行代码（通过instance_eval 或者 instance_exec） ，在洁净室中执行代码</li>
+<li>在代码块和对象之间相互转化</li>
+<li>在方法和对象之间相互转换</li>
+<li>可调用对象（代码块，Proc，Lambda及普通方法）的区别</li>
+<li>编写自己的领域专属语言</li>
+</ul>
 <h2 id="类定义"><a href="#类定义" class="headerlink" title="类定义"></a>类定义</h2><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">result <span class="token operator">=</span> <span class="token keyword">class</span> <span class="token class-name">MyClass</span>
 	<span class="token keyword">self</span>
 <span class="token keyword">end</span>
@@ -9032,7 +9272,7 @@ p obj<span class="token punctuation">.</span>my_attr<span aria-hidden="true" cla
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>​    这里我们编写了自己的类宏，并使用了钩子方法。我们已经可以所使用的对象为所欲为，剩下的就交给我们不断的实践。后面我们将开启Rails之旅。</p>
+<h3 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h3><p>​    这里我们编写了自己的类宏，并使用了钩子方法。我们已经可以所使用的对象为所欲为，剩下的就交给我们不断的实践。后面我们将开启Rails之旅。</p>
 ]]></content>
       <categories>
         <category>Ruby</category>
