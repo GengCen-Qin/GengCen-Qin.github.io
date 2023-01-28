@@ -9090,7 +9090,7 @@ obj <span class="token operator">=</span> <span class="token class-name">MyClass
 obj<span class="token punctuation">.</span>my_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    这称为<strong>对象扩展</strong></p>
-<blockquote>
+<h4 id="Object-extend"><a href="#Object-extend" class="headerlink" title="Object#extend"></a>Object#extend</h4><blockquote>
 <p>类扩展，对象扩展 因为用的很多，所以Ruby提供了<code>Object#extend</code>方法</p>
 </blockquote>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
@@ -9119,37 +9119,106 @@ obj<span class="token punctuation">.</span>my_method<span aria-hidden="true" cla
 <span class="token keyword">end</span>
 
 obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
-obj<span class="token punctuation">.</span>one
-obj<span class="token punctuation">.</span>two<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+obj<span class="token punctuation">.</span>one  <span class="token comment"># => “Hello one”</span>
+obj<span class="token punctuation">.</span>two  <span class="token comment"># => “Hello one”</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<pre><code> 定义方法时，并不是修改这个方法，而是定义一个新的方法，并将之前存在的方法名从新绑定，只要老方法还存在一个绑定，就仍可调用
-</code></pre>
-<h4 id="环绕别名"><a href="#环绕别名" class="headerlink" title="环绕别名"></a>环绕别名</h4><ol>
+<p>​    别名在Ruby中几乎随处可见，例如<code>String#size 就是 String#length</code>方法的别名，Inteager 有一个方法有至少五种别名</p>
+<blockquote>
+<p>如果先给一个方法起别名，又重新定义这个方法，我们看看会发生什么？</p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span>
+		p <span class="token string-literal"><span class="token string">"Hello one"</span></span>
+	<span class="token keyword">end</span>
+	alias_method <span class="token symbol">:two</span><span class="token punctuation">,</span><span class="token symbol">:one</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span>
+		p <span class="token string-literal"><span class="token string">"good morning"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span>one  <span class="token comment"># => "good morning"</span>
+obj<span class="token punctuation">.</span>two  <span class="token comment"># => "Hello one"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​        重定义方法时，并不是修改这个方法，而是定义一个新的方法，并将之前存在的方法名从新绑定，只要老方法还存在一个绑定，就仍可调用，这种先定义别名再重新定义方法的思想是一种有趣技巧的基础，我们举例说明</p>
+<h4 id="环绕别名-类似于动态代理的效果"><a href="#环绕别名-类似于动态代理的效果" class="headerlink" title="环绕别名(类似于动态代理的效果)"></a>环绕别名(类似于动态代理的效果)</h4><ol>
 <li>给方法定义一个别名</li>
 <li>重定义这个方法</li>
 <li>新方法中调用老的方法</li>
 </ol>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
-	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span> 
-		p <span class="token string-literal"><span class="token string">"Hello one"</span></span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">get_users</span></span>
+		p <span class="token string-literal"><span class="token string">"从数据库中获取数据"</span></span>
 	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 现在我们想对 MyClass#get_users做一些增强处理</span>
+<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	alias_method <span class="token symbol">:get_users_origin</span><span class="token punctuation">,</span><span class="token symbol">:get_users</span>
 
-	alias_method <span class="token symbol">:two</span><span class="token punctuation">,</span><span class="token symbol">:one</span>
-
-	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">one</span></span>
-		two
-		p <span class="token string-literal"><span class="token string">"Hello I am new one"</span></span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">get_users</span></span>
+		p <span class="token string-literal"><span class="token string">"检查用户权限"</span></span>
+		p <span class="token string-literal"><span class="token string">"开启事务"</span></span>
+		get_users_origin
+		p <span class="token string-literal"><span class="token string">"提交事务"</span></span>
 	<span class="token keyword">end</span>
 <span class="token keyword">end</span>
 
 obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
-obj<span class="token punctuation">.</span>one
-obj<span class="token punctuation">.</span>two<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+obj<span class="token punctuation">.</span>get_users<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="更多方法包装器"><a href="#更多方法包装器" class="headerlink" title="更多方法包装器"></a>更多方法包装器</h4><ol>
-<li>细化：使用细化，可以从新定义方法，如果定义重名方法，使用super则可调用到原先的内容</li>
-<li>Module#prepend：因为会将引入module放入当前类的祖父链位置的前面，所以也会覆盖掉当前类中定义的方法，使用super则可调用到原先的内容</li>
-</ol>
+<blockquote>
+<p>环绕别名的一个缺点在于它污染了你的类，添加了一个额外的名字，如果想解决这个问题，可以在添加别名之后，想办法把老版本的方法变成私有的，Ruby中 公有 和 私有 实际上是针对的方法名，而不是方法本身</p>
+<p>环绕别名的另一个缺点与加载有关，不要尝试加载（load）两次环绕别名，这里留给你自己思考</p>
+<p>环绕别名的最主要的问题在于它是一种猴子补丁，它有可能破坏已有的代码，Ruby2.0增加了两种额外的方式来为已有方法保证新的功能</p>
+</blockquote>
+<h4 id="更多方法包装器"><a href="#更多方法包装器" class="headerlink" title="更多方法包装器"></a>更多方法包装器</h4><blockquote>
+<p> 细化：使用细化，可以从新定义方法，如果定义重名方法，使用super则可调用到原先的内容，叫做：<strong>细化封装器</strong></p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">get_users</span></span>
+		p <span class="token string-literal"><span class="token string">"从数据库中获取数据"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 现在我们想对 MyClass#get_users做一些增强处理</span>
+<span class="token keyword">module</span> <span class="token class-name">MyClassRefinement</span>
+	refine MyClass <span class="token keyword">do</span>
+		<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">get_users</span></span>
+			p <span class="token string-literal"><span class="token string">"检查用户权限"</span></span>
+			p <span class="token string-literal"><span class="token string">"开启事务"</span></span>
+			<span class="token keyword">super</span>
+			p <span class="token string-literal"><span class="token string">"提交事务"</span></span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+using MyClassRefinement
+
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span>get_users<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>Module#prepend：因为会将引入module放入当前类的祖父链位置的前面，所以也会覆盖掉当前类中定义的方法，使用super则可调用到原先的内容，这种技术称为：<strong>下包含包装器</strong></p>
+</blockquote>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">get_users</span></span>
+		p <span class="token string-literal"><span class="token string">"从数据库中获取数据"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token comment"># 现在我们想对 MyClass#get_users做一些增强处理</span>
+<span class="token keyword">module</span> <span class="token class-name">ExplicitMyClass</span>
+	<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">get_users</span></span>
+		p <span class="token string-literal"><span class="token string">"检查用户权限"</span></span>
+		p <span class="token string-literal"><span class="token string">"开启事务"</span></span>
+		<span class="token keyword">super</span>
+		p <span class="token string-literal"><span class="token string">"提交事务"</span></span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span class="token keyword">class</span> <span class="token class-name">MyClass</span>
+	<span class="token keyword">prepend</span> ExplicitMyClass
+<span class="token keyword">end</span>
+obj <span class="token operator">=</span> <span class="token class-name">MyClass</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+obj<span class="token punctuation">.</span>get_users<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="测试：打破数据规律"><a href="#测试：打破数据规律" class="headerlink" title="测试：打破数据规律"></a>测试：打破数据规律</h3><blockquote>
 <p>让 1 + 1 = 3</p>
 </blockquote>
@@ -9163,7 +9232,13 @@ obj<span class="token punctuation">.</span>two<span aria-hidden="true" class="li
 <span class="token keyword">end</span>
 p <span class="token number">1</span><span class="token operator">+</span><span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>务必要慎用这种能力</p>
+<p>务必要慎用这种能力，实际上我们发现Ruby中的规则简单，小巧，易操作</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><ul>
+<li>类定义对self和当前类的影响</li>
+<li>熟悉<strong>单件方法</strong>和<strong>单件类</strong>，重新认识对象模型和方法查找</li>
+<li>学习了类实例变量，类宏和下包含包装器</li>
+</ul>
+<p>这些规则同时适用于类和模块</p>
 <h2 id="编写代码的代码"><a href="#编写代码的代码" class="headerlink" title="编写代码的代码"></a>编写代码的代码</h2><h3 id="Kernel-eval"><a href="#Kernel-eval" class="headerlink" title="Kernel#eval"></a>Kernel#eval</h3><p>​    前面我们学习了：<code>instance_eval , class_eval</code>,现在我要学习<code>Kernel#eval</code>方法，它的作用是执行一段<strong>代码字符串</strong></p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 执行 "p 123" 这段字符串，p 123表示输出 123 </span>
 eval <span class="token string-literal"><span class="token string">"p 123"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
