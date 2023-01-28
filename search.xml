@@ -37,7 +37,7 @@
 </blockquote>
 <p>​    最初我在想有没有插件可以直接通过<code>hexo d</code>直接部署到服务器指定位置中，确实有，但是我一直显示连接异常，后选择其他方式。也就是通过<code>github</code>的<code>WebHooks</code>功能。</p>
 <p>​    大致思路为： <code>hexo d</code> 推送代码到<code>github</code>仓库，当<code>WebHooks</code>监测到有pull事件，将发送一条命令通知服务器，然后服务器触发脚本，拉取最新<code>git</code>代码。</p>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8kokpdj63j30dc0810sy.jpg" alt="image-20221128112850056"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221128112850056.png" alt="image-20221128112850056"></p>
 <ol>
 <li>下载go  : <code>yum install -y golang </code></li>
 <li>设置代理 : <code>go env -w GOPROXY=[https://goproxy.cn](https://goproxy.cn/),direct</code>  否则用go访问会老超时</li>
@@ -84,7 +84,7 @@
 <ol start="9">
 <li>github上配置钩子</li>
 </ol>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8kozlqqbpj317v0jadi2.jpg" alt="image-20221128114311505"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221128114311505.png" alt="image-20221128114311505"></p>
 <p>填入Payload URL：<code>http://ip:9000/hooks/上面你自己定义的ID，在hooks.json</code></p>
 <p>添加好后，就可以直接从本地同步到Github上，当Github上发生修改，服务器就会被触发执行脚本，拉取最新的代码。</p>
 ]]></content>
