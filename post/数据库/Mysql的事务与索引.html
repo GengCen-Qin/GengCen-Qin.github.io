@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://www.chengling.cloud/img/default_top_img.jpg">
 <meta property="article:published_time" content="2022-11-25T05:03:04.000Z">
-<meta property="article:modified_time" content="2022-12-10T11:45:06.514Z">
+<meta property="article:modified_time" content="2023-01-30T13:47:12.243Z">
 <meta property="article:author" content="庚辰">
 <meta property="article:tag" content="Mysql">
 <meta name="twitter:card" content="summary">
@@ -53,7 +53,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2022-12-10 19:45:06'
+  postUpdate: '2023-01-30 21:47:12'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -142,7 +142,7 @@
       }
     }
     detectApple()
-    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/myHead.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top_img.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">玲辰书斋</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Mysql的事务与索引</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-25T05:03:04.000Z" title="发表于 2022-11-25 13:03:04">2022-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-12-10T11:45:06.514Z" title="更新于 2022-12-10 19:45:06">2022-12-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Mysql的事务与索引"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Mysql事务与索引"><a href="#Mysql事务与索引" class="headerlink" title="Mysql事务与索引"></a>Mysql事务与索引</h1><blockquote>
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/myHead.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top_img.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">玲辰书斋</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Mysql的事务与索引</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-25T05:03:04.000Z" title="发表于 2022-11-25 13:03:04">2022-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-01-30T13:47:12.243Z" title="更新于 2023-01-30 21:47:12">2023-01-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Mysql的事务与索引"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Mysql事务与索引"><a href="#Mysql事务与索引" class="headerlink" title="Mysql事务与索引"></a>Mysql事务与索引</h1><blockquote>
 <p>​    需求：先从数据库中读取摸一个字段的值，然后在该字段上的基础上进行修改，由于操作不是原子性，无法保证线程安全，也就是当A线程读取到1时，想+1，赋值为2。而B线程已经将数据修改为2了，那么A线程应该是在2的基础上+1，赋值为3。但实际中可能该值都到8了，A又给人家改回2了。所以我们该如何解决数据安全问题？</p>
 </blockquote>
 <ol>
@@ -219,16 +219,16 @@
 </blockquote>
 <p>​        结论： 锁锁住的是索引，当表中没有设定主键索引时，会默认找一个非空唯一的字段加主键索引，如果没有这个字段会使用一个隐藏字段加入主键索引。</p>
 <hr>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d8irzizj30uf0ft40b.jpg" alt="image-20220810182237613"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810182237613.png" alt="image-20220810182237613"></p>
 <h3 id="Record-Lock：记录锁"><a href="#Record-Lock：记录锁" class="headerlink" title="Record Lock：记录锁"></a>Record Lock：记录锁</h3><p>条件：唯一性索引（唯一、主键）等值查询，精准匹配到一个索引。</p>
 <p><code>select * from t2 where id = 4 for update;</code> 锁住id = 4的数据</p>
 <h3 id="Gap-Lock：间隙锁"><a href="#Gap-Lock：间隙锁" class="headerlink" title="Gap Lock：间隙锁"></a>Gap Lock：间隙锁</h3><p>条件：记录不存在，当我查询并加锁时，发现并没有击中索引，而是落入在一个索引的区间内，那么就会加一个间隙锁。那既然没数据我加间隙锁能干嘛？</p>
 <p>防止插入，当你有一个间隙锁的时候，就不能再给这个间隙加数据，等等。。那这不就保证了不会在我看不见的情况下，别人突然insert一条数据了嘛。。。幻读的解决似乎在这里能找到解决的办法</p>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d8poknbj30k0059mxg.jpg" alt="image-20220810182800083"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d8poknbj30k0059mxg.jpg" alt="image-20220810182800083"><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810182800083.png" alt="image-20220810182800083"></p>
 <h3 id="Next-Key-Lock：临键锁"><a href="#Next-Key-Lock：临键锁" class="headerlink" title="Next-Key Lock：临键锁"></a>Next-Key Lock：临键锁</h3><p>条件：范围查询，包含记录和区间。这里要注意临键是左开右闭的，(x,y]</p>
-<p> <img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8hekwp4gkj30k30713yt.jpg" alt="image-20220810183202191"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810183202191.png" alt="image-20220810183202191"></p>
 <p>​        所以当有这几个锁的时候解决了什么问题呢？那就是解决了在<code>repeatable Read</code>事务隔离级别下，幻读的影响，当有了间隙锁，这个区间虽然你看不到，但你相当于已经对这个范围都加锁了，其他数据无法进行insert，所以最后的结论是下图：</p>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d8riixdj30uc0a0myf.jpg" alt="image-20220810183658382"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810183658382.png" alt="image-20220810183658382"></p>
 <hr>
 <h2 id="ACID的实现原理"><a href="#ACID的实现原理" class="headerlink" title="ACID的实现原理"></a>ACID的实现原理</h2><h3 id="atomicity原子性"><a href="#atomicity原子性" class="headerlink" title="atomicity原子性"></a>atomicity原子性</h3><blockquote>
 <p>定义我们都知道，一个事务操作内，要么都成功，要么都失败，那Mysql是如何保证的？</p>
@@ -240,14 +240,14 @@
 <p>定义：如果一个事务提交后，数据的修改是永久性的。</p>
 </blockquote>
 <p>​        维护一个<code>redo.log</code>文件，背景是我们知道磁盘IO是一个很慢的操作，所以Mysql也维护了一份Buffer缓冲区，操作都会先到缓冲区，最后同步到磁盘中。但缓冲区最大的问题就是数据的不安全，所以引入了<code>redo.log</code>文件，数据会先同步到<code>redo log buffer</code>中，<code>redo log buffer</code> 也是redo.log文件的缓冲区，然后事务提交后按照我们的约定再刷盘到redo.log文件中。</p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230130213820352.png" alt="image-20230130213820352"></p>
 <blockquote>
 <p>那这里也会存在问题：</p>
 </blockquote>
 <ol>
 <li> redo log buffer 文件能否保证数据不丢失?</li>
 </ol>
-<p>Mysql中数据操作单元是一个数据页，16k，</p>
-<p>​        <code>redo.log</code>中则记录的是对磁盘上的某个表空间的某个数据页的某一行数据的某个字段做了修改，修改后的值为多少，它记录的是对物理磁盘上数据的修改，因此称之为物理日志。类似于Redis中的AOF操作追加</p>
+<p>​        Mysql中数据操作单元是一个数据页，16k，<code>redo.log</code>中则记录的是对磁盘上的某个表空间的某个数据页的某一行数据的某个字段做了修改，修改后的值为多少，它记录的是对物理磁盘上数据的修改，因此称之为物理日志。类似于Redis中的AOF操作追加</p>
 <p>​        <code>redo log buffer</code>是在commit之前就记录了，如果在commit之后再记录就不可能保证数据安全，因为commit后一瞬间挂机不就完了。所以当commit时，我们可以根据<code>innodb_flush_log_at_trx_commit</code> 来决定将<code>redo log buffer</code>什么时候刷盘到<code>redo.log</code>文件中。</p>
 <ul>
 <li><strong>设置为0的时候，表示每次事务提交时不进行刷盘操作，等待主线程每秒刷盘</strong></li>
@@ -269,7 +269,8 @@
 <blockquote>
 <p>MVCC是基于快照读的。但又有不同，我们下面来看一下RC和RR底层到底有什么不同？</p>
 </blockquote>
-<p>首先MVCC的关键在于<code>版本链，ReadView视图，事务ID</code>来区分。可以看这里的图：<img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8ywtb3olaj30my1qx0ye.jpg" alt="mysqlMvcc.drawio">  </p>
+<p>首先MVCC的关键在于<code>版本链，ReadView视图，事务ID</code>来区分。可以看这里的图：</p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/mysqlMvcc.drawio.png" alt="mysqlMvcc.drawio"></p>
 <p>至于RC与RR的区别则在于生成ReadView时机不同，在RC中每次select 都会生成一个readView，所以数据也在不断更新</p>
 <p>而RR则是以事务为单位，当第一个select时生成ReadView，后面再次select就共用一个。所以叫可重复读</p>
 <blockquote>
@@ -311,7 +312,7 @@
 </blockquote>
 </blockquote>
 <p>索引失效的情况网上有许多测试数据，可以直接查找，我们这里从底层说明为什么索引会失效。下图是对<code>a字段和b字段加入联合索引，索引底层B+树的样子</code></p>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d8w2upsj30ni0e5wfd.jpg" alt="image-20221116173602058"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221116173602058.png" alt="image-20221116173602058"></p>
 <p>通过上面的图我们能发现几个规则：</p>
 <ol>
 <li>a的值是有序的，b的值是无序的</li>
@@ -327,13 +328,13 @@
 <li>like ‘%i%’ 和情况1一样，无法使用索引</li>
 </ul>
 <blockquote>
-<p>​    索引失效的最本质原因就是：B+索引在底层的存储是有序的，如果要使用索引也应该有序，当使用联合索引时，应保证索引从左至右。这条规则对普通索引也有效。比如说对<code>name</code>加索引，有三个值，<code>abc,acb,aaa</code>，在添加索引时先看第一位，发现都是a，再看第二位，发现不一样了，这时也是按顺序排序的，最终一定是<code>aaa,abc,acb</code>,这里最简单的方式：我们已经知道索引的结构是B+树，通过上面的网址自己插入这几个值，看是怎么排序的。</p>
+<p>​    索引失效的最本质原因就是：B+索引在底层的存储是有序的，如果要使用索引也应该有序，当使用联合索引时，应保证索引从左至右。这条规则对普通索引也适用。比如说对<code>name</code>加索引，有三个值，<code>abc,acb,aaa</code>，在添加索引时先看第一位，发现都是a，再看第二位，发现不一样了，这时也是按顺序排序的，最终一定是<code>aaa,abc,acb</code>,这里最简单的方式：我们已经知道索引的结构是B+树，通过上面的网址自己插入这几个值，看是怎么排序的。</p>
 </blockquote>
 <h2 id="MyISAM-和-Innodb的索引区别"><a href="#MyISAM-和-Innodb的索引区别" class="headerlink" title="MyISAM 和 Innodb的索引区别"></a>MyISAM 和 Innodb的索引区别</h2><blockquote>
 <p>MyIsam 数据和索引是分为两个文件存储的，左边的图为索引，右边为数据，索引的key为主键id，value为数据的地址，</p>
 <p>不管是主键索引还是普通索引都是通过地址去查找数据</p>
 </blockquote>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d8yj7pij314a0idwh4.jpg" alt="image-20221116181734434"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221116181734434.png" alt="image-20221116181734434"></p>
 <blockquote>
 <p>Innodb 的索引，也叫聚簇索引，索引与数据是在一起的</p>
 <blockquote>
@@ -342,7 +343,7 @@
 <p>​    索引：分为主键索引和普通索引，主键索引直接拿数据，普通索引找主键索引找数据（性能相对比MyISAM低），</p>
 </blockquote>
 </blockquote>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d91i930j316q0hudiv.jpg" alt="image-20221116181403045"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221116181403045.png" alt="image-20221116181403045"></p>
 <hr>
 <h2 id="百万级数据索引优化"><a href="#百万级数据索引优化" class="headerlink" title="百万级数据索引优化"></a>百万级数据索引优化</h2><ol>
 <li><p>索引失效：</p>
