@@ -6309,29 +6309,21 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
   <entry>
     <title>分布式事务</title>
     <url>//post/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1.html</url>
-    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>​        我们在过去总是使用本地事务，也就是数据库提供的事务操作，其中具有ACID的特性，但在如今我们的各个模块儿被拆分，服务与服务间相互调用，简单来说就是需要跨进程的事务，我们来想一下现有的本地事务是否能解决分布式事务。<br />情况1：跨JVM，跨数据库产生分布式事务<br /></p>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>​        我们在过去总是使用本地事务，也就是数据库提供的事务操作，其中具有ACID的特性，但在如今我们的各个模块儿被拆分，服务与服务间相互调用，简单来说就是需要跨进程的事务，我们来想一下现有的本地事务是否能解决分布式事务。<br /><strong>情况1</strong>：跨JVM，跨数据库产生分布式事务<br /></p>
 <pre class="line-numbers language-mermaid" data-language="mermaid"><code class="language-mermaid"><span class="token keyword">graph</span> TD<span class="token punctuation">;</span>
     用户下订单<span class="token arrow operator">--></span>订单模块<span class="token punctuation">;</span>
     订单模块<span class="token arrow operator">--></span>物流模块<span class="token punctuation">;</span>
     订单模块<span class="token arrow operator">--></span>订单表<span class="token punctuation">;</span>
     物流模块<span class="token arrow operator">--></span>物流表<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p><br />        用户直接调用订单模块儿，开启事务，然后在订单表中存入数据，然后再远程调用物流模块儿，去操作物流模块儿，我们可以想到如果物流模块儿出现问题，订单模块儿远程调用发生错误，是会进行事务回滚的。应该是没问题的。那如果物流模块儿确实修改成功了，但网络传输出现了问题，订单模块儿就进行回滚了，则就导致了物流模块儿有数据，订单模块儿没数据的问题。我们再考虑下面的问题：<br />情况二：跨数据库实例产生分布式事务<br /></p>
+<p><br />        用户直接调用订单模块儿，开启事务，然后在订单表中存入数据，然后再远程调用物流模块儿，去操作物流模块儿，我们可以想到如果物流模块儿出现问题，订单模块儿远程调用发生错误，是会进行事务回滚的。应该是没问题的。那如果物流模块儿确实修改成功了，但网络传输出现了问题，订单模块儿就进行回滚了，则就导致了物流模块儿有数据，订单模块儿没数据的问题。我们再考虑下面的问题：<br /></p>
+<p><strong>情况二</strong>：跨数据库实例产生分布式事务<br /></p>
 <pre class="line-numbers language-mermaid" data-language="mermaid"><code class="language-mermaid"><span class="token keyword">graph</span> TD<span class="token punctuation">;</span>
     人员管理模块儿<span class="token arrow operator">--></span>用户数据库<span class="token punctuation">;</span>
     人员管理模块儿<span class="token arrow operator">--></span>订单数据库<span class="token punctuation">;</span>
     <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-
-
-<p>况三：跨JVM进程产生的分布式事务<br /></p>
-<pre class="line-numbers language-mermaid" data-language="mermaid"><code class="language-mermaid"><span class="token keyword">graph</span> TD<span class="token punctuation">;</span>
-    订单模块<span class="token arrow operator">--></span>库存模块儿<span class="token punctuation">;</span>
-    订单模块<span class="token arrow operator">--></span>数据库<span class="token punctuation">;</span>
-    库存模块儿<span class="token arrow operator">--></span>数据库<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><a name="ZNo2K"></a></p>
-<h2 id="前提理论"><a href="#前提理论" class="headerlink" title="前提理论"></a>前提理论</h2><p><a name="fbcqR"></a></p>
+<h2 id="前置理论"><a href="#前置理论" class="headerlink" title="前置理论"></a>前置理论</h2><p><a name="fbcqR"></a></p>
 <h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><p>​        CAP表示一致性，可用性，分区容忍性。下面我们用数据库读写分离来演示</p>
 <blockquote>
 <p>整体执行流程如下： </p>
@@ -6368,20 +6360,20 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p>在CAP理论中，是否三个特性能同时满足？</p>
 </blockquote>
 <p>​        不能，在分区容忍性必备的情况下，一致性与可用性间存在矛盾，所以应看情况保证CP或者AP的特性。<br /><strong>AP特性</strong>：放弃一致性，比如订单退款，并不是瞬间让钱到账，而是允许二十四小时内到账。<br /><strong>CP特性</strong>：保证一致性，数据必须同步到最新状态，比如跨行转账，必须双方都完后事务才算完成。<br />一般情况下，使用的是AP特性，保证服务的可用。</p>
-<h3 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h3><p>BASE 是 Basically Available(<strong>基本可用</strong>)、Soft state(<strong>软状态</strong>)和 Eventually consistent (<strong>最终一致性</strong>)三个短语的缩写。BASE理论是对<strong>CAP中AP的一个扩展</strong>，通过牺牲强一致性来获得可用性，<code>当出现故障，允许部分功能不可用，但要保证核心功能可用，允许数据在一段时间内是不一致的，但最终要达到一致状态</code>。满足BASE理论的事务，我们称之为“<strong>柔性事务</strong>”。</p>
+<h3 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h3><p>​        BASE 是 Basically Available(<strong>基本可用</strong>)、Soft state(<strong>软状态</strong>)和 Eventually consistent (<strong>最终一致性</strong>)三个短语的缩写。BASE理论是对<strong>CAP中AP的一个扩展</strong>，通过牺牲强一致性来获得可用性，<code>当出现故障，允许部分功能不可用，但要保证核心功能可用，允许数据在一段时间内是不一致的，但最终要达到一致状态</code>。满足BASE理论的事务，我们称之为“<strong>柔性事务</strong>”。</p>
 <ol>
 <li>基本可用：分布式系统中允许损失部分可用功能，来保证核心功能的可用</li>
 <li>软状态：因为不要求强一致性，存在过渡状态，比如订单的支付中，数据同步中等状态，最后改为成功状态。</li>
 <li>最终一致性：就是从中间状态最终一定达到数据一致。<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="分布式事务解决方案—2PC（两阶段提交）"><a href="#分布式事务解决方案—2PC（两阶段提交）" class="headerlink" title="分布式事务解决方案—2PC（两阶段提交）"></a>分布式事务解决方案—2PC（两阶段提交）</h3>2PC也称为两阶段提交，顾名思义是将事务分为两个阶段，准备阶段（Prepare），提交阶段（Commit）。举个栗子：</li>
 </ol>
 <blockquote>
-<p>张三和李四好久不见，老友约起聚餐，饭店老板要求先买单，才能出票。这时张三和李四分别抱怨近况不如 意，囊中羞涩，都不愿意请客，这时只能AA。只有张三和李四都付款，老板才能出票安排就餐。但由于张三和李四 都是铁公鸡，形成了尴尬的一幕： </p>
+<p>张三和李四好久不见，老友约起聚餐，饭店老板要求先买单，才能出票。这时张三和李四分别抱怨近况不如 意，囊中羞涩，都不愿意请客，这时只能AA。只有张三和李四都付款，老板才能出票安排就餐。</p>
 <ol>
 <li>准备阶段：老板要求张三付款，张三付款。老板要求李四付款，李四付款。 </li>
 <li>提交阶段：老板出票，两人拿票纷纷落座就餐。 </li>
 </ol>
 </blockquote>
-<p>​        例子中形成了一个事务，若张三或李四其中一人拒绝付款，或钱不够，店老板都不会给出票，并且会把已收款退回。<br />整个事务过程由事务管理器和参与者组成，店老板就是事务管理器，张三、李四就是事务参与者，事务管理器负责决策整个分布式事务的提交和回滚，事务参与者负责自己本地事务的提交和回滚。 </p>
+<p>​        例子中形成了一个事务，若张三或李四其中一人拒绝付款，或钱不够，店老板都不会给出票，并且会把已收款退回。<br />        整个事务过程由事务管理器和参与者组成，店老板就是事务管理器，张三、李四就是事务参与者，事务管理器负责决策整个分布式事务的提交和回滚，事务参与者负责自己本地事务的提交和回滚。 </p>
 <p>而在一些关系型数据库中（Oracle，Mysql）都是支持两阶段提交协议</p>
 <ol>
 <li> 准备阶段（Prepare phase）：事务管理器给每个参与者发送Prepare消息，每个数据库参与者在本地执行事务，并写本地的Undo/Redo日志，此时事务没有提交。（Undo日志是记录修改前的数据，用于数据库回滚，Redo日志是记录修改后的数据，用于提交事务后写入数据文件)，这时候资源是被锁定的。</li>
@@ -6390,12 +6382,11 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 </blockquote>
 </li>
 </ol>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8plad16dwj30li09qjs0.jpg" alt="image-20221202172257629"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172257629.png" alt="image-20221202172257629"></p>
 <blockquote>
 <p>失败情况：</p>
 </blockquote>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8planrsv9j30lg09njrv.jpg" alt="image-20221202172314630"></p>
-<p><br />为了统一标准减少行业内不必要的对接成本，需要制定标准化的处理模型及接口标准，国际开放标准组织Open Group定义了分布式事务处理模型<strong>DTP</strong>（Distributed Transaction Processing Reference Model)。<br><a name="RMORc"></a></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172314630.png" alt="image-20221202172314630"></p>
 <h4 id="XA方案"><a href="#XA方案" class="headerlink" title="XA方案"></a>XA方案</h4><blockquote>
 <p>DTP模型定义如下角色：<br><strong>AP</strong>(Application Program)：即应用程序，可以理解为使用DTP分布式事务的程序。<br><strong>RM</strong>(Resource Manager)：即资源管理器，可以理解为事务的参与者，一般情况下是指一个数据库实例，通过资源管理器对该数据库进行控制，资源管理器控制着分支事务。<br><strong>TM</strong>(Transaction Manager)：事务管理器，负责协调和管理事务，事务管理器控制着全局事务，管理事务生命周期，并协调各个RM。<strong>全局事务</strong>是指分布式事务处理环境中，需要操作多个数据库共同完成一个工作，这个工作即是一个全局事务。<br>DTP模型定义TM和RM之间通讯的接口规范叫<strong>XA</strong>，简单理解为数据库提供的2PC接口协议，<strong>基于数据库的XA 协议来实现2PC又称为XA方案</strong>。<br>以上三个角色之间的交互方式如下： </p>
 <ol>
@@ -6407,8 +6398,9 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p>XA方案的问题：</p>
 <ol>
 <li>需要数据库支持XA协议</li>
-<li>资源锁需要等两个阶段结束才释放，性能差，会导致锁等待<br><a name="YNc8P"></a><h4 id="Seata"><a href="#Seata" class="headerlink" title="Seata"></a><a href="https://seata.io/zh-cn/docs/overview/what-is-seata.html">Seata</a></h4>​        阿里开源的分布式事务框架，传统2PC的问题在Seata中得到了解决，它通过对本地关系数据库的分支事务的协调来驱动完成全局事务，是工作在应用层的中间件。主要优点是<strong>性能较好</strong>，且<strong>不长时间占用连接资源</strong>，它以高效并且对<strong>业务0侵入</strong>的方式解决微服务场景下面临的<strong>分布式事务问题</strong>，它目前提供AT（2PC）、TCC、SAGA 和 XA 事务模式。<br /></li>
+<li>资源锁需要等两个阶段结束才释放，性能差，会导致锁等待</li>
 </ol>
+<h4 id="Seata"><a href="#Seata" class="headerlink" title="Seata"></a><a href="https://seata.io/zh-cn/docs/overview/what-is-seata.html">Seata</a></h4><p>​        阿里开源的分布式事务框架，传统2PC的问题在Seata中得到了解决，它通过对本地关系数据库的分支事务的协调来驱动完成全局事务，是工作在应用层的中间件。主要优点是<strong>性能较好</strong>，且<strong>不长时间占用连接资源</strong>，它以高效并且对<strong>业务0侵入</strong>的方式解决微服务场景下面临的<strong>分布式事务问题</strong>，它目前提供AT（2PC）、TCC、SAGA 和 XA 事务模式。<br /></p>
 <p>​        第一阶段就将本地事务提交了（提交前需要获取全局事务锁），全局事务管理器统计所有分支事务的结果，如果某个分支出现了异常，在本地事务中有一个<code>UNDO_LOG Table</code>的数据表，记录了之前的数据，修改SQL，修改后的数据。可通过它进行事务的回滚，这里不会产生脏数据就是因为本地事务的提交需要先获取全局事务锁。<br />        第二阶段，如果分支事务都成功，则根据事务ID删除<code>undo_log</code>的记录，如果失败，则找到记录进行回滚。<br /></p>
 <p>这里业务说明官网已经写的很详细了，这里我不再赘述。<br />Seata的核心就是通过undo log文件让已经提交的事务，仍能回滚。这样就不用长期占用资源了</p>
 <blockquote>
@@ -6491,13 +6483,13 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 <p>这中间有什么问题？</p>
 </blockquote>
 <p>​        张三向消息队列发送消息就一定会出现网络问题，比如：事务内，张三钱减少了，然后发送数据到消息队列，如果发送错误张三的钱也可以回滚，但是可能消息已经到队列了，但返回时网络延迟发生错误，导致数据回滚，则队列中数据是仍然存在的，所以一定要保证数据操作与消息发送保证<code>原子性</code>。<br />        李四需要必须接收并完成消息，但可能出现问题导致不断的重试，所以有<code>幂等性</code>的问题<br><a name="CQSMK"></a></p>
-<h4 id="RocketMq"><a href="#RocketMq" class="headerlink" title="RocketMq"></a><a href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RocketMq</a></h4><p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8plb9y686j30n608hwez.jpg" alt="image-20221202172349710"></p>
+<h4 id="RocketMq"><a href="#RocketMq" class="headerlink" title="RocketMq"></a><a href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RocketMq</a></h4><p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172349710.png" alt="image-20221202172349710"></p>
 <blockquote>
 <p>这是大概的一个流程，我们现在分析可能存在哪些问题：<br /></p>
 </blockquote>
 <p>​        张三向消息队列成功发送事务消息后,有一个rockmq监听本地事务方法的返回。这时候事务消息并不能被消费，如果张三正常提交本地事务，则该事务消息可被消费，如果本地事务没有提交成功，返回Rollback则事务消息删除，如果返回UnKnown(比如出现某些异常)，则过一段时间，消息队列会再次监听本地事务执行情况。从而保证张三本地事务与事务消息的原子性。<br />李四从消息队列获取消息后，应该进行本地事务并确认该事务消息，如果没有确认，消息队列会不断发给消费者，最终也可人工处理。<br />        可靠消息最终一致性的优点就是如果李四那边要执行很久，张三这边是不用等的，只要最终确认该事务消息即可。进行了异步解耦。<br><a name="NYbFr"></a></p>
 <h3 id="分布式事务解决方案—最大努力通知"><a href="#分布式事务解决方案—最大努力通知" class="headerlink" title="分布式事务解决方案—最大努力通知"></a>分布式事务解决方案—最大努力通知</h3><p><a name="wrMQP"></a></p>
-<h4 id="RocketMq-1"><a href="#RocketMq-1" class="headerlink" title="RocketMq"></a><a href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RocketMq</a></h4><p>我们以支付业务为例<br><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8plbxsllkj309l07e74g.jpg" alt="image-20221202172428011"></p>
+<h4 id="RocketMq-1"><a href="#RocketMq-1" class="headerlink" title="RocketMq"></a><a href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RocketMq</a></h4><p>我们以支付业务为例<br><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172428011.png" alt="image-20221202172428011"></p>
 <p>这里的账户系统就是等待通知的</p>
 <p>充值系统当充值完毕后发起通知</p>
 <blockquote>
@@ -6531,14 +6523,18 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 </ol>
 <p>可靠消息一致性要解决消息从发出到接收的一致性，即消息发出并且被接收到。<br />最大努力通知无法保证消息从发出到接收的一致性，只提供消息接收的可靠性机制。可靠机制是，最大努力的将消 息通知给接收方，当消息无法被接收方接收时，由接收方主动查询消息（业务处理结果）。</p>
 <p><a name="RmZfj"></a></p>
-<h4 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h4><p>消息接收方直接监听消息队列<br /><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8plc9jkfvj30u207bdga.jpg" alt="image-20221202172446775"><br />由消息通知系统监听消息队列，然后再通知消息接收方<br /><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8plcjd3y4j30tn0d5wfw.jpg" alt="image-20221202172502997"></p>
+<h4 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h4><p>消息接收方直接监听消息队列<br /></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172446775.png" alt="image-20221202172446775"></p>
+<p>由消息通知系统监听消息队列，然后再通知消息接收方<br /></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172502997.png" alt="image-20221202172502997"></p>
 <blockquote>
 <p>这两者有啥不同？</p>
 </blockquote>
 <p>第一种只适用于内部网络系统，也就是发起方和接收方都归你管理。但如果说消息发送方是第三方系统，人家就不能让你监听人家的消息队列吧，只能说加入一个中间通知系统，然后通过网络请求来通知你。</p>
 <p><a name="VCrLJ"></a></p>
 <h3 id="分布式事务综合案例分析"><a href="#分布式事务综合案例分析" class="headerlink" title="分布式事务综合案例分析"></a>分布式事务综合案例分析</h3><p>在上面我们已经学习了四种不同的分布式事务解决方案，我们需要进行区分，哪种业务场景需要哪种实现，各个方案有什么区别。<br><a name="qXtwu"></a></p>
-<h4 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h4><p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8plcr3x50j30t50dr0tp.jpg" alt="image-20221202172515706">    用户向用户中心发起注册请求，用户中心保存用户业务信息，然后通知统一账号服务新建该用户所对应登录账号。<br />针对注册业务，如果用户与账号信息不一致，则会导致严重问题，因此该业务对<strong>一致性要求较为严格</strong>，即当用户服务和账号服务任意一方出现问题都需要<strong>回滚事务</strong>。</p>
+<h4 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h4><p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172515706.png" alt="image-20221202172515706"></p>
+<p>用户向用户中心发起注册请求，用户中心保存用户业务信息，然后通知统一账号服务新建该用户所对应登录账号。<br />针对注册业务，如果用户与账号信息不一致，则会导致严重问题，因此该业务对<strong>一致性要求较为严格</strong>，即当用户服务和账号服务任意一方出现问题都需要<strong>回滚事务</strong>。</p>
 <blockquote>
 <p>业务分析</p>
 </blockquote>
@@ -6556,7 +6552,7 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 </ol>
 </li>
 <li>2PC方案<ol>
-<li>可行，支持事务回滚，有性能损耗，但简单<br><a name="TURmk"></a><h4 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h4><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8plcz7un6j30sm0intar.jpg" alt="image-20221202172528108"></li>
+<li>可行，支持事务回滚，有性能损耗，但简单<br><a name="TURmk"></a><h4 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h4><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172528108.png" alt="image-20221202172528108"></li>
 </ol>
 </li>
 </ol>
@@ -6565,46 +6561,41 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 <p>业务分析</p>
 </blockquote>
 <ol>
-<li><p>Seata方案</p>
-<ol>
+<li>Seata方案<ol>
 <li>不可行，银行存管系统不能让你去编写业务代码吧</li>
 </ol>
 </li>
-<li><p>TCC方案</p>
-<ol>
+<li>TCC方案<ol>
 <li>不可行，银行存管系统不会让你写try，conform，console吧</li>
 </ol>
 </li>
-<li><p>可靠消息最终一致性</p>
-<ol>
+<li>可靠消息最终一致性<ol>
 <li>不可行，银行系统不会和用户系统直接通过MQ交互</li>
 </ol>
 </li>
-<li><p>最大努力通知</p>
-<ol>
-<li>可行，我们发送请求给银行系统，银行系统最终给我返回结果，或者我们也可主动查询<br><a name="gnVFt"></a><h4 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h4><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8pldem4wej30ta0dlq3r.jpg" alt="image-20221202172553120"><br />管理员对某标的满标审批通过，交易中心修改标的状态为“还款中”，同时要通知还款服务生成还款计划。<blockquote>
-<p>业务分析</p>
-</blockquote>
-</li>
+<li>最大努力通知<ol>
+<li>可行，我们发送请求给银行系统，银行系统最终给我返回结果，或者我们也可主动查询<br><a name="gnVFt"></a><h4 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h4><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172553120.png" alt="image-20221202172553120"></li>
 </ol>
 </li>
-<li><p>使用Seata</p>
+</ol>
+<p>管理员对某标的满标审批通过，交易中心修改标的状态为“还款中”，同时要通知还款服务生成还款计划。</p>
+<blockquote>
+<p>业务分析</p>
+</blockquote>
 <ol>
+<li>使用Seata<ol>
 <li>不行，生成计划如果过久，Seata锁定资源</li>
 </ol>
 </li>
-<li><p>使用TCC</p>
-<ol>
+<li>使用TCC<ol>
 <li>本需求对业务一致性要求较低，因为生成还款计划的时长较长，所以不要求交易中心修改标的状态为“还款中”就立 即生成还款计划  ，所以本方案不适用。</li>
 </ol>
 </li>
-<li><p>使用努力通知</p>
-<ol>
+<li>使用努力通知<ol>
 <li>满标审批通过后由交易中心向还款服务发送通知要求生成还款计划，还款服务并且对外提供还款计划生成结果校对接口供其它服务查询，最大努力  通知方案也适用本场景  。</li>
 </ol>
 </li>
-<li><p>使用消息一致性</p>
-<ol>
+<li>使用消息一致性<ol>
 <li>满标审批通过后由交易中心修改标的状态为“还款中”并且向还款服务发送消息，还款服务接收到消息开始生成还款计划，基本于MQ的可靠消息一致性方案适用此场景  。</li>
 </ol>
 </li>
@@ -6613,8 +6604,8 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>分布式事务对比分析</strong>:<br /><strong>2PC</strong> 最大的诟病是一个阻塞协议。RM在执行分支事务后需要等待TM的决定，此时服务会阻塞并锁定资源。由于其 阻塞机制和最差时间复杂度高， 因此，这种设计不能适应随着事务涉及的服务数量增加而扩展的需要，很难用于并 发较高以及子事务生命周期较长 (long-running transactions) 的分布式服务中。</p>
 <p>如果拿<strong>TCC</strong>事务的处理流程与2PC两阶段提交做比较，2PC通常都是在跨库的DB层面，而TCC则在应用层面的处 理，需要通过业务逻辑来实现。这种分布式事务的实现方式的优势在于，可以让应用自己定义数据操作的粒度，使 得降低锁冲突、提高吞吐量成为可能。而不足之处则在于对应用的侵入性非常强，业务逻辑的每个分支都需要实现 try、conﬁrm、cancel三个操作。此外，其实现难度也比较大，需要按照网络状态、系统故障等不同的失败原因实 现不同的回滚策略。典型的使用场景：满，登录送优惠券等。</p>
 <p><strong>可靠消息最终一致性</strong>事务适合执行周期长且实时性要求不高的场景。引入消息机制后，同步的事务操作变为基于消 息执行的异步操作, 避免了分布式事务中的同步阻塞操作的影响，并实现了两个服务的解耦。典型的使用场景：注 册送积分，登录送优惠券等。</p>
-<p><strong>最大努力通知</strong>是分布式事务中要求最低的一种,适用于一些最终一致性时间敏感度低的业务；允许发起通知方处理业 务失败，在接收通知方收到通知后积极进行失败处理，无论发起通知方如何处理结果都会不影响到接收通知方的后 续处理；发起通知方需提供查询执行情况接口，用于接收通知方校对结果。典型的使用场景：银行通知、支付结果 通知等。<br /><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h8pldnytvfj30t406sjrv.jpg" alt="image-20221202172607739"></p>
-<p><br /><strong>总结</strong>：</p>
+<p><strong>最大努力通知</strong>是分布式事务中要求最低的一种,适用于一些最终一致性时间敏感度低的业务；允许发起通知方处理业 务失败，在接收通知方收到通知后积极进行失败处理，无论发起通知方如何处理结果都会不影响到接收通知方的后 续处理；发起通知方需提供查询执行情况接口，用于接收通知方校对结果。典型的使用场景：银行通知、支付结果 通知等。<br /></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172607739.png" alt="image-20221202172607739"><br /><strong>总结</strong>：</p>
 <p>​        在条件允许的情况下，我们<strong>尽可能选择本地事务</strong>单数据源，因为它减少了网络交互带来的性能损耗，且避免了数据 弱一致性带来的种种问题。<strong>若某系统频繁且不合理的使用分布式事务</strong>，应首先从整体设计角度观察服务的拆分是否 合理，是否高内聚低耦合？是否粒度太小？分布式事务一直是业界难题，因为网络的不确定性，而且我们习惯于拿 分布式事务与单机事务ACID做对比。无论是数据库层的XA、还是应用层TCC、可靠消息、最大努力通知等方案，都没有完美解决分布式事务问题，它们 不过是各自在性能、一致性、可用性等方面做取舍，寻求某些场景偏好下的权衡。</p>
 ]]></content>
       <categories>
@@ -10977,6 +10968,162 @@ Blog<span class="token punctuation">.</span>transaction <span class="token keywo
       <tags>
         <tag>RPC</tag>
         <tag>RMI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多线程事务</title>
+    <url>//post/%E5%B9%B6%E5%8F%91/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BA%8B%E5%8A%A1.html</url>
+    <content><![CDATA[<h1 id="多线程事务"><a href="#多线程事务" class="headerlink" title="多线程事务"></a>多线程事务</h1><p>​        在Spring开发时，遇到一个从Excel表导入数据到数据库的需求，当然最简单的方法就是先使用EasyExcel把数据读出到集合中，然后依次插入到数据库中。但如何保证效率，原子性呢？我们一步步优化方案。这里会涉及到分布式事务的知识，如果感兴趣可以看我之前的文章：<a href="http://www.chengling.cloud/post/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1.html">玲辰书斋</a>，这里不会引入不必要的组件，而是我们自己模拟类似的思想。</p>
+<p>方法1：依次顺序插入</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">test</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> users <span class="token operator">=</span> <span class="token function">getAllUsers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        users<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>user <span class="token operator">-></span> userService<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>方法2：使用批处理，一次操作中执行多条SQL</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">test</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> users <span class="token operator">=</span> <span class="token function">getAllUsers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    userService<span class="token punctuation">.</span><span class="token function">saveBatch</span><span class="token punctuation">(</span>users<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>方法3：使用多线程+批处理，每个线程插入多条数据</p>
+<blockquote>
+<p>需要注意的一点，Spring容器不允许线程注入，也就是没办法在多线程直接使用Bean操作，例如：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">testThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 下面两种方式是无效的，不会执行任何东西</span>
+  <span class="token class-name">Runnable</span> runnable <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-></span> <span class="token punctuation">&#123;</span>
+            userService<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+  <span class="token comment">// 方法1</span>
+  <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span>runnable<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// 方法2</span>
+  <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newFixedThreadPool</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span>runnable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我们需要下面的方式进行执行</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">testThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">Runnable</span> runnable <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-></span> <span class="token punctuation">&#123;</span>
+            userService<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        <span class="token class-name">ExecutorService</span> executorService <span class="token operator">=</span> <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newFixedThreadPool</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">CompletableFuture</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Void</span><span class="token punctuation">></span></span> future <span class="token operator">=</span> <span class="token class-name">CompletableFuture</span><span class="token punctuation">.</span><span class="token function">runAsync</span><span class="token punctuation">(</span>runnable<span class="token punctuation">,</span> executorService<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        future<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</blockquote>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">testThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">int</span> threadSize <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+    <span class="token class-name">ExecutorService</span> executorService <span class="token operator">=</span> <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newFixedThreadPool</span><span class="token punctuation">(</span>threadSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span><span class="token punctuation">></span></span> list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> threadSize<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 我们假设数据拆分为五分</span>
+        list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">getAllUsers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> users <span class="token operator">:</span> list<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">CompletableFuture</span><span class="token punctuation">.</span><span class="token function">runAsync</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token punctuation">&#123;</span>
+            userService<span class="token punctuation">.</span><span class="token function">saveBatch</span><span class="token punctuation">(</span>users<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>executorService<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"插入成功"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>方法4：这时候速度已经很快了，但是如果其中一个线程插入数据时发生错误进行回滚，其他线程是无法得知的，因为事务是针对线程的，所以这里我们需要用一些方式保证每个线程之间的状态是被共享的。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// UserService#saveUserSyn()</span>
+<span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">saveUserSyn</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> users<span class="token punctuation">,</span> <span class="token class-name">CountDownLatch</span> threadLatch<span class="token punctuation">,</span> <span class="token class-name">CountDownLatch</span> mainLatch<span class="token punctuation">,</span> <span class="token class-name">UserError</span> hasError<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">TransactionStatus</span> transactionStatus <span class="token operator">=</span> dataSourceTransactionManager<span class="token punctuation">.</span><span class="token function">getTransaction</span><span class="token punctuation">(</span>transactionDefinition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"子线程："</span> <span class="token operator">+</span> <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+            users<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token operator">::</span><span class="token function">save</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            hasError<span class="token punctuation">.</span><span class="token function">setHasError</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
+            threadLatch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 切换到主线程执行</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+            mainLatch<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//等待主线程执行</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            hasError<span class="token punctuation">.</span><span class="token function">setHasError</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token comment">// 判断是否有错误，如有错误 就回滚事务</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>hasError<span class="token punctuation">.</span><span class="token function">isHasError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            dataSourceTransactionManager<span class="token punctuation">.</span><span class="token function">rollback</span><span class="token punctuation">(</span>transactionStatus<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            dataSourceTransactionManager<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span>transactionStatus<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 测试方法</span>
+<span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">void</span> <span class="token function">userSaveSyn</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> userList <span class="token operator">=</span> <span class="token function">getAllUsers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 添加一个错误数据</span>
+        <span class="token class-name">User</span> user <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        user<span class="token punctuation">.</span><span class="token function">setUserAccount</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        user<span class="token punctuation">.</span><span class="token function">setUserPassword</span><span class="token punctuation">(</span><span class="token string">"123456"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        userList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 线程数量</span>
+        <span class="token keyword">final</span> <span class="token class-name">Integer</span> threadCount <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//每个线程处理的数据量</span>
+        <span class="token keyword">final</span> <span class="token class-name">Integer</span> dataPartionLength <span class="token operator">=</span> <span class="token punctuation">(</span>userList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> threadCount <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">/</span> threadCount<span class="token punctuation">;</span>
+
+        <span class="token comment">// 创建多线程处理任务</span>
+        <span class="token class-name">ExecutorService</span> studentThreadPool <span class="token operator">=</span> <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newFixedThreadPool</span><span class="token punctuation">(</span>threadCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">CountDownLatch</span> threadLatchs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span>threadCount<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 用于计算子线程提交数量</span>
+        <span class="token class-name">CountDownLatch</span> mainLatch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 用于判断主线程是否提交</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> threadCount<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token comment">// 每个线程处理的数据</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> threadDatas <span class="token operator">=</span> userList<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">skip</span><span class="token punctuation">(</span>i <span class="token operator">*</span> dataPartionLength<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span>dataPartionLength<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            studentThreadPool<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-></span> <span class="token punctuation">&#123;</span>
+                userService<span class="token punctuation">.</span><span class="token function">saveUserSyn</span><span class="token punctuation">(</span>threadDatas<span class="token punctuation">,</span> threadLatchs<span class="token punctuation">,</span> mainLatch<span class="token punctuation">,</span> hasError<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+            <span class="token comment">// 倒计时锁设置超时时间 30s</span>
+            <span class="token keyword">boolean</span> await <span class="token operator">=</span> threadLatchs<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span><span class="token constant">SECONDS</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>await<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">// 等待超时，事务回滚</span>
+                hasError<span class="token punctuation">.</span><span class="token function">setHasError</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            hasError<span class="token punctuation">.</span><span class="token function">setHasError</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        mainLatch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 切换到子线程执行</span>
+        studentThreadPool<span class="token punctuation">.</span><span class="token function">shutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//关闭线程池</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"主线程完成"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>​        这里我们使用<code>CountDownLatch</code> 和 Volatile来解决这个问题。</p>
+<p>CountDownLatch的语法与原理讲解：<a href="https://zhuanlan.zhihu.com/p/148231820">https://zhuanlan.zhihu.com/p/148231820</a></p>
+<p>Volatile保证线程间数据的可见性</p>
+<p>2PC（两阶段提交），这个属于分布式事务的一个理论，可以看我之前写的文章：<a href="http://www.chengling.cloud/post/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1.html">玲辰书斋</a>，我们这里模拟了这样的业务场景，大致流程为：</p>
+<ul>
+<li>每个线程开启事务，插入数据，但不提交，向主线程通知说，我这里已经好了</li>
+<li>主线程等待一段时间，看是否所有的子线程都没问题了。如果超时也算是异常</li>
+<li>如果没有异常，主线程向所有子线程通知，可以提交事务</li>
+<li>如果有异常，主线程向所有子线程通知，进行回滚操作</li>
+<li>而中间使用Volatile修饰的hasError对象进行传达，是否出现异常。需要注意如果只是传递普通的boolean对象，可能会发生不一致的情况，我测试时没法通过。</li>
+<li>CountDownLatch则保证子线程在主线程没有通知前，是不能提交事务的。</li>
+</ul>
+<p>​        这里细心的小伙伴就会发现，即便是主线程通知子线程可以提交了，子线程依然有可能出现提交失败的可能，那其他线程提交事务是无法得知这边的失败的消息的。这该怎么办呢？这里我是看的极海老师视频的：<a href="https://www.bilibili.com/video/BV1zM411C7Uf/?spm_id_from=333.999.0.0&vd_source=0a64aa946b64cdeca6c32ae21dc17f40">Bilibili</a>，就是我们其实无法在一个Java进程中保证多线程的原子性。</p>
+<blockquote>
+</blockquote>
+]]></content>
+      <categories>
+        <category>并发</category>
+      </categories>
+      <tags>
+        <tag>事务</tag>
+        <tag>多线程</tag>
       </tags>
   </entry>
 </search>
