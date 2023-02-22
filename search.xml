@@ -4324,7 +4324,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
 <li>当同时使用拦截器与过滤器时，请求模型：</li>
 </ol>
-<p><img src="/Users/qinsicheng/Library/Application%20Support/typora-user-images/image-20221124165341727.png" alt="image-20221124165341727"></p>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124165341727.png" alt="image-20221124165341727"></p>
 ]]></content>
       <categories>
         <category>Web</category>
