@@ -4506,6 +4506,10 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810183202191.png" alt="image-20220810183202191"></p>
 <p>​        所以当有这几个锁的时候解决了什么问题呢？那就是解决了在<code>repeatable Read</code>事务隔离级别下，幻读的影响，当有了间隙锁，这个区间虽然你看不到，但你相当于已经对这个范围都加锁了，其他数据无法进行insert，所以最后的结论是下图：</p>
 <p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810183658382.png" alt="image-20220810183658382"></p>
+<blockquote>
+<p>当前读与快照读的底层分析</p>
+</blockquote>
+<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/mysqlMvcc.drawio.png" alt="mysqlMvcc.drawio"></p>
 <hr>
 <h2 id="ACID的实现原理"><a href="#ACID的实现原理" class="headerlink" title="ACID的实现原理"></a>ACID的实现原理</h2><h3 id="atomicity原子性"><a href="#atomicity原子性" class="headerlink" title="atomicity原子性"></a>atomicity原子性</h3><blockquote>
 <p>定义我们都知道，一个事务操作内，要么都成功，要么都失败，那Mysql是如何保证的？</p>
@@ -11183,6 +11187,282 @@ cmake <span class="token parameter variable">-D</span> <span class="token assign
       </categories>
       <tags>
         <tag>opencv</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot自动装配原理</title>
+    <url>//post/Spring/SpringBoot%20%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E5%8E%9F%E7%90%86.html</url>
+    <content><![CDATA[<h1 id="SpringBoot-自动装配原理"><a href="#SpringBoot-自动装配原理" class="headerlink" title="SpringBoot 自动装配原理"></a>SpringBoot 自动装配原理</h1><h2 id="SpringBootApplication-启动注解"><a href="#SpringBootApplication-启动注解" class="headerlink" title="@SpringBootApplication 启动注解"></a>@SpringBootApplication 启动注解</h2><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@SpringBootApplication</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SpringBootBasicLearnApplication</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">SpringApplication</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">SpringBootBasicLearnApplication</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+
+	<span class="token comment">/**
+	 * to store the base package from the importing configuration
+	 * 也就是获取到我们启动类的包路径
+	 */</span>
+	<span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Registrar</span> <span class="token keyword">implements</span> <span class="token class-name">ImportBeanDefinitionRegistrar</span><span class="token punctuation">,</span> <span class="token class-name">DeterminableImports</span> <span class="token punctuation">&#123;</span>
+
+		<span class="token annotation punctuation">@Override</span>
+		<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">registerBeanDefinitions</span><span class="token punctuation">(</span><span class="token class-name">AnnotationMetadata</span> metadata<span class="token punctuation">,</span> <span class="token class-name">BeanDefinitionRegistry</span> registry<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// 这里注入容器，将我们的包路径信息封装成一个Bean</span>
+			<span class="token function">register</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">PackageImports</span><span class="token punctuation">(</span>metadata<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getPackageNames</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+
+		<span class="token annotation punctuation">@Override</span>
+		<span class="token keyword">public</span> <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> <span class="token function">determineImports</span><span class="token punctuation">(</span><span class="token class-name">AnnotationMetadata</span> metadata<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token keyword">return</span> <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">singleton</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PackageImports</span><span class="token punctuation">(</span>metadata<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+
+	<span class="token punctuation">&#125;</span>
+
+
+
+<span class="token comment">// BeanClassLoaderAware,ResourceLoaderAware 这些表示可以获取Aware前的信息</span>
+<span class="token comment">// Ordered 表示Bean注入排序</span>
+<span class="token comment">// 关键是这个： DeferredImportSelector  延迟导入选择器  extends </span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AutoConfigurationImportSelector</span> <span class="token keyword">implements</span> <span class="token class-name">DeferredImportSelector</span><span class="token punctuation">,</span> <span class="token class-name">BeanClassLoaderAware</span><span class="token punctuation">,</span>
+		<span class="token class-name">ResourceLoaderAware</span><span class="token punctuation">,</span> <span class="token class-name">BeanFactoryAware</span><span class="token punctuation">,</span> <span class="token class-name">EnvironmentAware</span><span class="token punctuation">,</span> <span class="token class-name">Ordered</span>
+      
+      
+      
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">DeferredImportSelector</span> <span class="token keyword">extends</span> <span class="token class-name">ImportSelector</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 这里是接口的定义方法，具体实现看AutoConfigurationImportSelector</span>
+		<span class="token keyword">void</span> <span class="token function">process</span><span class="token punctuation">(</span><span class="token class-name">AnnotationMetadata</span> metadata<span class="token punctuation">,</span> <span class="token class-name">DeferredImportSelector</span> selector<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span class="token annotation punctuation">@Override</span>
+		<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">process</span><span class="token punctuation">(</span><span class="token class-name">AnnotationMetadata</span> annotationMetadata<span class="token punctuation">,</span> <span class="token class-name">DeferredImportSelector</span> deferredImportSelector<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token class-name">AutoConfigurationEntry</span> autoConfigurationEntry <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">AutoConfigurationImportSelector</span><span class="token punctuation">)</span> deferredImportSelector<span class="token punctuation">)</span>
+           <span class="token comment">// 这里是核心，获取自动配置的实例，通过元数据 ！！！ </span>
+					<span class="token punctuation">.</span><span class="token function">getAutoConfigurationEntry</span><span class="token punctuation">(</span>annotationMetadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token keyword">this</span><span class="token punctuation">.</span>autoConfigurationEntries<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>autoConfigurationEntry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> importClassName <span class="token operator">:</span> autoConfigurationEntry<span class="token punctuation">.</span><span class="token function">getConfigurations</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+				<span class="token keyword">this</span><span class="token punctuation">.</span>entries<span class="token punctuation">.</span><span class="token function">putIfAbsent</span><span class="token punctuation">(</span>importClassName<span class="token punctuation">,</span> annotationMetadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token punctuation">&#125;</span>
+		<span class="token punctuation">&#125;</span>
+
+
+<span class="token keyword">protected</span> <span class="token class-name">AutoConfigurationEntry</span> <span class="token function">getAutoConfigurationEntry</span><span class="token punctuation">(</span><span class="token class-name">AnnotationMetadata</span> annotationMetadata<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isEnabled</span><span class="token punctuation">(</span>annotationMetadata<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token keyword">return</span> <span class="token constant">EMPTY_ENTRY</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+  	<span class="token comment">// 获取EnableAutoConfiguration注解中定义的exclude排除的Bean类</span>
+		<span class="token class-name">AnnotationAttributes</span> attributes <span class="token operator">=</span> <span class="token function">getAttributes</span><span class="token punctuation">(</span>annotationMetadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  	<span class="token comment">// 这里获取候选配置，是关键！！！</span>
+		<span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> configurations <span class="token operator">=</span> <span class="token function">getCandidateConfigurations</span><span class="token punctuation">(</span>annotationMetadata<span class="token punctuation">,</span> attributes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		configurations <span class="token operator">=</span> <span class="token function">removeDuplicates</span><span class="token punctuation">(</span>configurations<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> exclusions <span class="token operator">=</span> <span class="token function">getExclusions</span><span class="token punctuation">(</span>annotationMetadata<span class="token punctuation">,</span> attributes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">checkExcludedClasses</span><span class="token punctuation">(</span>configurations<span class="token punctuation">,</span> exclusions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 删除注解声明的不用的类信息</span>
+		configurations<span class="token punctuation">.</span><span class="token function">removeAll</span><span class="token punctuation">(</span>exclusions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  	<span class="token comment">// 关键！！！根据过滤规则，过滤不用的类信息</span>
+		configurations <span class="token operator">=</span> <span class="token function">getConfigurationClassFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>configurations<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token comment">// 触发自动配置导入事件</span>
+  	<span class="token function">fireAutoConfigurationImportEvents</span><span class="token punctuation">(</span>configurations<span class="token punctuation">,</span> exclusions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AutoConfigurationEntry</span><span class="token punctuation">(</span>configurations<span class="token punctuation">,</span> exclusions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+
+
+
+<span class="token keyword">protected</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> <span class="token function">getCandidateConfigurations</span><span class="token punctuation">(</span><span class="token class-name">AnnotationMetadata</span> metadata<span class="token punctuation">,</span> <span class="token class-name">AnnotationAttributes</span> attributes<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> configurations <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span>
+				<span class="token class-name">SpringFactoriesLoader</span><span class="token punctuation">.</span><span class="token function">loadFactoryNames</span><span class="token punctuation">(</span><span class="token function">getSpringFactoriesLoaderFactoryClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">getBeanClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  	<span class="token comment">// 这里是关键，会找原先定义的所有Bean配置！！！</span>
+		<span class="token class-name">ImportCandidates</span><span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token class-name">AutoConfiguration</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token function">getBeanClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>configurations<span class="token operator">::</span><span class="token function">add</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> configurations<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+
+<span class="token comment">// 获取注解类的全类名集合</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ImportCandidates</span> <span class="token function">load</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">></span></span> annotation<span class="token punctuation">,</span> <span class="token class-name">ClassLoader</span> classLoader<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// LOCATION: "META-INF/spring/%s.imports"; 通过这个文件来找到所有自动配置类的信息</span>
+  <span class="token comment">// annotation.getName() = org.springframework.boot.autoconfigure.AutoConfiguration</span>
+  <span class="token comment">// 最终加载：META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</span>
+  <span class="token comment">// 这里直接下载源码，找Maven:org.springframework.boot:spring-boot-autoconfigure:2.7.5，一共有144个</span>
+  <span class="token comment">// 里面的就是默认启动的一个项,比如：org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration，可以追一下源码</span>
+		<span class="token class-name">String</span> location <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token constant">LOCATION</span><span class="token punctuation">,</span> annotation<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  	<span class="token comment">// 这里就读取到了所有的全类名集合</span>
+		<span class="token class-name">Enumeration</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">></span></span> urls <span class="token operator">=</span> <span class="token function">findUrlsInClasspath</span><span class="token punctuation">(</span>classLoaderToUse<span class="token punctuation">,</span> location<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> autoConfigurations <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">while</span> <span class="token punctuation">(</span>urls<span class="token punctuation">.</span><span class="token function">hasMoreElements</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token class-name">URL</span> url <span class="token operator">=</span> urls<span class="token punctuation">.</span><span class="token function">nextElement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			autoConfigurations<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span><span class="token function">readAutoConfigurations</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+    <span class="token comment">// 封装被返回</span>
+		<span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ImportCandidates</span><span class="token punctuation">(</span>autoConfigurations<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+
+
+
+<span class="token comment">// 这里就是过滤一部分不符合的类名</span>
+<span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> <span class="token function">filter</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> configurations<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token keyword">long</span> startTime <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">nanoTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> candidates <span class="token operator">=</span> <span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">toStringArray</span><span class="token punctuation">(</span>configurations<span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token keyword">boolean</span> skipped <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+      <span class="token comment">// 通过过滤器 原来加载配置文件有144个，如果是基础SpringBoot项目，就剩13个了</span>
+			<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">AutoConfigurationImportFilter</span> filter <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>filters<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+				<span class="token keyword">boolean</span><span class="token punctuation">[</span><span class="token punctuation">]</span> match <span class="token operator">=</span> filter<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span>candidates<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>autoConfigurationMetadata<span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> match<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+					<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>match<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+						candidates<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+						skipped <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+					<span class="token punctuation">&#125;</span>
+				<span class="token punctuation">&#125;</span>
+			<span class="token punctuation">&#125;</span>
+			<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>skipped<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+				<span class="token keyword">return</span> configurations<span class="token punctuation">;</span>
+			<span class="token punctuation">&#125;</span>
+  
+  
+<span class="token comment">// 这里我们以META-INF中Redis自动装配类来演示</span>
+<span class="token number">1.</span> 查找 <span class="token class-name"><span class="token namespace">org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token punctuation">.</span>autoconfigure<span class="token punctuation">.</span>data<span class="token punctuation">.</span>redis<span class="token punctuation">.</span></span>RedisAutoConfiguration</span>
+<span class="token number">2.</span> 查看源码
+<span class="token annotation punctuation">@AutoConfiguration</span>
+<span class="token comment">// 这里就是判断你容器内有没有这个类数据</span>
+<span class="token annotation punctuation">@ConditionalOnClass</span><span class="token punctuation">(</span><span class="token class-name">RedisOperations</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token comment">// 加载配置类，也就是我们在resource文件下写的内容，加载进来</span>
+<span class="token annotation punctuation">@EnableConfigurationProperties</span><span class="token punctuation">(</span><span class="token class-name">RedisProperties</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token comment">// 导如 Lettuce  Jedis 这都是我们熟悉的工具</span>
+<span class="token annotation punctuation">@Import</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> <span class="token class-name">LettuceConnectionConfiguration</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">JedisConnectionConfiguration</span><span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RedisAutoConfiguration</span> <span class="token punctuation">&#123;</span>
+
+	<span class="token annotation punctuation">@Bean</span>
+  <span class="token comment">// redisTemplate 工具</span>
+	<span class="token annotation punctuation">@ConditionalOnMissingBean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"redisTemplate"</span><span class="token punctuation">)</span>
+	<span class="token annotation punctuation">@ConditionalOnSingleCandidate</span><span class="token punctuation">(</span><span class="token class-name">RedisConnectionFactory</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+	<span class="token keyword">public</span> <span class="token class-name">RedisTemplate</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">></span></span> <span class="token function">redisTemplate</span><span class="token punctuation">(</span><span class="token class-name">RedisConnectionFactory</span> redisConnectionFactory<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token class-name">RedisTemplate</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">></span></span> template <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RedisTemplate</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		template<span class="token punctuation">.</span><span class="token function">setConnectionFactory</span><span class="token punctuation">(</span>redisConnectionFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> template<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token annotation punctuation">@Bean</span>
+  <span class="token comment">// StringRedisTemplate 工具</span>
+	<span class="token annotation punctuation">@ConditionalOnMissingBean</span>
+	<span class="token annotation punctuation">@ConditionalOnSingleCandidate</span><span class="token punctuation">(</span><span class="token class-name">RedisConnectionFactory</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+	<span class="token keyword">public</span> <span class="token class-name">StringRedisTemplate</span> <span class="token function">stringRedisTemplate</span><span class="token punctuation">(</span><span class="token class-name">RedisConnectionFactory</span> redisConnectionFactory<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">StringRedisTemplate</span><span class="token punctuation">(</span>redisConnectionFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 核心点就是我们需要导入使用组件的核心位，比如我们使用Redis就要导入依赖</span>
+org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>data<span class="token punctuation">.</span>redis<span class="token punctuation">.</span>core
+ 
+<span class="token generics"><span class="token punctuation">&lt;</span>dependency<span class="token punctuation">></span></span>
+  <span class="token generics"><span class="token punctuation">&lt;</span>groupId<span class="token punctuation">></span></span>org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>boot<span class="token operator">&lt;</span><span class="token operator">/</span>groupId<span class="token operator">></span>
+  <span class="token generics"><span class="token punctuation">&lt;</span>artifactId<span class="token punctuation">></span></span>spring<span class="token operator">-</span>boot<span class="token operator">-</span>starter<span class="token operator">-</span>data<span class="token operator">-</span>redis<span class="token operator">&lt;</span><span class="token operator">/</span>artifactId<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>dependency<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+]]></content>
+      <categories>
+        <category>Spring</category>
+      </categories>
+      <tags>
+        <tag>自动装配</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ABAC权限设计</title>
+    <url>//post/%E6%95%B0%E6%8D%AE%E5%BA%93/ABAC%E6%9D%83%E9%99%90%E8%AE%BE%E8%AE%A1.html</url>
+    <content><![CDATA[<p>这里我使用ABAC理论来设计：</p>
+<h2 id="数据库表设计"><a href="#数据库表设计" class="headerlink" title="数据库表设计"></a>数据库表设计</h2><ul>
+<li><p>用户属性：</p>
+<ul>
+<li>```sql<br>CREATE TABLE User<br>(<br>userId int,<br>userName varchar(100),<br>roleId int<br>);<pre class="line-numbers language-none"><code class="language-none">  
+- 环境属性
+  - &#96;&#96;&#96;sql
+    CREATE TABLE Role
+    (
+    roleId int,
+    roleName varchar(100)  # 比如：普通用户，付费用户，积分等级 
+    );<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+</li>
+<li><p>操作属性：</p>
+<ul>
+<li>```sql<br>CREATE TABLE <code>action</code><br>(<br>actionId int,<br>actionName varchar(100)  # 比如：read读，write评论<br>);<pre class="line-numbers language-none"><code class="language-none">  
+  - 试读
+  
+  - 付费读
+  
+  - 免费读
+  
+  - 评论
+  
+- Resources属性：
+  - &#96;&#96;&#96;sql
+    CREATE TABLE module  # 我们最终操作的资源，例如查看的文章，数据
+    (
+    moduleId int,
+    moduleName varchar(100),  # 比如：Java基础模块儿，Java高级模块儿 
+    moduleTitle varchar(50),  # 模块儿的标题   这里就可以通过Policy来自定义控制展示
+    moduleDes varchar(255),   # 模块儿的描述
+    moduleContent text        # 模块儿具体的内容
+    );<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+</li>
+<li><p>Policy策略：</p>
+<ul>
+<li>```sql<br>CREATE TABLE policy # 这里定义我们的权限控制方案<br>(<br>policyId int,<br>policyDetail varchar(255),  # 在下面我们将给出示例<br>policyStatus tinyint        # 策略状态，例如禁用，启用<br>);<pre class="line-numbers language-none"><code class="language-none">  
+- Policy 与 Resources 关联表，
+
+  - 其中一个资源可能有多个策略，比如针对资源普通用户一种策略，付费用户一种策略，这取决于我们Policy如何解析，是否加入or的操作
+  - 一个策略可能也针对多个资源生效
+
+
+定义不同的Policy，
+
+- Java模块儿下文章免费读取或评论
+
+&#96;&#96;&#96;json
+&#123;
+  &quot;effect&quot;:&quot;Allow&quot;, 
+  &quot;actions&quot;:[
+    &quot;read&quot;,&quot;write&quot;
+  ],
+  &quot;resources&quot;:[
+    &quot;Module:java:article:*&quot;,
+  ]
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
+</li>
+<li><p>这里表示 非vip用户，可以读取Java模块儿下文章的标题和描述，其中condition相当于条件，也可以定义多种条件</p>
+</li>
+</ul>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"effect"</span><span class="token operator">:</span><span class="token string">"Allow"</span><span class="token punctuation">,</span> 
+  <span class="token property">"actions"</span><span class="token operator">:</span><span class="token punctuation">[</span>
+    <span class="token string">"read"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"resources"</span><span class="token operator">:</span><span class="token punctuation">[</span>
+    <span class="token string">"Module:java:article:title"</span><span class="token punctuation">,</span>
+    <span class="token string">"Module:java:article:description"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"condition"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"isVip:0"</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>通过Policy可以控制，哪些资源可以哪些用户访问，其中普通用户能访问什么，访问多少，具体展示可以在Resources中控制。而Resoures与Policy做关联。</p>
+<h2 id="大体流程"><a href="#大体流程" class="headerlink" title="大体流程"></a>大体流程</h2><p>​         用户登录时，后台将用户信息保存到Session中，当用户想要访问某个资源时并进行操作时，后台读取该资源对应的策略，然后通过Session中保存的用户数据与对应的策略进行计算对比，看是否可以授权，如果授权通过，则只能读取到策略规定的访问内容，封装并返回，前端根据信息来展示对应的内容。</p>
+<h2 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h2><ol>
+<li>Policy内容格式进行规范统一</li>
+<li>需要写一个解析器，来解析Policy的内容</li>
+<li>资源与策略的对应关系与策略本身可以写入Redis中，快速读取和校验</li>
+</ol>
+<p>​       这里的想法是我查阅ABAC理论的思路，之前并未使用过，不过自己推断的流程应该是行的通的，策略与角色之间分离，如果未来有更多的权限管理，只需要修改或加入新的策略，也更灵活。</p>
+]]></content>
+      <categories>
+        <category>权限设计</category>
+      </categories>
+      <tags>
+        <tag>权限设计</tag>
       </tags>
   </entry>
 </search>
