@@ -37,7 +37,7 @@
 </blockquote>
 <p>​    最初我在想有没有插件可以直接通过<code>hexo d</code>直接部署到服务器指定位置中，确实有，但是我一直显示连接异常，后选择其他方式。也就是通过<code>github</code>的<code>WebHooks</code>功能。</p>
 <p>​    大致思路为： <code>hexo d</code> 推送代码到<code>github</code>仓库，当<code>WebHooks</code>监测到有pull事件，将发送一条命令通知服务器，然后服务器触发脚本，拉取最新<code>git</code>代码。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221128112850056.png" alt="image-20221128112850056"></p>
+<p><img src="../../typora-user-images/image-20221128112850056.png" alt="image-20221128112850056"></p>
 <ol>
 <li>下载go  : <code>yum install -y golang </code></li>
 <li>设置代理 : <code>go env -w GOPROXY=[https://goproxy.cn](https://goproxy.cn/),direct</code>  否则用go访问会老超时</li>
@@ -84,7 +84,7 @@
 <ol start="9">
 <li>github上配置钩子</li>
 </ol>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221128114311505.png" alt="image-20221128114311505"></p>
+<p><img src="../../typora-user-images/image-20221128114311505.png" alt="image-20221128114311505"></p>
 <p>填入Payload URL：<code>http://ip:9000/hooks/上面你自己定义的ID，在hooks.json</code></p>
 <p>添加好后，就可以直接从本地同步到Github上，当Github上发生修改，服务器就会被触发执行脚本，拉取最新的代码。</p>
 ]]></content>
@@ -2378,12 +2378,12 @@ public void bufferedReader() throws IOException &#123;
 <blockquote>
 <p>Java反射机制原理图</p>
 </blockquote>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221203151322560.png" alt="image-20221203151322560"></p>
+<p><img src="../../typora-user-images/image-20221203151322560.png" alt="image-20221203151322560"></p>
 <blockquote>
 <p>类加载过程</p>
 </blockquote>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221203155444189.png" alt="image-20221203155444189"></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221203155504141.png" alt="image-20221203155504141"></p>
+<p><img src="../../typora-user-images/image-20221203155444189.png" alt="image-20221203155444189"></p>
+<p><img src="../../typora-user-images/image-20221203155504141.png" alt="image-20221203155504141"></p>
 <p>​        简单来说就是我们写成的源码，在被JVM加载后，会对每个类生成唯一的Class对象，每当我们实例化一个对象时，这个对象的对象头都有一个指针指向对象所属的唯一的Class对象。</p>
 <p>​        当我们获取到Class对象时，我们可以知道Class成员变量，方法，构造器，并进行任意的使用。</p>
 <blockquote>
@@ -2464,7 +2464,7 @@ public void bufferedReader() throws IOException &#123;
 
 <p>​    Method和Field和Constructor对象都有<code>setAccessible()</code>方法,setAccessible作用是启动和禁止访问安全检查的开关。当setAccessible(true)表示反射的对象在使用时取消访问检查，提高反射的效率，为false则表示执行访问检查。当我们修改上述代码：<code>hi.setAccessible(true);</code>，最终执行速度可以快一倍左右。</p>
 <p>​    并且当我们访问<code>private</code>修饰的变量，方法，构造器时，如果不设置<code>setAccessible()</code>会爆出：<code>java.lang.IllegalAccessException</code>; 如果设置则可正常访问。</p>
-<h4 id="Class类"><a href="#Class类" class="headerlink" title="Class类"></a>Class类</h4><p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221203154354105.png" alt="image-20221203154354105"></p>
+<h4 id="Class类"><a href="#Class类" class="headerlink" title="Class类"></a>Class类</h4><p><img src="../../typora-user-images/image-20221203154354105.png" alt="image-20221203154354105"></p>
 <ol>
 <li>Class也是类，继承Object。</li>
 <li>Class类不是new出来的，而是系统创建的</li>
@@ -2477,7 +2477,7 @@ public void bufferedReader() throws IOException &#123;
 <blockquote>
 <p>Class类的常用方法：</p>
 </blockquote>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221203155854410.png" alt="image-20221203155854410"></p>
+<p><img src="../../typora-user-images/image-20221203155854410.png" alt="image-20221203155854410"></p>
 <blockquote>
 <p>如何获取Class类</p>
 </blockquote>
@@ -2627,19 +2627,19 @@ public void bufferedReader() throws IOException &#123;
     <url>//post/Redis/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BD%93%E4%BD%A0%E5%AD%A6%E4%B9%A0Redis%EF%BC%8C%E5%8F%91%E7%8E%B0%E8%87%AA%E5%B7%B1%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9C%A8%E6%8C%96%E7%9F%BF%E4%BA%86.html</url>
     <content><![CDATA[<h1 id="为什么当你学习Redis，发现自己的服务器在挖矿了"><a href="#为什么当你学习Redis，发现自己的服务器在挖矿了" class="headerlink" title="为什么当你学习Redis，发现自己的服务器在挖矿了"></a>为什么当你学习Redis，发现自己的服务器在挖矿了</h1><p>​    在我学习Redis时，因为嫌麻烦就没有设置密码，结果导致一段时间后系统提醒我，我的服务器上有挖矿行为，如果不清理就停止运行，我一脸懵逼，并不断上网查找哪里出现问题了，但最终还是没有解决，无奈下我初始化了服务器。希望本篇文章能对你有锁帮助，顺利让你体会到入侵自己服务器的感觉。</p>
 <h2 id="你是如何连接服务器的？"><a href="#你是如何连接服务器的？" class="headerlink" title="你是如何连接服务器的？"></a>你是如何连接服务器的？</h2><p>​    在最初我们购买好自己的服务器后，要么在服务器厂商页面进行安全连接，要么通过<code>SSH 用户名@密码</code>方式进行连接，例如下图：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221017171909179.png" alt="image-20221017171909179"></p>
+<p><img src="../../typora-user-images/image-20221017171909179.png" alt="image-20221017171909179"></p>
 <p>​    但到后面我们发现每次都需要输入密码，也太麻烦了，可以利用秘钥登陆服务器。那如何获取到你的秘钥呢？</p>
 <ol>
 <li><p>客户端通过命令行模式输入：<code>ssh-keygen</code>生成自己的公钥和私钥（这里可以指定参数，具体自己查）。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221017172559852.png" alt="image-20221017172559852"></p>
+<p><img src="../../typora-user-images/image-20221017172559852.png" alt="image-20221017172559852"></p>
 </li>
 <li><p>手动将客户端的公钥放入远程<a href="https://cloud.tencent.com/product/cvm?from=10680">服务器</a>的指定位置,/root/.ssh/authorized_keys。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221017173030351.png" alt="image-20221017173030351"></p>
+<p><img src="../../typora-user-images/image-20221017173030351.png" alt="image-20221017173030351"></p>
 </li>
 <li><p>现在我们再通过ssh进行登陆，可以看到直接登陆到服务器了</p>
 </li>
 </ol>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221017173225460.png" alt="image-20221017173225460"></p>
+<p><img src="../../typora-user-images/image-20221017173225460.png" alt="image-20221017173225460"></p>
 <p>那说了这么多，我们发现只要服务器上有你的秘钥，你就可以直接进行登陆，不需要设置密码。那这和Redis有啥关系呢？</p>
 <h2 id="你是如何连接Redis的？"><a href="#你是如何连接Redis的？" class="headerlink" title="你是如何连接Redis的？"></a>你是如何连接Redis的？</h2><p>通常有三种：</p>
 <ol>
@@ -2653,9 +2653,9 @@ public void bufferedReader() throws IOException &#123;
 <li><code>bind 0.0.0.0</code></li>
 </ol>
 <p>​    如果你忘了设置密码了，当Redis重新加载配置文件后，理论上你能访问到的同时，别人只要知道你的IP地址，也就能操作你的Redis了，下图显示本地可以直接访问，并进行操作了。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221017175943082.png" alt="image-20221017175943082"></p>
+<p><img src="../../typora-user-images/image-20221017175943082.png" alt="image-20221017175943082"></p>
 <p>​    接下来我们对Redis存储一些值，输入：<code>cat 你的公钥本地地址 | redis-cli -h 服务器IP地址 -x set crackit</code></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221017180431887.png" alt="image-20221017180431887"></p>
+<p><img src="../../typora-user-images/image-20221017180431887.png" alt="image-20221017180431887"></p>
 <p>​    通过上面的指令，我们已经成功的将公钥值放入Redis中了，并可以查询到。</p>
 <blockquote>
 <p>192.168.1.11:6379&gt; config set dir /root/.ssh/    配置地址设置</p>
@@ -2680,7 +2680,7 @@ public void bufferedReader() throws IOException &#123;
 <li><p>这时候看chatter应该是可以用了</p>
 <ol>
 <li><p>使用：<code>lsattr authorized_keys</code>，去检查该文件</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221017185101472.png" alt="image-20221017185101472"></p>
+<p><img src="../../typora-user-images/image-20221017185101472.png" alt="image-20221017185101472"></p>
 </li>
 <li><p>如果是这种情况说明文件已经被锁定了，我们使用：<code>chattr -ia authorized_keys </code>也就是去掉这两个属性。</p>
 </li>
@@ -3768,7 +3768,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 </ol>
 <p>因此Redis自己优化了字符串结构，为简单动态字符串（Simple Dynamic String），简称SDS。</p>
 <p>我们在最初学习Redis时，会操作：<code>set key value</code>, 底层实际上创建了两个SDS，一个包含 key，一个包含 value。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126101355075.png" alt="image-20221126101355075"></p>
+<p><img src="../../typora-user-images/image-20221126101355075.png" alt="image-20221126101355075"></p>
 <p>​    我们看到它提到了动态字符串，那相应应该有动态扩容的能力，假如我们要给SDS追加一段字符串“,Amy”，这里首先会申请新内存空间：</p>
 <ul>
 <li>如果新字符串小于1M，则新空间为扩展后字符串长度的两倍+1；</li>
@@ -3784,9 +3784,9 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <li>二进制安全</li>
 </ol>
 <h3 id="IntSet"><a href="#IntSet" class="headerlink" title="IntSet"></a>IntSet</h3><p>IntSet 是Redis的Set结构的一种实现方式，基于<strong>整数数组</strong>来实现，并且<strong>长度可变</strong>，<strong>有序</strong>。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126101835593.png" alt="image-20221126101835593"></p>
+<p><img src="../../typora-user-images/image-20221126101835593.png" alt="image-20221126101835593"></p>
 <p>为了方便查找，本身按照整数进行<strong>升序存储</strong>保存到content[]内</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126102206179.png" alt="image-20221126102206179"></p>
+<p><img src="../../typora-user-images/image-20221126102206179.png" alt="image-20221126102206179"></p>
 <p>假设最初存储元素：<code>&#123;5,10,20&#125;</code>采用的编码是INTSET_ENC_INT16，则每个整数占2字节。</p>
 <p>我们向该其中添加一个数字：50000，这个数字超出了int16_t的范围，intset会自动升级编码方式到合适的大小。以当前案例来说流程如下：</p>
 <ol>
@@ -3891,7 +3891,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
     <span class="token class-name">int16_t</span> pauserehash<span class="token punctuation">;</span> <span class="token comment">// rehash是否暂停，1则暂停，0则继续</span>
 <span class="token punctuation">&#125;</span> dict<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126103253031.png" alt="image-20221126103253031"></p>
+<p><img src="../../typora-user-images/image-20221126103253031.png" alt="image-20221126103253031"></p>
 <p>​    我们可以看到Dict中有两个dictht，第一个负责存储值，第二个负责reHash。也就是当节点个数过多时，需要进行扩容，在Java的Map中，当数组中一个链表的长度大于8，就会进行数组扩容，否则查找遍历太慢。这里的原理是类似的。</p>
 <p>​    dictht内部是dictEntry数组，dictEntry含有指向下一个节点的指针。</p>
 <h4 id="Dict扩容"><a href="#Dict扩容" class="headerlink" title="Dict扩容"></a>Dict扩容</h4><p>​    这里还是有Java中Map举例，HashMap默认还有加载因子为0.75，也就是说不等我们把空间使用完，底层就会判断如果<code>当前节点数/容量数</code>大于0.75，会频繁导致Hash碰撞，并且链表长度太长，所以需要扩容。</p>
@@ -3998,19 +3998,19 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <li>rehash时ht[0]只减不增，新增操作只在ht[1]执行，其它操作在两个哈希表</li>
 </ul>
 <h3 id="ZipList"><a href="#ZipList" class="headerlink" title="ZipList"></a>ZipList</h3><p>​    ZipList 是一种<strong>特殊的“双端链表”</strong> ，由一系列特殊编码的<strong>连续内存</strong>块组成。可以在<strong>任意一端进行压入/弹出</strong>操作, 并且该操作的时间复杂度为 **O(1)**。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126105002059.png" alt="image-20221126105002059"></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126105045389.png" alt="image-20221126105045389"></p>
+<p><img src="../../typora-user-images/image-20221126105002059.png" alt="image-20221126105002059"></p>
+<p><img src="../../typora-user-images/image-20221126105045389.png" alt="image-20221126105045389"></p>
 <p>​    ZipList说是特殊的来链表，但实际上并不是通过指针连接的，因为占用内存，所以Entry的结构是：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126105310737.png" alt="image-20221126105310737"></p>
+<p><img src="../../typora-user-images/image-20221126105310737.png" alt="image-20221126105310737"></p>
 <p>​    因为是一块儿内存，每个节点记录了前一个节点的长度，就可以计算出各个节点的位置。</p>
 <blockquote>
 <p>这里有一个<strong>连锁更新</strong>（Cascade Update）的问题，但作者并未修改，因为发生的概率极低、</p>
 </blockquote>
 <p>​    假设我们有N个连续的、长度为250~253字节之间的entry，因此entry的previous_entry_length属性用1个字节即可表示，如图所示：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126115032201.png" alt="image-20221126115032201"></p>
+<p><img src="../../typora-user-images/image-20221126115032201.png" alt="image-20221126115032201"></p>
 <p>​    现在在头位置插入一个新的节点，长度为254，则原先的头结点的<code>previous_entry_length</code>就会用5个字节来存储，那么该节点本身的长度就超过了254，则后续所有节点都必须更新。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126115247739.png" alt="image-20221126115247739"></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126115312608.png" alt="image-20221126115312608"></p>
+<p><img src="../../typora-user-images/image-20221126115247739.png" alt="image-20221126115247739"></p>
+<p><img src="../../typora-user-images/image-20221126115312608.png" alt="image-20221126115312608"></p>
 <blockquote>
 <p>总结：</p>
 </blockquote>
@@ -4028,7 +4028,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p>如果ZipList超出上线怎么办？</p>
 </blockquote>
 <p>​    利用分片思想，形成多个ZipList，但分散后又不方便管理，则推出了：QuickList。它是一个双端链表，只不过链表中的每个节点都是一个ZipList。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126120010880.png" alt="image-20221126120010880"></p>
+<p><img src="../../typora-user-images/image-20221126120010880.png" alt="image-20221126120010880"></p>
 <p>​    为了避免QuickList中的每个ZipList中entry过多，Redis提供了一个配置项：list-max-ziplist-size来限制。</p>
 <ul>
 <li>如果值为正，则代表ZipList的允许的entry个数的最大值</li>
@@ -4053,8 +4053,8 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <blockquote>
 <p>源码：</p>
 </blockquote>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126120353527.png" alt="image-20221126120353527"></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126120419505.png" alt="image-20221126120419505"></p>
+<p><img src="../../typora-user-images/image-20221126120353527.png" alt="image-20221126120353527"></p>
+<p><img src="../../typora-user-images/image-20221126120419505.png" alt="image-20221126120419505"></p>
 <blockquote>
 <p>特点：</p>
 </blockquote>
@@ -4068,9 +4068,9 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p>​    原有链表的一个问题，就是查找元素时，需要一个个遍历，每个节点有一个指针指向下一个元素，那能不能多加几个指针？</p>
 </blockquote>
 <p>跳表的结构图：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126120643605.png" alt="image-20221126120643605"></p>
+<p><img src="../../typora-user-images/image-20221126120643605.png" alt="image-20221126120643605"></p>
 <p>可以看到跳表的一个特性就是有序，如果无序，则多出来的指针没有意义。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126120833282.png" alt="image-20221126120833282"></p>
+<p><img src="../../typora-user-images/image-20221126120833282.png" alt="image-20221126120833282"></p>
 <blockquote>
 <p>总结：</p>
 </blockquote>
@@ -4082,9 +4082,9 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <li>增删改查效率与红黑树基本一致，实现却更简单</li>
 </ol>
 <h3 id="RedisObject"><a href="#RedisObject" class="headerlink" title="RedisObject"></a>RedisObject</h3><p>Redis中的任意数据类型<code>(String,List,Set,Hash,ZSet)</code>都会被封装为RedisObject对象。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126121217400.png" alt="image-20221126121217400"></p>
+<p><img src="../../typora-user-images/image-20221126121217400.png" alt="image-20221126121217400"></p>
 <h4 id="底层编码方式"><a href="#底层编码方式" class="headerlink" title="底层编码方式"></a>底层编码方式</h4><p>Redis中会根据存储的数据类型不同，选择不同的编码方式，共包含11种不同类型：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126121318276.png" alt="image-20221126121318276"></p>
+<p><img src="../../typora-user-images/image-20221126121318276.png" alt="image-20221126121318276"></p>
 <h4 id="五种数据类型的底层类型："><a href="#五种数据类型的底层类型：" class="headerlink" title="五种数据类型的底层类型："></a>五种数据类型的底层类型：</h4><table>
 <thead>
 <tr>
@@ -4115,11 +4115,11 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 </tbody></table>
 <h2 id="五种数据类型"><a href="#五种数据类型" class="headerlink" title="五种数据类型"></a>五种数据类型</h2><h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p>我们知道底层是通过SDS结构，但不同的SDS长度会使用不同的编码。</p>
 <p>如果存储的是字符串是整数值，大小在Long_MAX范围内，则会使用INT编码，直接将数据保存在RedisObject的ptr指针位置（刚好8字节），<strong>不再需要SDS了</strong>。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126121746597.png" alt="image-20221126121746597"></p>
+<p><img src="../../typora-user-images/image-20221126121746597.png" alt="image-20221126121746597"></p>
 <p>如果存储的SDS长度小于44字节，则会采用EMBSTR编码，此时object head与SDS是一段连续空间。申请内存时只需要调用一次内存分配函数，效率更高。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126121826644.png" alt="image-20221126121826644"></p>
+<p><img src="../../typora-user-images/image-20221126121826644.png" alt="image-20221126121826644"></p>
 <p>否则用的就是raw编码了，SDS单独占一个内存，RedisObject用指针连接</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126121919607.png" alt="image-20221126121919607"></p>
+<p><img src="../../typora-user-images/image-20221126121919607.png" alt="image-20221126121919607"></p>
 <h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><blockquote>
 <p>我们可以自己想一想，底层结构中哪个合适?</p>
 </blockquote>
@@ -4152,7 +4152,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <li>ZipList是连续内存，因此score和element是紧挨在一起的两个entry， element在前，score在后</li>
 <li>score越小越接近队首，score越大越接近队尾，按照score值升序排列</li>
 </ol>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221126123840996.png" alt="image-20221126123840996"></p>
+<p><img src="../../typora-user-images/image-20221126123840996.png" alt="image-20221126123840996"></p>
 <h3 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h3><p>需求：</p>
 <ol>
 <li>键值存储</li>
@@ -4324,7 +4324,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
 <li>当同时使用拦截器与过滤器时，请求模型：</li>
 </ol>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124165341727.png" alt="image-20221124165341727"></p>
+<p><img src="../../typora-user-images/image-20221124165341727.png" alt="image-20221124165341727"></p>
 ]]></content>
       <categories>
         <category>Web</category>
@@ -4496,20 +4496,20 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 </blockquote>
 <p>​        结论： 锁锁住的是索引，当表中没有设定主键索引时，会默认找一个非空唯一的字段加主键索引，如果没有这个字段会使用一个隐藏字段加入主键索引。</p>
 <hr>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810182237613.png" alt="image-20220810182237613"></p>
+<p><img src="../../typora-user-images/image-20220810182237613.png" alt="image-20220810182237613"></p>
 <h3 id="Record-Lock：记录锁"><a href="#Record-Lock：记录锁" class="headerlink" title="Record Lock：记录锁"></a>Record Lock：记录锁</h3><p>条件：唯一性索引（唯一、主键）等值查询，精准匹配到一个索引。</p>
 <p><code>select * from t2 where id = 4 for update;</code> 锁住id = 4的数据</p>
 <h3 id="Gap-Lock：间隙锁"><a href="#Gap-Lock：间隙锁" class="headerlink" title="Gap Lock：间隙锁"></a>Gap Lock：间隙锁</h3><p>条件：记录不存在，当我查询并加锁时，发现并没有击中索引，而是落入在一个索引的区间内，那么就会加一个间隙锁。那既然没数据我加间隙锁能干嘛？</p>
 <p>防止插入，当你有一个间隙锁的时候，就不能再给这个间隙加数据，等等。。那这不就保证了不会在我看不见的情况下，别人突然insert一条数据了嘛。。。幻读的解决似乎在这里能找到解决的办法</p>
-<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d8poknbj30k0059mxg.jpg" alt="image-20220810182800083"><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810182800083.png" alt="image-20220810182800083"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h89d8poknbj30k0059mxg.jpg" alt="image-20220810182800083"><img src="../../typora-user-images/image-20220810182800083.png" alt="image-20220810182800083"></p>
 <h3 id="Next-Key-Lock：临键锁"><a href="#Next-Key-Lock：临键锁" class="headerlink" title="Next-Key Lock：临键锁"></a>Next-Key Lock：临键锁</h3><p>条件：范围查询，包含记录和区间。这里要注意临键是左开右闭的，(x,y]</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810183202191.png" alt="image-20220810183202191"></p>
+<p><img src="../../typora-user-images/image-20220810183202191.png" alt="image-20220810183202191"></p>
 <p>​        所以当有这几个锁的时候解决了什么问题呢？那就是解决了在<code>repeatable Read</code>事务隔离级别下，幻读的影响，当有了间隙锁，这个区间虽然你看不到，但你相当于已经对这个范围都加锁了，其他数据无法进行insert，所以最后的结论是下图：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20220810183658382.png" alt="image-20220810183658382"></p>
+<p><img src="../../typora-user-images/image-20220810183658382.png" alt="image-20220810183658382"></p>
 <blockquote>
 <p>当前读与快照读的底层分析</p>
 </blockquote>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/mysqlMvcc.drawio.png" alt="mysqlMvcc.drawio"></p>
+<p><img src="../../typora-user-images/mysqlMvcc.drawio.png" alt="mysqlMvcc.drawio"></p>
 <hr>
 <h2 id="ACID的实现原理"><a href="#ACID的实现原理" class="headerlink" title="ACID的实现原理"></a>ACID的实现原理</h2><h3 id="atomicity原子性"><a href="#atomicity原子性" class="headerlink" title="atomicity原子性"></a>atomicity原子性</h3><blockquote>
 <p>定义我们都知道，一个事务操作内，要么都成功，要么都失败，那Mysql是如何保证的？</p>
@@ -4521,7 +4521,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p>定义：如果一个事务提交后，数据的修改是永久性的。</p>
 </blockquote>
 <p>​        维护一个<code>redo.log</code>文件，背景是我们知道磁盘IO是一个很慢的操作，所以Mysql也维护了一份Buffer缓冲区，操作都会先到缓冲区，最后同步到磁盘中。但缓冲区最大的问题就是数据的不安全，所以引入了<code>redo.log</code>文件，数据会先同步到<code>redo log buffer</code>中，<code>redo log buffer</code> 也是redo.log文件的缓冲区，然后事务提交后按照我们的约定再刷盘到redo.log文件中。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230130213820352.png" alt="image-20230130213820352"></p>
+<p><img src="../../typora-user-images/image-20230130213820352.png" alt="image-20230130213820352"></p>
 <blockquote>
 <p>那这里也会存在问题：</p>
 </blockquote>
@@ -4551,7 +4551,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p>MVCC是基于快照读的。但又有不同，我们下面来看一下RC和RR底层到底有什么不同？</p>
 </blockquote>
 <p>首先MVCC的关键在于<code>版本链，ReadView视图，事务ID</code>来区分。可以看这里的图：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/mysqlMvcc.drawio.png" alt="mysqlMvcc.drawio"></p>
+<p><img src="../../typora-user-images/mysqlMvcc.drawio.png" alt="mysqlMvcc.drawio"></p>
 <p>至于RC与RR的区别则在于生成ReadView时机不同，在RC中每次select 都会生成一个readView，所以数据也在不断更新</p>
 <p>而RR则是以事务为单位，当第一个select时生成ReadView，后面再次select就共用一个。所以叫可重复读</p>
 <blockquote>
@@ -4593,7 +4593,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 </blockquote>
 </blockquote>
 <p>索引失效的情况网上有许多测试数据，可以直接查找，我们这里从底层说明为什么索引会失效。下图是对<code>a字段和b字段加入联合索引，索引底层B+树的样子</code></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221116173602058.png" alt="image-20221116173602058"></p>
+<p><img src="../../typora-user-images/image-20221116173602058.png" alt="image-20221116173602058"></p>
 <p>通过上面的图我们能发现几个规则：</p>
 <ol>
 <li>a的值是有序的，b的值是无序的</li>
@@ -4615,7 +4615,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p>MyIsam 数据和索引是分为两个文件存储的，左边的图为索引，右边为数据，索引的key为主键id，value为数据的地址，</p>
 <p>不管是主键索引还是普通索引都是通过地址去查找数据</p>
 </blockquote>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221116181734434.png" alt="image-20221116181734434"></p>
+<p><img src="../../typora-user-images/image-20221116181734434.png" alt="image-20221116181734434"></p>
 <blockquote>
 <p>Innodb 的索引，也叫聚簇索引，索引与数据是在一起的</p>
 <blockquote>
@@ -4624,7 +4624,7 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 <p>​    索引：分为主键索引和普通索引，主键索引直接拿数据，普通索引找主键索引找数据（性能相对比MyISAM低），</p>
 </blockquote>
 </blockquote>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221116181403045.png" alt="image-20221116181403045"></p>
+<p><img src="../../typora-user-images/image-20221116181403045.png" alt="image-20221116181403045"></p>
 <hr>
 <h2 id="百万级数据索引优化"><a href="#百万级数据索引优化" class="headerlink" title="百万级数据索引优化"></a>百万级数据索引优化</h2><ol>
 <li><p>索引失效：</p>
@@ -6402,11 +6402,11 @@ sqlSessionConfig sqlSessionConfig<span class="token punctuation">;</span>
 </blockquote>
 </li>
 </ol>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172257629.png" alt="image-20221202172257629"></p>
+<p><img src="../../typora-user-images/image-20221202172257629.png" alt="image-20221202172257629"></p>
 <blockquote>
 <p>失败情况：</p>
 </blockquote>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172314630.png" alt="image-20221202172314630"></p>
+<p><img src="../../typora-user-images/image-20221202172314630.png" alt="image-20221202172314630"></p>
 <h4 id="XA方案"><a href="#XA方案" class="headerlink" title="XA方案"></a>XA方案</h4><blockquote>
 <p>DTP模型定义如下角色：<br><strong>AP</strong>(Application Program)：即应用程序，可以理解为使用DTP分布式事务的程序。<br><strong>RM</strong>(Resource Manager)：即资源管理器，可以理解为事务的参与者，一般情况下是指一个数据库实例，通过资源管理器对该数据库进行控制，资源管理器控制着分支事务。<br><strong>TM</strong>(Transaction Manager)：事务管理器，负责协调和管理事务，事务管理器控制着全局事务，管理事务生命周期，并协调各个RM。<strong>全局事务</strong>是指分布式事务处理环境中，需要操作多个数据库共同完成一个工作，这个工作即是一个全局事务。<br>DTP模型定义TM和RM之间通讯的接口规范叫<strong>XA</strong>，简单理解为数据库提供的2PC接口协议，<strong>基于数据库的XA 协议来实现2PC又称为XA方案</strong>。<br>以上三个角色之间的交互方式如下： </p>
 <ol>
@@ -6503,13 +6503,13 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 <p>这中间有什么问题？</p>
 </blockquote>
 <p>​        张三向消息队列发送消息就一定会出现网络问题，比如：事务内，张三钱减少了，然后发送数据到消息队列，如果发送错误张三的钱也可以回滚，但是可能消息已经到队列了，但返回时网络延迟发生错误，导致数据回滚，则队列中数据是仍然存在的，所以一定要保证数据操作与消息发送保证<code>原子性</code>。<br />        李四需要必须接收并完成消息，但可能出现问题导致不断的重试，所以有<code>幂等性</code>的问题<br><a name="CQSMK"></a></p>
-<h4 id="RocketMq"><a href="#RocketMq" class="headerlink" title="RocketMq"></a><a href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RocketMq</a></h4><p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172349710.png" alt="image-20221202172349710"></p>
+<h4 id="RocketMq"><a href="#RocketMq" class="headerlink" title="RocketMq"></a><a href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RocketMq</a></h4><p><img src="../../typora-user-images/image-20221202172349710.png" alt="image-20221202172349710"></p>
 <blockquote>
 <p>这是大概的一个流程，我们现在分析可能存在哪些问题：<br /></p>
 </blockquote>
 <p>​        张三向消息队列成功发送事务消息后,有一个rockmq监听本地事务方法的返回。这时候事务消息并不能被消费，如果张三正常提交本地事务，则该事务消息可被消费，如果本地事务没有提交成功，返回Rollback则事务消息删除，如果返回UnKnown(比如出现某些异常)，则过一段时间，消息队列会再次监听本地事务执行情况。从而保证张三本地事务与事务消息的原子性。<br />李四从消息队列获取消息后，应该进行本地事务并确认该事务消息，如果没有确认，消息队列会不断发给消费者，最终也可人工处理。<br />        可靠消息最终一致性的优点就是如果李四那边要执行很久，张三这边是不用等的，只要最终确认该事务消息即可。进行了异步解耦。<br><a name="NYbFr"></a></p>
 <h3 id="分布式事务解决方案—最大努力通知"><a href="#分布式事务解决方案—最大努力通知" class="headerlink" title="分布式事务解决方案—最大努力通知"></a>分布式事务解决方案—最大努力通知</h3><p><a name="wrMQP"></a></p>
-<h4 id="RocketMq-1"><a href="#RocketMq-1" class="headerlink" title="RocketMq"></a><a href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RocketMq</a></h4><p>我们以支付业务为例<br><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172428011.png" alt="image-20221202172428011"></p>
+<h4 id="RocketMq-1"><a href="#RocketMq-1" class="headerlink" title="RocketMq"></a><a href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RocketMq</a></h4><p>我们以支付业务为例<br><img src="../../typora-user-images/image-20221202172428011.png" alt="image-20221202172428011"></p>
 <p>这里的账户系统就是等待通知的</p>
 <p>充值系统当充值完毕后发起通知</p>
 <blockquote>
@@ -6544,16 +6544,16 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 <p>可靠消息一致性要解决消息从发出到接收的一致性，即消息发出并且被接收到。<br />最大努力通知无法保证消息从发出到接收的一致性，只提供消息接收的可靠性机制。可靠机制是，最大努力的将消 息通知给接收方，当消息无法被接收方接收时，由接收方主动查询消息（业务处理结果）。</p>
 <p><a name="RmZfj"></a></p>
 <h4 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h4><p>消息接收方直接监听消息队列<br /></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172446775.png" alt="image-20221202172446775"></p>
+<p><img src="../../typora-user-images/image-20221202172446775.png" alt="image-20221202172446775"></p>
 <p>由消息通知系统监听消息队列，然后再通知消息接收方<br /></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172502997.png" alt="image-20221202172502997"></p>
+<p><img src="../../typora-user-images/image-20221202172502997.png" alt="image-20221202172502997"></p>
 <blockquote>
 <p>这两者有啥不同？</p>
 </blockquote>
 <p>第一种只适用于内部网络系统，也就是发起方和接收方都归你管理。但如果说消息发送方是第三方系统，人家就不能让你监听人家的消息队列吧，只能说加入一个中间通知系统，然后通过网络请求来通知你。</p>
 <p><a name="VCrLJ"></a></p>
 <h3 id="分布式事务综合案例分析"><a href="#分布式事务综合案例分析" class="headerlink" title="分布式事务综合案例分析"></a>分布式事务综合案例分析</h3><p>在上面我们已经学习了四种不同的分布式事务解决方案，我们需要进行区分，哪种业务场景需要哪种实现，各个方案有什么区别。<br><a name="qXtwu"></a></p>
-<h4 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h4><p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172515706.png" alt="image-20221202172515706"></p>
+<h4 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h4><p><img src="../../typora-user-images/image-20221202172515706.png" alt="image-20221202172515706"></p>
 <p>用户向用户中心发起注册请求，用户中心保存用户业务信息，然后通知统一账号服务新建该用户所对应登录账号。<br />针对注册业务，如果用户与账号信息不一致，则会导致严重问题，因此该业务对<strong>一致性要求较为严格</strong>，即当用户服务和账号服务任意一方出现问题都需要<strong>回滚事务</strong>。</p>
 <blockquote>
 <p>业务分析</p>
@@ -6572,7 +6572,7 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 </ol>
 </li>
 <li>2PC方案<ol>
-<li>可行，支持事务回滚，有性能损耗，但简单<br><a name="TURmk"></a><h4 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h4><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172528108.png" alt="image-20221202172528108"></li>
+<li>可行，支持事务回滚，有性能损耗，但简单<br><a name="TURmk"></a><h4 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h4><img src="../../typora-user-images/image-20221202172528108.png" alt="image-20221202172528108"></li>
 </ol>
 </li>
 </ol>
@@ -6594,7 +6594,7 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 </ol>
 </li>
 <li>最大努力通知<ol>
-<li>可行，我们发送请求给银行系统，银行系统最终给我返回结果，或者我们也可主动查询<br><a name="gnVFt"></a><h4 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h4><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172553120.png" alt="image-20221202172553120"></li>
+<li>可行，我们发送请求给银行系统，银行系统最终给我返回结果，或者我们也可主动查询<br><a name="gnVFt"></a><h4 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h4><img src="../../typora-user-images/image-20221202172553120.png" alt="image-20221202172553120"></li>
 </ol>
 </li>
 </ol>
@@ -6625,7 +6625,7 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 <p>如果拿<strong>TCC</strong>事务的处理流程与2PC两阶段提交做比较，2PC通常都是在跨库的DB层面，而TCC则在应用层面的处 理，需要通过业务逻辑来实现。这种分布式事务的实现方式的优势在于，可以让应用自己定义数据操作的粒度，使 得降低锁冲突、提高吞吐量成为可能。而不足之处则在于对应用的侵入性非常强，业务逻辑的每个分支都需要实现 try、conﬁrm、cancel三个操作。此外，其实现难度也比较大，需要按照网络状态、系统故障等不同的失败原因实 现不同的回滚策略。典型的使用场景：满，登录送优惠券等。</p>
 <p><strong>可靠消息最终一致性</strong>事务适合执行周期长且实时性要求不高的场景。引入消息机制后，同步的事务操作变为基于消 息执行的异步操作, 避免了分布式事务中的同步阻塞操作的影响，并实现了两个服务的解耦。典型的使用场景：注 册送积分，登录送优惠券等。</p>
 <p><strong>最大努力通知</strong>是分布式事务中要求最低的一种,适用于一些最终一致性时间敏感度低的业务；允许发起通知方处理业 务失败，在接收通知方收到通知后积极进行失败处理，无论发起通知方如何处理结果都会不影响到接收通知方的后 续处理；发起通知方需提供查询执行情况接口，用于接收通知方校对结果。典型的使用场景：银行通知、支付结果 通知等。<br /></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221202172607739.png" alt="image-20221202172607739"><br /><strong>总结</strong>：</p>
+<p><img src="../../typora-user-images/image-20221202172607739.png" alt="image-20221202172607739"><br /><strong>总结</strong>：</p>
 <p>​        在条件允许的情况下，我们<strong>尽可能选择本地事务</strong>单数据源，因为它减少了网络交互带来的性能损耗，且避免了数据 弱一致性带来的种种问题。<strong>若某系统频繁且不合理的使用分布式事务</strong>，应首先从整体设计角度观察服务的拆分是否 合理，是否高内聚低耦合？是否粒度太小？分布式事务一直是业界难题，因为网络的不确定性，而且我们习惯于拿 分布式事务与单机事务ACID做对比。无论是数据库层的XA、还是应用层TCC、可靠消息、最大努力通知等方案，都没有完美解决分布式事务问题，它们 不过是各自在性能、一致性、可用性等方面做取舍，寻求某些场景偏好下的权衡。</p>
 ]]></content>
       <categories>
@@ -6954,9 +6954,9 @@ cancel：空<span aria-hidden="true" class="line-numbers-rows"><span></span><spa
 <span class="token punctuation">&#125;</span>
   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
 </ol>
-<p>这里JUC包下定义的参数<img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221028210505748.png" alt="image-20221028210505748"></p>
+<p>这里JUC包下定义的参数<img src="../../typora-user-images/image-20221028210505748.png" alt="image-20221028210505748"></p>
 <p>这里是我们，自己定义的，唯一不一样就是少了<code>maximumPoolSize</code>,也就是再对线程数量进行控制，这里感兴趣的朋友可以自己试着去做。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221028210704145.png" alt="image-20221028210704145"></p>
+<p><img src="../../typora-user-images/image-20221028210704145.png" alt="image-20221028210704145"></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​    如果你能跟随着思路完成到这里，我觉得这块儿知识点，你应该是没问题了，具体代码细节，或者是组件如何使用，就靠你们自己去查询和实验。我感觉我的代码还是通俗易懂的。这里再次感谢<code>低并发编程</code>公众号，我感觉干活满满，推荐大家读一读。</p>
 ]]></content>
       <categories>
@@ -7089,7 +7089,7 @@ objectLock<span class="token punctuation">.</span><span class="token function">w
 <h4 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h4><p>​        禁止指令重排，指令重排是一种计算机运行代码的优化手段，但可能造成奇怪的bug</p>
 <h4 id="原子性（具有误导性）"><a href="#原子性（具有误导性）" class="headerlink" title="原子性（具有误导性）"></a>原子性（具有误导性）</h4><p>​        Java 内存模型保证了 read、load、use、assign、store、write、lock 和 unlock 操作具有原子性，例如对一个 int 类型的变量执行 assign 赋值操作，这个操作就是原子性的。 Java 内存模型允许虚拟机将没有被 volatile 修饰的 64 位数据（long，double）的读写操作划分为两次 32 位的操作来进行，即 load、store、read 和 write 操作可以不具备原子性。</p>
 <p>​        被Volatile修饰过的对象，在多线程下只能保证可见性，但不保证操作的原子性</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221123193040531.png" alt="image-20221123193040531"></p>
+<p><img src="../../typora-user-images/image-20221123193040531.png" alt="image-20221123193040531"></p>
 <h3 id="活锁，死锁，哲学家问题"><a href="#活锁，死锁，哲学家问题" class="headerlink" title="活锁，死锁，哲学家问题"></a>活锁，死锁，哲学家问题</h3><p>活锁： 两个线程互相影响彼此依赖的变量</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TestLiveLock</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">static</span> <span class="token keyword">volatile</span> <span class="token keyword">int</span> count <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span><span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Object</span> lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -7117,18 +7117,19 @@ objectLock<span class="token punctuation">.</span><span class="token function">w
 <p>哲学家问题就是死锁问题的一种形式。</p>
 <h2 id="进阶知识"><a href="#进阶知识" class="headerlink" title="进阶知识"></a>进阶知识</h2><h3 id="Monitor"><a href="#Monitor" class="headerlink" title="Monitor"></a>Monitor</h3><p>Java对象头</p>
 <p>普通对象：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221123194620216.png" alt="image-20221123194620216"></p>
+<p><img src="../../typora-user-images/image-20220610232552374.png" alt="image-test"></p>
+<p><img src="../../typora-user-images/image-20221123194620216.png" alt="image-20221123194620216"></p>
 <p>数组对象：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221123194636687.png" alt="image-20221123194636687"></p>
+<p><img src="../../typora-user-images/image-20221123194636687.png" alt="image-20221123194636687"></p>
 <p>其中Mark Wordd的内部结构（32位虚拟机）</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221123194704096.png" alt="image-20221123194704096"></p>
+<p><img src="../../typora-user-images/image-20221123194704096.png" alt="image-20221123194704096"></p>
 <p>64位虚拟机</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221123194741408.png" alt="image-20221123194741408"></p>
+<p><img src="../../typora-user-images/image-20221123194741408.png" alt="image-20221123194741408"></p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">Object</span> lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>lock<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>当<code>synchronized 对对象加入重量级锁时，Mark Work中就会有指向Monitor对象的指针</code>，下面我们看看Monitor的结构</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221123195851860.png" alt="image-20221123195851860"></p>
+<p><img src="../../typora-user-images/image-20221123195851860.png" alt="image-20221123195851860"></p>
 <p>WaitSet 就是等待队列</p>
 <p>EntryList 就是阻塞队列</p>
 <p>Owner 就是当前获取锁的线程</p>
@@ -7156,7 +7157,7 @@ objectLock<span class="token punctuation">.</span><span class="token function">w
 <ul>
 <li>当遇到加锁操作时，线程的栈帧中会创建一个（Lock Record）对象，每个线程的栈帧都会包含一个锁记录的解耦，内部存放锁定对象的Mark Word</li>
 </ul>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124102353283.png" alt="image-20221124102353283"></p>
+<p><img src="../../typora-user-images/image-20221124102353283.png" alt="image-20221124102353283"></p>
 <ul>
 <li><p>让锁记录中 Object reference 指向锁对象，并尝试用 cas 替换 Object 的 Mark Word，将 Mark Word 的值存入锁记录。</p>
 <ul>
@@ -7164,10 +7165,10 @@ objectLock<span class="token punctuation">.</span><span class="token function">w
 <li>如果失败说明，有竞争，进入锁膨胀过程</li>
 <li>如果发现有竞争，但是可以通过Mark Word 判断加锁的线程是不是自己，如果是自己，则再添加一个Lock Record作为重入计数</li>
 </ul>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124102736732.png" alt="image-20221124102736732"></p>
+<p><img src="../../typora-user-images/image-20221124102736732.png" alt="image-20221124102736732"></p>
 </li>
 </ul>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124103008743.png" alt="image-20221124103008743"></p>
+<p><img src="../../typora-user-images/image-20221124103008743.png" alt="image-20221124103008743"></p>
 <p>​    当退出 synchronized 代码块（解锁时）如果有取值为 null 的锁记录，表示有重入，这时重置锁记录，表示重入计数减一。</p>
 <p>​    当退出 synchronized 代码块（解锁时）锁记录的值不为 null，这时使用 cas 将 Mark Word 的值恢复给对象头</p>
 <ul>
@@ -7178,10 +7179,10 @@ objectLock<span class="token punctuation">.</span><span class="token function">w
 </ul>
 <h4 id="锁膨胀"><a href="#锁膨胀" class="headerlink" title="锁膨胀"></a>锁膨胀</h4><p>​    当发现线程竞争发生了直接冲突时，就会将Object中MarkWork指向Monitor，并且将状态改为10。10就是重量级锁。阻塞线程就进入Monitor的EntryList进行阻塞。</p>
 <p>​    当持有轻量级锁的线程进行cas操作时，发现失败了，就说明现在已经是重量级锁了，则通过Monitor地址找到Monitor对象，将Owner设置为空，表示锁释放，然后通知EntryList阻塞线程唤醒。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124103939951.png" alt="image-20221124103939951"></p>
+<p><img src="../../typora-user-images/image-20221124103939951.png" alt="image-20221124103939951"></p>
 <h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>偏向锁是对轻量级锁的再次优化，之前使用轻量级锁方案时，每次获取锁都要和Object的对象头做CAS操作，即便是重入锁，也需要该操作。现在希望Object对象头上直接写占有锁的线程ID，这样只要比较，不进行CAS操作。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124105155494.png" alt="image-20221124105155494"></p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124105207495.png" alt="image-20221124105207495"></p>
+<p><img src="../../typora-user-images/image-20221124105155494.png" alt="image-20221124105155494"></p>
+<p><img src="../../typora-user-images/image-20221124105207495.png" alt="image-20221124105207495"></p>
 <p>查看对象头的信息</p>
 <pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.openjdk.jol<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
@@ -7191,7 +7192,7 @@ objectLock<span class="token punctuation">.</span><span class="token function">w
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">></span></span>compile<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124111220643.png" alt="image-20221124111220643"></p>
+<p><img src="../../typora-user-images/image-20221124111220643.png" alt="image-20221124111220643"></p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> start <span class="token punctuation">&#123;</span>
     <span class="token keyword">public</span>  <span class="token keyword">synchronized</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">InterruptedException</span> <span class="token punctuation">&#123;</span>
         <span class="token class-name">Object</span> o <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -7209,7 +7210,7 @@ objectLock<span class="token punctuation">.</span><span class="token function">w
 <p>需要注意：当使用了对象的.hashcode()方法会变为不可偏向</p>
 </blockquote>
 <p>因为在偏向锁中对象头没有位置存储HashCode，所以转为轻量级锁或者重量级锁。每个对象最初的HashCode为0，第一次使用时，进行赋值。</p>
-<h3 id="线程安全的集合类"><a href="#线程安全的集合类" class="headerlink" title="线程安全的集合类"></a>线程安全的集合类</h3><p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20221124112756210.png" alt="image-20221124112756210"></p>
+<h3 id="线程安全的集合类"><a href="#线程安全的集合类" class="headerlink" title="线程安全的集合类"></a>线程安全的集合类</h3><p><img src="../../typora-user-images/image-20221124112756210.png" alt="image-20221124112756210"></p>
 <p>这里分为三类</p>
 <ol>
 <li><p>遗留的：HashTable（Map），Vector（List）</p>
@@ -7564,7 +7565,7 @@ p <span class="token builtin">Module</span><span class="token punctuation">.</sp
 
 <p>​    可以看到Class是继承了Module，并自身定义了实例化的操作。所以类和模块儿使用上看起来那么像。</p>
 <p>​    每个类最终继承于BasicObject，而每个类又是Class类的实例。</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230124214842752.png" alt="image-20230124214842752"></p>
+<p><img src="../../typora-user-images/image-20230124214842752.png" alt="image-20230124214842752"></p>
 <h4 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h4><p>​    任何大写字母开头的引用，都代表着常量，而常量一般指不会修改的东西，在Ruby中常亮也可以看做是变量，而当你修改，编译器会发出警告，但仍然会进行修改。常量与变量最大的区别在于作用域的不同。</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">MyModule</span>
   <span class="token comment"># 外部的MyConstant</span>
@@ -7578,7 +7579,7 @@ p MyModule<span class="token double-colon punctuation">::</span>MyConstant
 p MyModule<span class="token double-colon punctuation">::</span>MyClass<span class="token double-colon punctuation">::</span>MyConstant<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​    我们以树形结构为例：</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230124220328845.png" alt="image-20230124220328845">    </p>
+<p><img src="../../typora-user-images/image-20230124220328845.png" alt="image-20230124220328845">    </p>
 <p>​    这里内部的MyConstant和外部的MyConstant实际上处于两个作用域中，是完全不同的东西，而我们可以通过<code>::</code>来访问他们</p>
 <p>​    如果处于模块儿较深的位置，想用绝对路径来访问外部的常量，可以使用 :: 表示路径的根位置。</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token constant">Y</span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"a root-level constant"</span></span>
@@ -8929,7 +8930,7 @@ obj <span class="token operator">=</span> <span class="token class-name">D</span
 p obj<span class="token punctuation">.</span>a_method<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>我们画出obj一起祖先链的图，先不考虑单件类和模块</p>
-<img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230127215743350.png" alt="image-20230127215743350" style="zoom:67%;" />
+<img src="../../typora-user-images/image-20230127215743350.png" alt="image-20230127215743350" style="zoom:67%;" />
 
 <h4 id="单件类-和-方法查找"><a href="#单件类-和-方法查找" class="headerlink" title="单件类 和 方法查找"></a>单件类 和 方法查找</h4><blockquote>
 <p>单件类的超类是什么？</p>
@@ -8963,11 +8964,11 @@ p <span class="token constant">E</span><span class="token punctuation">.</span>s
 <p>上面的定义看起来有点儿绕，Ruby为何这样设计？</p>
 </blockquote>
 <p>​    因为这样就可以在子类中调用父类的类方法</p>
-<p>​    <img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230103164540176.png" alt="image-20230103164540176" style="zoom:80%;" /></p>
+<p>​    <img src="../../typora-user-images/image-20230103164540176.png" alt="image-20230103164540176" style="zoom:80%;" /></p>
 <blockquote>
 <p>我们再来画一下有了单件类后的祖先链和方法查找</p>
 </blockquote>
-<img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230127220319776.png" alt="image-20230127220319776" style="zoom:67%;" />
+<img src="../../typora-user-images/image-20230127220319776.png" alt="image-20230127220319776" style="zoom:67%;" />
 
 <h4 id="七条规则"><a href="#七条规则" class="headerlink" title="七条规则"></a>七条规则</h4><ol>
 <li>对象：要么是普通对象，要么是模块儿</li>
@@ -10188,7 +10189,7 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 <li>命名空间：以module的方式组织，比如按照模块儿划分</li>
 </ul>
 <p>​    这里我们可以将一些公共函数写入BaseController，再将业务类继承BaseController，以达到方法公用，比如我们写一个Session模块儿</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230107194458907.png" alt="image-20230107194458907"></p>
+<p><img src="../../typora-user-images/image-20230107194458907.png" alt="image-20230107194458907"></p>
 <h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><blockquote>
 <p>params</p>
 </blockquote>
@@ -10388,23 +10389,23 @@ stories <span class="token constant">GET</span>  <span class="token operator">/<
 <li>Destorying an Object</li>
 <li>finding an Object</li>
 </ol>
-<h3 id="Create回调"><a href="#Create回调" class="headerlink" title="Create回调"></a>Create回调</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112192554270.png" alt="image-20230112192554270" style="zoom:80%;" />
+<h3 id="Create回调"><a href="#Create回调" class="headerlink" title="Create回调"></a>Create回调</h3><img src="../../typora-user-images/image-20230112192554270.png" alt="image-20230112192554270" style="zoom:80%;" />
 
 <p>​    顺序也是严格按照图中的顺序执行。这些方法也都是类方法，可直接指定：<code>before_save :update_username</code></p>
 <blockquote>
 <p>需要注意：after_save 是已经存储到数据库了，但并未提交，如果在after_save针对模型又做出修改，不能再使用 self.save ,因为会触发死循环。</p>
 </blockquote>
-<h3 id="Update回调"><a href="#Update回调" class="headerlink" title="Update回调"></a>Update回调</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193429505.png" alt="image-20230112193429505" style="zoom:80%;" />
+<h3 id="Update回调"><a href="#Update回调" class="headerlink" title="Update回调"></a>Update回调</h3><img src="../../typora-user-images/image-20230112193429505.png" alt="image-20230112193429505" style="zoom:80%;" />
 
-<h3 id="Destroy回调"><a href="#Destroy回调" class="headerlink" title="Destroy回调"></a>Destroy回调</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193459198.png" alt="image-20230112193459198" style="zoom:80%;" />
+<h3 id="Destroy回调"><a href="#Destroy回调" class="headerlink" title="Destroy回调"></a>Destroy回调</h3><img src="../../typora-user-images/image-20230112193459198.png" alt="image-20230112193459198" style="zoom:80%;" />
 
-<h3 id="Find回调"><a href="#Find回调" class="headerlink" title="Find回调"></a>Find回调</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193533698.png" alt="image-20230112193533698" style="zoom:80%;" />
+<h3 id="Find回调"><a href="#Find回调" class="headerlink" title="Find回调"></a>Find回调</h3><img src="../../typora-user-images/image-20230112193533698.png" alt="image-20230112193533698" style="zoom:80%;" />
 
-<h3 id="触发callback的方法"><a href="#触发callback的方法" class="headerlink" title="触发callback的方法"></a>触发callback的方法</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193615984.png" alt="image-20230112193615984" style="zoom:80%;" />
+<h3 id="触发callback的方法"><a href="#触发callback的方法" class="headerlink" title="触发callback的方法"></a>触发callback的方法</h3><img src="../../typora-user-images/image-20230112193615984.png" alt="image-20230112193615984" style="zoom:80%;" />
 
-<h3 id="触发after-find-（基本不使用）"><a href="#触发after-find-（基本不使用）" class="headerlink" title="触发after_find （基本不使用）"></a>触发after_find （基本不使用）</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193716012.png" alt="image-20230112193716012" style="zoom:80%;" />
+<h3 id="触发after-find-（基本不使用）"><a href="#触发after-find-（基本不使用）" class="headerlink" title="触发after_find （基本不使用）"></a>触发after_find （基本不使用）</h3><img src="../../typora-user-images/image-20230112193716012.png" alt="image-20230112193716012" style="zoom:80%;" />
 
-<h3 id="跳过callback的触发方法"><a href="#跳过callback的触发方法" class="headerlink" title="跳过callback的触发方法"></a>跳过callback的触发方法</h3><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230112193746758.png" alt="image-20230112193746758" style="zoom:80%;" />
+<h3 id="跳过callback的触发方法"><a href="#跳过callback的触发方法" class="headerlink" title="跳过callback的触发方法"></a>跳过callback的触发方法</h3><img src="../../typora-user-images/image-20230112193746758.png" alt="image-20230112193746758" style="zoom:80%;" />
 
 <h3 id="Callback参数"><a href="#Callback参数" class="headerlink" title="Callback参数"></a>Callback参数</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">User</span> ActiveRecord<span class="token double-colon punctuation">::</span>Base
   before_save <span class="token symbol">:update_username</span><span class="token punctuation">,</span><span class="token symbol">unless</span><span class="token symbol">:proc</span> <span class="token punctuation">&#123;</span><span class="token operator">|</span>user<span class="token operator">|</span> user<span class="token punctuation">.</span>evil<span class="token operator">?</span><span class="token punctuation">&#125;</span>
@@ -11150,7 +11151,7 @@ Blog<span class="token punctuation">.</span>transaction <span class="token keywo
     <title>opencv环境搭建</title>
     <url>//post/opencv/opencv%20%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8.html</url>
     <content><![CDATA[<h1 id="opencv-入门"><a href="#opencv-入门" class="headerlink" title="opencv 入门"></a>opencv 入门</h1><h2 id="环境下载与搭建"><a href="#环境下载与搭建" class="headerlink" title="环境下载与搭建"></a>环境下载与搭建</h2><h3 id="Windows用户"><a href="#Windows用户" class="headerlink" title="Windows用户"></a>Windows用户</h3><p>直接在官网下载 Windows 文件：<a href="https://opencv.org/releases/">https://opencv.org/releases/</a> 。然后参考这篇文章：<a href="https://blog.csdn.net/qianlixiaomage/article/details/108416400%E3%80%82%E8%AF%B4%E5%AE%9E%E8%AF%9DWindows%E4%B8%8A%E6%93%8D%E4%BD%9C%E5%A4%AA%E6%96%B9%E4%BE%BF%E4%BA%86%E3%80%82%E6%88%91%E7%94%A8Mac%E6%8D%A3%E9%BC%93%E4%BA%86%E5%8D%8A%E5%A4%A9%EF%BC%8C%E6%B0%94%E6%AD%BB%E3%80%82">https://blog.csdn.net/qianlixiaomage/article/details/108416400。说实话Windows上操作太方便了。我用Mac捣鼓了半天，气死。</a></p>
-<img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230220124942228.png" alt="image-20230220124942228" style="zoom:50%;" />
+<img src="../../typora-user-images/image-20230220124942228.png" alt="image-20230220124942228" style="zoom:50%;" />
 
 <h3 id="Mac用户"><a href="#Mac用户" class="headerlink" title="Mac用户"></a>Mac用户</h3><p>直接在官网下载 Sources 文件：<a href="https://opencv.org/releases/">https://opencv.org/releases/</a> 。并进行解压。</p>
 <p>下载cmake：<code>brew install cmake</code></p>
@@ -11174,7 +11175,7 @@ cmake <span class="token parameter variable">-D</span> <span class="token assign
 <li><p>打开一个Java项目</p>
 </li>
 <li><p>在Project Structure中Libraries中添加opencv的jar包</p>
-<p><img src="https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/9635/image-20230220130215311.png" alt="image-20230220130215311"></p>
+<p><img src="../../typora-user-images/image-20230220130215311.png" alt="image-20230220130215311"></p>
 </li>
 <li><p>然后在opencv下添加：opencv-4.7.0/build/lib/libopencv_java470.dylib</p>
 </li>
@@ -11636,5 +11637,19 @@ org<span class="token punctuation">.</span>springframework<span class="token pun
       <tags>
         <tag>注解</tag>
       </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>//post/testPdfShow.html</url>
+    <content><![CDATA[
+
+	<div class="row">
+    <embed src="/file/技术面试常见智力题.pdf" width="100%" height="550" type="application/pdf">
+	</div>
+
+
+
+
+]]></content>
   </entry>
 </search>
