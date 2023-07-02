@@ -1,0 +1,1053 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Turbo Rails Tutorial-第四章 | 玲辰书斋</title><meta name="author" content="庚辰"><meta name="copyright" content="庚辰"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="​     Turbo Drive这一章我们将解释Turbo Drive是什么？它是怎么转化Link clicks和Form submissions为Ajax请求来加速Rails系统。 是什么？Turbo Drive是Turbo的第一部分，已经被Rails7默认引入了，可以看一下Gemfile和application.js # Gemfile  # Hotwire&#39;s SPA-like p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Turbo Rails Tutorial-第四章">
+<meta property="og:url" content="http://www.chengling.cloud/post/Ruby/Hotails/%E7%AC%AC%E5%9B%9B%E7%AB%A0.html">
+<meta property="og:site_name" content="玲辰书斋">
+<meta property="og:description" content="​     Turbo Drive这一章我们将解释Turbo Drive是什么？它是怎么转化Link clicks和Form submissions为Ajax请求来加速Rails系统。 是什么？Turbo Drive是Turbo的第一部分，已经被Rails7默认引入了，可以看一下Gemfile和application.js # Gemfile  # Hotwire&#39;s SPA-like p">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.chengling.cloud/img/default_top_img.jpg">
+<meta property="article:published_time" content="2023-07-02T02:24:44.000Z">
+<meta property="article:modified_time" content="2023-07-02T09:02:35.872Z">
+<meta property="article:author" content="庚辰">
+<meta property="article:tag" content="Rails">
+<meta property="article:tag" content="turbo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.chengling.cloud/img/default_top_img.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://www.chengling.cloud/post/Ruby/Hotails/%E7%AC%AC%E5%9B%9B%E7%AB%A0"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Turbo Rails Tutorial-第四章',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-02 17:02:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/myHead.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">43</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top_img.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">玲辰书斋</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Turbo Rails Tutorial-第四章</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-02T02:24:44.000Z" title="发表于 2023-07-02 10:24:44">2023-07-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-02T09:02:35.872Z" title="更新于 2023-07-02 17:02:35">2023-07-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Turbo-Rails/">Turbo-Rails</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Turbo Rails Tutorial-第四章"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>​    </p>
+<h2 id="Turbo-Drive"><a href="#Turbo-Drive" class="headerlink" title="Turbo Drive"></a>Turbo Drive</h2><p>这一章我们将解释<code>Turbo Drive</code>是什么？它是怎么转化Link clicks和Form submissions为Ajax请求来加速Rails系统。</p>
+<h3 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h3><p>Turbo Drive是Turbo的第一部分，已经被Rails7默认引入了，可以看一下Gemfile和application.js</p>
+<pre class="line-numbers language-none"><code class="language-none"># Gemfile
+
+# Hotwire&#39;s SPA-like page accelerator [https:&#x2F;&#x2F;turbo.hotwired.dev]
+gem &quot;turbo-rails&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// app/javascript/application.js</span>
+
+<span class="token comment">// Entry point for the build script in your package.json</span>
+<span class="token keyword">import</span> <span class="token string">"@hotwired/turbo-rails"</span>
+<span class="token keyword">import</span> <span class="token string">"./controllers"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>通过<code>Turbo Drive</code>，HTML页面不会被完全重新渲染，当我们的<code>Turbo Drive</code>拦截一个<code>link clikc or a form submission</code>时，这个Ajax请求的响应体只会替换HTML也页面中的<body>部分，其中大多数请求<head>部分不会修改，这就使性能得到优化，因为不需要重复下载相同的CSS和JS，当你第一次访问网页时，就下载了所有的<code>CSS和JS</code>文件，后面就不需要再加载了。</p>
+<p>但隐藏的问题是：如果服务端CSS和JS代码更新了，但用户之前访问过网页，CSS和JS不再更新怎么办？我们将在后面回答这个问题、</p>
+<h3 id="Turbo-Drive是如何工作的？"><a href="#Turbo-Drive是如何工作的？" class="headerlink" title="Turbo Drive是如何工作的？"></a>Turbo Drive是如何工作的？</h3><p>Turbo Drive拦截了 links 的单击事件和 forms 的提交事件。</p>
+<p>每次一个 link is clicked ，Turbo Drive 就会拦截该事件，重写默认的行为转为Ajax请求，并把结果中的<body>部分与原页面做替换。</p>
+<p>这也是为什么Rails7项目默认为单页面应用，页面第一次访问不会完全从新渲染,只有<body>部分。</p>
+<p>每当有links被click时，伪代码实现例如：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// Select all links on the page</span>
+<span class="token keyword">const</span> links <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelectorAll</span><span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Add a "click" event listener on each link to intercept the click</span>
+<span class="token comment">// and override the default behavior</span>
+links<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">link</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  link<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// Override default behavior</span>
+    event<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">// Convert the click on the link into an AJAX request</span>
+    <span class="token comment">// Replace the current page's &lt;body> with the &lt;body> of the response</span>
+    <span class="token comment">// and leave the &lt;head> unchanged</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>对于表单提交也是类似的，不再展示伪代码。</p>
+<hr>
+<p>在前面我们讨论过，Rails7的一大变化。</p>
+<p><strong>Invalid form submissions have to return a 422 status code for Turbo Drive to replace the <body> of the page and display the form errors.</strong></p>
+<p>422状态码就是指：Rails中的<code>:unprocessable_entity</code>，如果你看<code>scaffold generator</code>生成的代码，就会发现在<code>#create and #update</code>默认带有<code>status: :unprocessable_entity</code>。</p>
+<hr>
+<p><strong>Turbolinks</strong>是<strong>Turbo Drive</strong>的前身，只是前者只能拦截 <code>clicks on links</code>,不包含表单提交，现在<strong>Turbo Drive</strong>包含处理表单提交，所以作者重命名TurboLinks为Turbo Drive。</p>
+<hr>
+<h3 id="禁用Turbo-Drive"><a href="#禁用Turbo-Drive" class="headerlink" title="禁用Turbo Drive"></a>禁用Turbo Drive</h3><p>在某些情况中，我们需要禁用Turbo Drive，比如某些Gem不支持Turbo Drive，一个好的应对方式就是在特定的地方禁用，例如登陆和退出的表单。下面我们示例禁用特定的<code>links and forms</code></p>
+<p>只需要添加：<code>data-turbo=&quot;false&quot;</code></p>
+<p>比如在<code>Quotes#index</code>页面，让我们禁用新建功能中的Turbo Drive</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Quotes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+    &lt;%= link_to "New quote",
+                new_quote_path,
+                class: "btn btn--primary",
+                data: &#123; turbo: false &#125; %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= render @quotes %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果你去看控制台中的网络包，你会发现每次请求时有四个请求。</p>
+<ul>
+<li>One HTML request to load the Quotes#new HTML page</li>
+<li>One request to load the CSS bundle</li>
+<li>One request to load the JavaScript bundle</li>
+<li>One request to load the favicon of the page</li>
+</ul>
+<hr>
+<p>这里是用谷歌浏览器，如果你是其他浏览器，可能不太一样</p>
+<hr>
+<p>但如果我们恢复刚才的代码，再次请求，就会发现只有两个请求：</p>
+<ul>
+<li>One AJAX request to get the HTML for the Quotes#new page</li>
+<li>One request to load the favicon of the page</li>
+</ul>
+<p>同样的我们也可以测试表单提交：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%= simple_form_for quote,
+                    html: &#123;
+                      class: "quote form",
+                      data: &#123; turbo: false &#125;
+                    &#125; do |f| %>
+
+  &lt;% if quote.errors.any? %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>error-message<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      &lt;%= quote.errors.full_messages.to_sentence.capitalize %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &lt;% end %>
+
+  &lt;%= f.input :name, input_html: &#123; autofocus: true &#125; %>
+  &lt;%= f.submit class: "btn btn--secondary" %>
+&lt;% end %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>请求时，发现有五个请求包：</p>
+<ul>
+<li>One HTML request to submit the form</li>
+<li>The HTML redirection to the Quotes#index page</li>
+<li>One request to load the CSS bundle</li>
+<li>One request to load the JavaScript bundle</li>
+<li>One request to load the favicon of the page</li>
+</ul>
+<p>当我们恢复时，再看只有三个请求包</p>
+<ul>
+<li>One AJAX request to submit the form</li>
+<li>The AJAX redirection to the Quotes#index page</li>
+<li>One request to load the favicon of the page</li>
+</ul>
+<p>我们已经证明了Turbo Drive为我们做什么了。</p>
+<ul>
+<li>它转化了所有的 Link clicks 和 form submissions 为AJAX请求，并加速应用</li>
+<li>它阻拦了加载CSS和JS文件的重复加载</li>
+</ul>
+<p>我们发现，我们也没有写一句JS代码</p>
+<hr>
+<p>如果你想全局禁用Turbo Drive，虽然我们不推荐，你可以以下操作：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// app/javascript/application.js</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Turbo <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@hotwired/turbo-rails"</span>
+Turbo<span class="token punctuation">.</span>session<span class="token punctuation">.</span>drive <span class="token operator">=</span> <span class="token boolean">false</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<h3 id="Reloading-the-page-with-data-turbo-track-”reload”"><a href="#Reloading-the-page-with-data-turbo-track-”reload”" class="headerlink" title="Reloading the page with data-turbo-track=”reload”"></a>Reloading the page with data-turbo-track=”reload”</h3><p>之前我们说过，ajax请求仅仅替换<body>中的内容，而没有<head>，导致用户无法使用最新的JS和CSS文件。</p>
+<p>为了解决这个问题，每次新的请求，Turbo Drive比较DOM节点中的<code>data-turbo-track=&quot;reload&quot;</code>和响应中的<head>，如果不同则重新加载整个页面。</p>
+<p>如果你看一下<code>application.html.erb</code>，就会发现：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/layouts/application.html.erb %>
+
+&lt;%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+&lt;%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>现在我们知道他的作用了。</p>
+<p>这里你可以打开控制台去看一下请求，然后修改你的CSS或JS文件，再发一个请求，看一下和之前有什么区别？</p>
+<hr>
+<p><strong>注意：</strong>做一些小的测试体验，像上面那样，会让我们更清晰的明白发生了什么事儿，在下面的章节中我们还会做一些小的测试。</p>
+<hr>
+<h3 id="Changing-the-style-of-the-Turbo-Drive-progress-bar"><a href="#Changing-the-style-of-the-Turbo-Drive-progress-bar" class="headerlink" title="Changing the style of the Turbo Drive progress bar"></a>Changing the style of the Turbo Drive progress bar</h3><p>随着<code>Turbo Drive</code>重写浏览器的默认行为，浏览器的进度条会受到一些影响。</p>
+<p><code>Turbo</code>已经为浏览器默认加载条构建了替代品，并且我们可以引入自己的样式，让我们先来写样式：</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">// app/assets/stylesheets/components/_turbo_progress_bar.scss
+
+.turbo-progress-bar</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>to right<span class="token punctuation">,</span> <span class="token function">var</span><span class="token punctuation">(</span>--color-primary<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">var</span><span class="token punctuation">(</span>--color-primary-rotate<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>别忘了引入Sass文件</p>
+<pre class="line-numbers language-css" data-language="css"><code class="language-css">// app/assets/stylesheets/application.sass.scss
+
+// All the previous code
+<span class="token atrule"><span class="token rule">@import</span> <span class="token string">"components/turbo_progress_bar"</span><span class="token punctuation">;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>想要查看到我们的样式是否成功的加载，一个好办法就是让我们程序休眠几秒，我们可以试试：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/controllers/application_controller.rb</span>
+
+<span class="token keyword">class</span> <span class="token class-name">ApplicationController</span> <span class="token operator">&lt;</span> ActionController<span class="token double-colon punctuation">::</span>Base
+  <span class="token comment"># Add this line to see the progress bar long enough</span>
+  <span class="token comment"># and remove it when it has the expected styles</span>
+  before_action <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">&#123;</span> sleep <span class="token number">3</span> <span class="token punctuation">&#125;</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>现在你就能更方便的看到效果了，让我们删除这段用于休眠的临时代码吧。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>可以看到这一章很简单，我们基本没写什么自定义JS代码，就能获得实质性的性能提升。</p>
+<p>下一章，我们将使用<code>Turbo Freames</code>去转化一些复合页面为小的片段页面。</p>
+<h2 id="Turbo-Frames-and-Turbo-Stream-templates"><a href="#Turbo-Frames-and-Turbo-Stream-templates" class="headerlink" title="Turbo Frames and Turbo Stream templates"></a>Turbo Frames and Turbo Stream templates</h2><p>这一章节，我们将学习如何切割页面为小的独立部分，读完这一章节后，增删改查行为就会统一在index页面展示。</p>
+<h3 id="要干嘛？"><a href="#要干嘛？" class="headerlink" title="要干嘛？"></a>要干嘛？</h3><p>在我们现在的quotes编辑器中，当进行<code>#new and #edit</code>时，会跳转到其他的页面，而本章希望通过<code>Turbo Frames and Turbo Streams</code>做到当操作时，均在<code>Quotes#index</code>页面进行。可以看看线上的效果：<a target="_blank" rel="noopener" href="https://www.hotrails.dev/quotes">https://www.hotrails.dev/quotes</a></p>
+<p>在我们练习<code>Turbo Frame</code>技巧前，先画一些草图来说明我们要干的事儿，然后更新我们的系统测试。</p>
+<p>现在我们的<code>Quotes#index</code>页面长这个样子</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/7cae681616507225567e0f2a00f99fcf.png" alt="img"></p>
+<p>现在我们希望当点击<code>New quote</code>时，表单可以添加到原来页面的标题下面</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/bb3112182f8b730e7f29af8b05abb35e.png" alt="img"></p>
+<p>当我们点击<code>Create quote</code>按钮时，创建好的quote应该展示在quotes列表的最上面</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/48b3d9cc26ef1c1bf823fbb9557bfabf.png" alt="img"></p>
+<p>当我们点击第二个quote的<code>Edit</code>按钮时，表格应该直接替换选择的这个quote卡片</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/650ce5d398557c92636e06bf9d59a602.png" alt="img"></p>
+<p>当我们点击<code>Update quote</code>按钮时，又展示回卡片的样式，并且数据更新</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/68d75d31efc764d338d58bb2e3f96192.png" alt="img"></p>
+<p>而其他的行为，应该不受到影响</p>
+<ul>
+<li>点击<code>Delete</code>按钮时，该条quote应该就被删除掉来了</li>
+<li>点击quote的标题时，应该跳转到<code>Quotes#show</code>页面</li>
+</ul>
+<p>让我们现在更新测试代码来匹配对应的设想行为</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># test/system/quotes_test.rb</span>
+
+<span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"application_system_test_case"</span></span>
+
+<span class="token keyword">class</span> <span class="token class-name">QuotesTest</span> <span class="token operator">&lt;</span> ApplicationSystemTestCase
+  setup <span class="token keyword">do</span>
+    <span class="token variable">@quote</span> <span class="token operator">=</span> quotes<span class="token punctuation">(</span><span class="token symbol">:first</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+
+  test <span class="token string-literal"><span class="token string">"Showing a quote"</span></span> <span class="token keyword">do</span>
+    visit quotes_path
+    click_link <span class="token variable">@quote</span><span class="token punctuation">.</span>name
+
+    assert_selector <span class="token string-literal"><span class="token string">"h1"</span></span><span class="token punctuation">,</span> <span class="token symbol">text</span><span class="token operator">:</span> <span class="token variable">@quote</span><span class="token punctuation">.</span>name
+  <span class="token keyword">end</span>
+
+  test <span class="token string-literal"><span class="token string">"Creating a new quote"</span></span> <span class="token keyword">do</span>
+    visit quotes_path
+    assert_selector <span class="token string-literal"><span class="token string">"h1"</span></span><span class="token punctuation">,</span> <span class="token symbol">text</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Quotes"</span></span>
+
+    click_on <span class="token string-literal"><span class="token string">"New quote"</span></span>
+    fill_in <span class="token string-literal"><span class="token string">"Name"</span></span><span class="token punctuation">,</span> <span class="token symbol">with</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Capybara quote"</span></span>
+
+    assert_selector <span class="token string-literal"><span class="token string">"h1"</span></span><span class="token punctuation">,</span> <span class="token symbol">text</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Quotes"</span></span>
+    click_on <span class="token string-literal"><span class="token string">"Create quote"</span></span>
+
+    assert_selector <span class="token string-literal"><span class="token string">"h1"</span></span><span class="token punctuation">,</span> <span class="token symbol">text</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Quotes"</span></span>
+    assert_text <span class="token string-literal"><span class="token string">"Capybara quote"</span></span>
+  <span class="token keyword">end</span>
+
+  test <span class="token string-literal"><span class="token string">"Updating a quote"</span></span> <span class="token keyword">do</span>
+    visit quotes_path
+    assert_selector <span class="token string-literal"><span class="token string">"h1"</span></span><span class="token punctuation">,</span> <span class="token symbol">text</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Quotes"</span></span>
+
+    click_on <span class="token string-literal"><span class="token string">"Edit"</span></span><span class="token punctuation">,</span> <span class="token symbol">match</span><span class="token operator">:</span> <span class="token symbol">:first</span>
+    fill_in <span class="token string-literal"><span class="token string">"Name"</span></span><span class="token punctuation">,</span> <span class="token symbol">with</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Updated quote"</span></span>
+
+    assert_selector <span class="token string-literal"><span class="token string">"h1"</span></span><span class="token punctuation">,</span> <span class="token symbol">text</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Quotes"</span></span>
+    click_on <span class="token string-literal"><span class="token string">"Update quote"</span></span>
+
+    assert_selector <span class="token string-literal"><span class="token string">"h1"</span></span><span class="token punctuation">,</span> <span class="token symbol">text</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Quotes"</span></span>
+    assert_text <span class="token string-literal"><span class="token string">"Updated quote"</span></span>
+  <span class="token keyword">end</span>
+
+  test <span class="token string-literal"><span class="token string">"Destroying a quote"</span></span> <span class="token keyword">do</span>
+    visit quotes_path
+    assert_text <span class="token variable">@quote</span><span class="token punctuation">.</span>name
+
+    click_on <span class="token string-literal"><span class="token string">"Delete"</span></span><span class="token punctuation">,</span> <span class="token symbol">match</span><span class="token operator">:</span> <span class="token symbol">:first</span>
+    assert_no_text <span class="token variable">@quote</span><span class="token punctuation">.</span>name
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="什么是Turbo-Frames？"><a href="#什么是Turbo-Frames？" class="headerlink" title="什么是Turbo Frames？"></a>什么是Turbo Frames？</h3><pre class="line-numbers language-none"><code class="language-none">Turbo Frames are independent pieces of a web page that can be appended, prepended, replaced, or removed without a complete page refresh and writing a single line of JavaScript!<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>也就是可以添加，删除，替换独立的网页片段，而不需要刷新和写自定义的JS。</p>
+<p>这一部分中，我们将使用几个小的案例来学习<code>Turbo Frames</code>，然后再实现我们上面的预想。</p>
+<p>让我们创建第一个<code>Turbo Frame</code>，这里我们使用<code>turbo_frame_tag helper</code>，我们把<code>Quotes#index</code>页面中header部分嵌套到 id 为”first_turbo_frame”的Turbo Frame中</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/index.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= turbo_frame_tag "first_turbo_frame" do %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Quotes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+      &lt;%= link_to "New quote", new_quote_path, class: "btn btn--primary" %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &lt;% end %>
+
+  &lt;%= render @quotes %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果你看一下DOM，Turbo Frame生成的HTML就长下面的样子</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>turbo-frame</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>first_turbo_frame<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Quotes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn--primary<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/quotes/new<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>New quote<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>turbo-frame</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如我们看到的，<code>turbo_frame_tag helper</code>帮助我们创建了<turbo-frame>自定义标签，其中id就是我们传递给helper的第一个参数。</p>
+<p><turbo-frame>标签并不存在于HTML官方定义中，这是<code>Turbo JavaScript Library</code>中定义的元素。它拦截 <code>form submissions and clicks on links</code>，让这些frames成为你网页的独立部分！</p>
+<p>现在点击<code>New quote</code>按钮，页面上被turbo-frame嵌套的部分消失了，并且浏览器控制台显示：<code>Response has no matching &lt;turbo-frame id=&quot;first_turbo_frame&quot;&gt; element</code>，让我们来解释这奇怪的现象。</p>
+<h3 id="Turbo-Frames-cheat-sheet"><a href="#Turbo-Frames-cheat-sheet" class="headerlink" title="Turbo Frames cheat sheet"></a>Turbo Frames cheat sheet</h3><p>这一部分我们将探索一些应用于<code>Turbo Frames</code>的规则</p>
+<p>尽管我们的例子都是 Links ， 不过同样适用于 Forms</p>
+<hr>
+<p><strong>规则1：</strong>当你点击一个嵌套<code>Turbo Frame</code>的超链接，<code>Turbo</code>期待在目标页面中有一个相同ID的<code>frame</code>，然后目标页面的 <code>frame</code>内容将会替换原页面中的<code>frame</code>内容。</p>
+<p>单纯去说，会比较难懂，我们来画一些草图，来更好的理解</p>
+<p>现在的<code>Quotes#index</code>页面长这个样子：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/7ce595524b517a5faed2da331dfa662d.png" alt="img"></p>
+<p>现在我们用同样的ID嵌套<code>Quotes#new</code>页面片段</p>
+<p>为了匹配草图的内容，我们现在改改代码</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/new.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= link_to sanitize("<span class="token entity named-entity" title="&larr;">&amp;larr;</span> Back to quotes"), quotes_path %>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>New quote<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= turbo_frame_tag "first_turbo_frame" do %>
+    &lt;%= render "form", quote: @quote %>
+  &lt;% end %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>现在我们在浏览器中试试，当我们刷新<code>Quotes#index</code>页面，并且点击<code>New quote</code>按钮时，你会发现<code>Quotes#new</code>页面中被嵌套的内容，替换了<code>Quotes#index</code>页面中相同id的内容。</p>
+<hr>
+<p><strong>规则2：</strong>当你点击一个嵌套了<code>Turbo Frame</code>的超链接，但目标页面没有相同ID的frame，原先页面中嵌套的frame消失，并且以日志的形式响应异常信息，显示在控制台中。</p>
+<p>还记得我们上面遇到的奇怪现象吗？这就是因为规则二导致的，如果你在<code>Quotes#new</code>的form上，再写其他ID的frame，刷新页面，并点击<code>New quote</code>，就会看到异常日志再次出现。</p>
+<hr>
+<p><strong>规则3：</strong>link 可以指定另外一个frame id去串联内容</p>
+<p>这个规则很有用，但需要更多的草图去理解它，我们现在使用id为second_frame的Turbo Frame去嵌套quote列表，在<code>Quotes#index</code>页面</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/ecd2fecc16fc2bcd5f574b44d3c46f97.png" alt="img"></p>
+<p>在<code>Quotes#new</code>页面中，让我们使用相同的ID去嵌套表单</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/4ecaf53db21447f056f442c9bd5f030c.png" alt="img"></p>
+<p>根据草图，修改我们的源码，我在代码中标记了关键部分</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/index.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= turbo_frame_tag "first_turbo_frame" do %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Quotes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+      &lt;%= link_to "New quote",
+                  new_quote_path,
+                  &lt;% # 这里是关键，虽然被first_turbo_frame的frame嵌套 %>
+                    但是指定了second_frame的frame %>
+      						&lt;% # 这里声明，将目标页面中，被id为second_frame嵌套的frame替换，当前页面中相同id的frame部分>&lt;/%>
+                  data: &#123; turbo_frame: "second_frame" &#125;,
+                  class: "btn btn--primary" %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &lt;% end %>
+
+  &lt;%= turbo_frame_tag "second_frame" do %>
+    &lt;%= render @quotes %>
+  &lt;% end %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span>
+&lt;%# app/views/quotes/new.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= link_to sanitize("<span class="token entity named-entity" title="&larr;">&amp;larr;</span> Back to quotes"), quotes_path %>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>New quote<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= turbo_frame_tag "second_frame" do %>
+    &lt;%= render "form", quote: @quote %>
+  &lt;% end %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>现在我们再试试，我们访问<code>Quotes#index</code>页面，刷新，点击<code>New quoto</code>按钮，可以看到我们的quotes列表被表单替换掉了。这个就是我们传递的<code> data: &#123; turbo_frame: &quot;second_frame&quot; &#125;</code>发挥的作用。</p>
+<hr>
+<p><strong>注意：</strong></p>
+<p>有一个特殊的frame代表整个页面，但它并不是一个真是的<code>Turbo Frame</code>，但是又很像，所以你基本可以认为是一致的。</p>
+<p>比如：如果你想让<code>New quote</code>按钮去替换整个页面，我们可以使用<code>data-turbo-frame=&quot;_top&quot;</code>像下面这样：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/76e6e2c392b1450c138e8b3521b63608.png" alt="img"></p>
+<p>当然每个页面都默认有<code>_top frame</code>，所以<code>Quotes#new</code>也有</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/fa4967e41c2314b3f39f87529a0a1f6e.png" alt="img"></p>
+<p>我们该代码试试：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/index.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= turbo_frame_tag "first_turbo_frame" do %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Quotes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+      &lt;%= link_to "New quote",
+                  new_quote_path,
+                  data: &#123; turbo_frame: "_top" &#125;,
+                  class: "btn btn--primary" %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &lt;% end %>
+
+  &lt;%= render @quotes %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我们可以在<code>Quotes#new</code>页面中添加任意内容，因为浏览器会替换整个页面，例如：我们把<code>Quotes#new</code>页面恢复为最初的样子</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/new.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= link_to sanitize("<span class="token entity named-entity" title="&larr;">&amp;larr;</span> Back to quotes"), quotes_path %>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>New quote<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= render "form", quote: @quote %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>现在我们再访问<code>Quotes#indexd</code>页面，并进行添加，可以看到整个页面都被<code>Quotes#new</code>页面替换了，但是url没有变。</p>
+<p><strong>当使用</strong><code>**_top**</code><strong>关键词时，页面的URL会改变为目标页面的URL，这与使用常规Turbo Frame时的不同之处。</strong></p>
+<hr>
+<p>可以看到，Turbo Frames算是Rails开发人员的新增利器，它可以帮助我们切割独立的页面而不需要写什么JS代码。</p>
+<p>上面的内容针对我们的项目基本够用了，但我们仍要学习两个东西：</p>
+<ul>
+<li>怎么将<code>Turbo Frames</code>与<code>Turbo_stream fomat</code>结合使用？</li>
+<li>如何对Frames命名，通过良好的约定</li>
+</ul>
+<p>让我们开始练习，并通过测试，在此之前记得把<code>Quotes#index</code>页面恢复为最初状态</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/index.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Quotes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+    &lt;%= link_to "New quote", new_quote_path, class: "btn btn--primary" %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= render @quotes %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Editing-quotes-with-Turbo-Frames"><a href="#Editing-quotes-with-Turbo-Frames" class="headerlink" title="Editing quotes with Turbo Frames"></a>Editing quotes with Turbo Frames</h3><p>现在我们先做quotes修改部分使用Turbo Frames，目标就是当点击修改时，edit表单将会替换选中的quote数据。通过上面的学习，这一点很容易做到，但如何给这个Frame起一个好名字呢？</p>
+<p>在<code>Quotes#index</code>页面中，每个被Turbo Frame嵌套的quote数据都应该有一个唯一ID，一个好的约定就是：模型单数形式_模型的ID，看我们画一个草图展示：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/30c97bcce1d6f6ac8f72d1c6611b3ad1.png" alt="img"></p>
+<p>假如我们想编辑第二个数据，当我们点击edit时，我们需要<code>Quotes#edit</code>页面被同样的ID frame嵌套</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/953789bb0c5857882861ef8233e70bf0.png" alt="img"></p>
+<p>通过合适的命名，当我们点击<code>Quotes#index</code>页面的edit按钮时，嵌套表单的frame将会替换嵌套第二条数据的frame。</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/184c38d3e6f9d417f40e9577a113dda3.png" alt="img"></p>
+<p>现在开始代码实现，首先在<code>Quotes#index</code>页面，使用<code>quote_#&#123;quote_id&#125;</code>的frame嵌套住每条数据，而index页面的数据都来源于<code>_quote.html.erb</code>部分，所以我们只需要操作这部分：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/_quote.html.erb %>
+
+&lt;%= turbo_frame_tag "quote_#&#123;quote.id&#125;" do %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &lt;%= link_to quote.name, quote_path(quote) %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote__actions<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      &lt;%= button_to "Delete",
+                    quote_path(quote),
+                    method: :delete,
+                    class: "btn btn--light" %>
+      &lt;%= link_to "Edit",
+                  edit_quote_path(quote),
+                  class: "btn btn--light" %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&lt;% end %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>下来是<code>Quotes#edit</code>页面</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/edit.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= link_to sanitize("<span class="token entity named-entity" title="&larr;">&amp;larr;</span> Back to quote"), quote_path(@quote) %>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Edit quote<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= turbo_frame_tag "quote_#&#123;@quote.id&#125;" do %>
+    &lt;%= render "form", quote: @quote %>
+  &lt;% end %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>通过简单的几行代码，我们就实现了功能，你可以在浏览器中去查看，测试一下提交正常数据，异常数据是否都能正常工作。</p>
+<p>不过你可能已经注意到当我们想查看quote详情时，不再起作用，并且当删除时，控制台中会爆出异常。这和上面的规则2有关，我们很快去解决，不过在此之前，我们聊聊<code>dom_id helper</code>帮助我们写出就简洁的Turbo Frame ids。</p>
+<h3 id="Turbo-Frames-and-the-dom-id-helper"><a href="#Turbo-Frames-and-the-dom-id-helper" class="headerlink" title="Turbo Frames and the dom_id helper"></a>Turbo Frames and the dom_id helper</h3><p>你可以传递一个字符串或者对象，它能帮助我们转为一个<code>dom_id</code>，比如：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># If the quote is persisted and its id is 1:</span>
+dom_id<span class="token punctuation">(</span><span class="token variable">@quote</span><span class="token punctuation">)</span> <span class="token comment"># => "quote_1"</span>
+
+<span class="token comment"># If the quote is a new record:</span>
+dom_id<span class="token punctuation">(</span><span class="token class-name">Quote</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">)</span> <span class="token comment"># => "new_quote"</span>
+
+<span class="token comment"># Note that the dom_id can also take an optional prefix argument</span>
+<span class="token comment"># We will use this later in the tutorial</span>
+dom_id<span class="token punctuation">(</span><span class="token class-name">Quote</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"prefix"</span></span><span class="token punctuation">)</span> <span class="token comment"># "prefix_new_quote"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>turbo_frame_tag helper</code> 自动将对象，转为dom_id，所以我们可以改改之前在<code>Quotes#index</code>和<code>Quotes#edit</code>页面，传递对象即可，下面的代码是等价的：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token operator">&lt;</span><span class="token operator">%=</span> turbo_frame_tag <span class="token string-literal"><span class="token string">"quote_</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content"><span class="token variable">@quote</span><span class="token punctuation">.</span>id</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span> <span class="token keyword">do</span> <span class="token string-literal"><span class="token string">%>
+...
+&lt;% end %></span></span>
+
+  <span class="token operator">&lt;</span><span class="token operator">%=</span> turbo_frame_tag dom_id<span class="token punctuation">(</span><span class="token variable">@quote</span><span class="token punctuation">)</span> <span class="token keyword">do</span> <span class="token string-literal"><span class="token string">%>
+...
+&lt;% end %></span></span>
+
+  <span class="token operator">&lt;</span><span class="token operator">%=</span> turbo_frame_tag <span class="token variable">@quote</span> <span class="token string-literal"><span class="token string">%>
+...
+&lt;% end %></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所以我们利用语法糖来改改：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/_quote.html.erb %>
+
+&lt;%= turbo_frame_tag quote do %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &lt;%= link_to quote.name, quote_path(quote) %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote__actions<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      &lt;%= button_to "Delete",
+                    quote_path(quote),
+                    method: :delete,
+                    class: "btn btn--light" %>
+      &lt;%= link_to "Edit",
+                  edit_quote_path(quote),
+                  class: "btn btn--light" %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&lt;% end %>
+&lt;%# app/views/quotes/edit.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= link_to sanitize("<span class="token entity named-entity" title="&larr;">&amp;larr;</span> Back to quote"), quote_path(@quote) %>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Edit quote<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= turbo_frame_tag @quote do %>
+    &lt;%= render "form", quote: @quote %>
+  &lt;% end %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>一切工作正常，我们继续。</p>
+<h3 id="Showing-and-deleting-quotes"><a href="#Showing-and-deleting-quotes" class="headerlink" title="Showing and deleting quotes"></a>Showing and deleting quotes</h3><p>还是上面的问题：</p>
+<ol>
+<li>查看quote详情没法正常工作了，数据也消失了，控制台也报错</li>
+<li>删除按钮也在控制台报错了</li>
+</ol>
+<p>现在的<code>Quotes#index</code>页面长下面的样子：</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/a7f51f8b8880ae36e98c2a5502692d31.png" alt="img"></p>
+<p>每个数据都被quote_id嵌套，但<code>Quotes#show</code>页面并没有相同的ID</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/a9592b5c2cb19ed7cb403039935f8c59.png" alt="img"></p>
+<p>这里我们就使用<code>&quot;_top&quot;</code>来替换整个页面</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/_quote.html.erb %>
+
+&lt;%= turbo_frame_tag quote do %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &lt;%= link_to quote.name,
+                quote_path(quote),
+                data: &#123; turbo_frame: "_top" &#125; %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote__actions<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      &lt;%= button_to "Delete",
+                    quote_path(quote),
+                    method: :delete,
+                    class: "btn btn--light" %>
+      &lt;%= link_to "Edit",
+                  edit_quote_path(quote),
+                  class: "btn btn--light" %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&lt;% end %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>再在浏览器中测试，发现第一个问题就解决啦</p>
+<p>我们也可以用同样的方式，解决第二个问题：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/_quote.html.erb %>
+
+&lt;%= turbo_frame_tag quote do %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &lt;%= link_to quote.name,
+                quote_path(quote),
+                data: &#123; turbo_frame: "_top" &#125; %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote__actions<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      &lt;%= button_to "Delete",
+                    quote_path(quote),
+                    method: :delete,
+                    form: &#123; data: &#123; turbo_frame: "_top" &#125; &#125;,
+                    class: "btn btn--light" %>
+      &lt;%= link_to "Edit",
+                  edit_quote_path(quote),
+                  class: "btn btn--light" %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&lt;% end %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>一切工作良好，但出现了个副作用，比如当我们给第二个数据点击Edit时，这时还没有提交，然后删除下面的数据，则页面所有内容被替换，第二条数据的修改框也就没有了。</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/3c4ad0ed70f3646e667828aed2f9e1ed.png" alt="img"></p>
+<p>但我们希望的是删除第三条数据时，不影响其他的数据，Turbo and Rails再次帮助了我们，让我们先删除对Delete按钮做出的修改</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/_quote.html.erb %>
+
+&lt;%= turbo_frame_tag quote do %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    &lt;%= link_to quote.name,
+                quote_path(quote),
+                data: &#123; turbo_frame: "_top" &#125; %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote__actions<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      &lt;%= button_to "Delete",
+                    quote_path(quote),
+                    method: :delete,
+                    class: "btn btn--light" %>
+      &lt;%= link_to "Edit",
+                  edit_quote_path(quote),
+                  class: "btn btn--light" %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+&lt;% end %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>是时候介绍：<code>Turbo_Stream format</code>了</p>
+<h3 id="The-Turbo-Stream-format"><a href="#The-Turbo-Stream-format" class="headerlink" title="The Turbo Stream format"></a>The Turbo Stream format</h3><p>在Rails7中，表单提交会附带<code>Turbo_Stream format</code>，我们删除一个quote，并看看Rails的日志</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Started DELETE <span class="token string">"/quotes/908005781"</span> <span class="token keyword">for</span> <span class="token number">127.0</span>.0.1 at <span class="token number">2022</span>-01-27 <span class="token number">15</span>:30:13 +0100
+Processing by QuotesController<span class="token comment">#destroy as TURBO_STREAM</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>可以看到<code>#destroy</code>带有<code>Turbo_Stream</code>，让我们看看怎么利用它去解决上面的问题</p>
+<p>在Controller中，我们需要通过<code>respond_to</code>支持HTML和<code>Turbo_Stream</code></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/controllers/quotes_controller.rb</span>
+
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">destroy</span></span>
+  <span class="token variable">@quote</span><span class="token punctuation">.</span>destroy
+
+  respond_to <span class="token keyword">do</span> <span class="token operator">|</span>format<span class="token operator">|</span>
+    format<span class="token punctuation">.</span>html <span class="token punctuation">&#123;</span> redirect_to quotes_path<span class="token punctuation">,</span> <span class="token symbol">notice</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Quote was successfully destroyed."</span></span> <span class="token punctuation">&#125;</span>
+    format<span class="token punctuation">.</span>turbo_stream
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我们创建对应的视图</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/destroy.turbo_stream.erb %>
+
+&lt;%= turbo_stream.remove "quote_#&#123;@quote.id&#125;" %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>我们在浏览器中再次删除quote，并查看响应的HTML数据：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>turbo-stream</span> <span class="token attr-name">action</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>remove<span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote_908005780<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>turbo-stream</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>这个就是<code>turbo_stream helper</code>接收了<code>remove</code>方法和<code>&quot;quote_#&#123;@quote.id&#125;</code>，然后又转化为了<turbo-stream>自定义标签</p>
+<p><strong>当浏览器接收到了这段HTML代码，Turbo知道怎么拦截它，</strong>找到对应的参数ID，我们的例子中，就是删除掉已经被删除了的数据frame，而其他的页面不变，这正是我们想要的。</p>
+<hr>
+<p>注意：当我写下本章内容时，<code>turbo_stream helper</code>可以帮助我们响应下面的方法：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># Remove a Turbo Frame</span>
+turbo_stream.remove
+
+<span class="token comment"># Insert a Turbo Frame at the beginning/end of a list</span>
+turbo_stream.append
+turbo_stream.prepend
+
+<span class="token comment"># Insert a Turbo Frame before/after another Turbo Frame</span>
+turbo_stream.before
+turbo_stream.after
+
+<span class="token comment"># Replace or update the content of a Turbo Frame</span>
+turbo_stream.update
+turbo_stream.replace<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>当然除了需要一个对应的方法，<code>turbo_stream helper</code>也需要一个 partial and locals 作为参数，来知道需要操作哪个HTML使用对应方法。后面我们将展开学习。</p>
+<hr>
+<p>有了Turbo Frame 和TURBO_STREAM format的结合，我们将能够在我们的网页上执行精确的操作，而不必写一行JavaScript，因此保留我们的网页的状态。</p>
+<p>还有就是，turbo_stream helper 也可以使用<code>dom_id</code>，因此我们再修改：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/destroy.turbo_stream.erb %>
+
+&lt;%= turbo_stream.remove @quote %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Creating-a-new-quote-with-Turbo-Frames"><a href="#Creating-a-new-quote-with-Turbo-Frames" class="headerlink" title="Creating a new quote with Turbo Frames"></a>Creating a new quote with Turbo Frames</h3><p>也就是我们的quote编辑器新增功能，在深处实现之前，我们先画几个草图说明。</p>
+<p>我们希望当点击New quote时，表单可以出现在页面头部的下面，当创建好后，把新加的数据放到列表的最上面，并删除原来的表单。为此我们需要多两个Turbo  Frames：</p>
+<ul>
+<li>一个空的Turbo Frame，帮助我们接收新增表单</li>
+<li>一个Turbo Frame嵌套住原来的数据集合，然后可以让新的数据放到最前面。</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/166f7aed5ce32886972a2a6e8d89ebc9.png" alt="img"></p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/1e1bb685c8587ca8d81e6c3f391169c4.png" alt="img"></p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/2a414f446fa7b1ed984d81dac501486e.png" alt="img"></p>
+<p>开始写代码：</p>
+<p><code>Quotes#new</code>页面</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/new.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  &lt;%= link_to sanitize("<span class="token entity named-entity" title="&larr;">&amp;larr;</span> Back to quotes"), quotes_path %>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>New quote<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= turbo_frame_tag @quote do %>
+    &lt;%= render "form", quote: @quote %>
+  &lt;% end %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>因为这里的<code>@quote</code>是一个新的记录，所以下面三个表达式是等价的：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">turbo_frame_tag <span class="token string">"new_quote"</span>
+turbo_frame_tag Quote.new
+turbo_frame_tag @quote<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>现在我们给<code>Quotes#index</code>页面中加入一个空Turbo Frame使用相同的ID，为了接收 new quote form。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/index.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Quotes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+    &lt;%= link_to "New quote",
+                new_quote_path,
+                class: "btn btn--primary",
+                data: &#123; turbo_frame: dom_id(Quote.new) &#125; %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= turbo_frame_tag Quote.new %>
+  &lt;%= render @quotes %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到我们添加了一个空的Turbo Frame，并且在”New quote”中指定：<code>data: &#123; turbo_frame: dom_id(Quote.new) &#125;</code>用来与连接这个空的Turbo Frame，也就是使用我们之前将的规则3。让我们写下会发生什么事儿：</p>
+<ol>
+<li>当我们点击<code>New quote</code>链接，点击事件会被Turbo拦截</li>
+<li>Turbo知道了该请求将会与id为<code>new_quote</code>的frame进行互动，这源于我们在<code>New quote</code>链接上指定的<code>data-turbo-frame</code></li>
+<li>该请求会以ajax形式发送，并且服务端会返回id为<code>new_quote</code>的<code>Quotes#new</code>页面</li>
+<li>当浏览器接收到了这段HTML，Turbo将会提取<code>Quotes#new</code>页面中，id为<code>new_quote</code>的frame，然后替换<code>Quotes#index</code>中相同id的frame</li>
+</ol>
+<p>我们再试试提交空的数据，当点击<code>Create Quote</code>按钮时，数据是异常的，而异常信息应该出现在页面中，我们再说的细一些</p>
+<ol>
+<li>当我们点击<code>Create Quote</code>按钮时，表单提交将被Turbo拦截</li>
+<li>表单将被id为<code>new_quote</code>的frame嵌套</li>
+<li>服务端接收到了异常参数，并返回<code>Quotes#new</code>页面并带有异常信息</li>
+<li>浏览器接收到<code>status: :unprocessable_entity</code>的响应时，就会将新的<code>new_quote</code>的frame替换原先的，并带有异常信息</li>
+</ol>
+<p>现在我们已经完成了草图上的设计，还有一件事儿就是将正常添加的数据，放在数据列表的上面。</p>
+<p>如果你在浏览器中去试试，发现虽然数据已经创建到数据库了，但数据并没有放到数据列表的最上面。这是为啥？</p>
+<p>当我们用一个正常数据提交表单时，<code>QuotesController#create</code>将会返回<code>Quotes#index</code>页面，其中嵌套一个id为<code>new_quote</code>的空frame，Turbo将会用这个替换我们之前的表单，但是Turbo并不知道怎么处理这个新加的数据，它应该被放到哪里？所以我们将使用Turbo Stream view来处理。</p>
+<p>先声明<code>QuotesController</code>需要同时支持HTML和Turbo_Stream formats:</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/controllers/quotes_controller.rb</span>
+
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">create</span></span>
+  <span class="token variable">@quote</span> <span class="token operator">=</span> <span class="token class-name">Quote</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span>quote_params<span class="token punctuation">)</span>
+
+  <span class="token keyword">if</span> <span class="token variable">@quote</span><span class="token punctuation">.</span>save
+    respond_to <span class="token keyword">do</span> <span class="token operator">|</span>format<span class="token operator">|</span>
+      format<span class="token punctuation">.</span>html <span class="token punctuation">&#123;</span> redirect_to quotes_path<span class="token punctuation">,</span> <span class="token symbol">notice</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Quote was successfully created."</span></span> <span class="token punctuation">&#125;</span>
+      format<span class="token punctuation">.</span>turbo_stream
+    <span class="token keyword">end</span>
+  <span class="token keyword">else</span>
+    render <span class="token symbol">:new</span><span class="token punctuation">,</span> <span class="token symbol">status</span><span class="token operator">:</span> <span class="token symbol">:unprocessable_entity</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后再创建关联的视图</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token operator">&lt;</span><span class="token operator">%</span><span class="token comment"># app/views/quotes/create.turbo_stream.erb %></span>
+
+<span class="token operator">&lt;</span><span class="token operator">%=</span> turbo_stream<span class="token punctuation">.</span><span class="token keyword">prepend</span> <span class="token string-literal"><span class="token string">"quotes"</span></span><span class="token punctuation">,</span> <span class="token symbol">partial</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"quotes/quote"</span></span><span class="token punctuation">,</span> <span class="token symbol">locals</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span> <span class="token symbol">quote</span><span class="token operator">:</span> <span class="token variable">@quote</span> <span class="token punctuation">&#125;</span> <span class="token string-literal"><span class="token string">%>
+&lt;%= turbo_stream.update Quote.new, "" %></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在这个视图中，Turbo做了两件事儿</p>
+<ol>
+<li>告诉Turbo去把<code>app/views/quotes/_quote.html.erb</code>放到id为quotes的frame前面，这里可以看到我们可以直接传参关联。</li>
+<li>第二行代码告诉Turbo去更新id为<code>new_quote</code>的frame，变成空内容。</li>
+</ol>
+<p>现在我们就修改<code>Quotes#index</code>页面，将quotes集合使用id为quotes的frame进行嵌套</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/index.html.erb %>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Quotes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+    &lt;%= link_to "New quote",
+                new_quote_path,
+                class: "btn btn--primary",
+                data: &#123; turbo_frame: dom_id(Quote.new) &#125; %>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+  &lt;%= turbo_frame_tag Quote.new %>
+
+  &lt;%= turbo_frame_tag "quotes" do %>
+    &lt;%= render @quotes %>
+  &lt;% end %>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>现在我们再在浏览器中看看，如果你打开控制台的网络，你将看到表单提交的响应内容将会长下面的样子：</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>turbo-stream</span> <span class="token attr-name">action</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>prepend<span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quotes<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>turbo-frame</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>quote_123<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      <span class="token comment">&lt;!-- The HTML for the quote partial --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>turbo-frame</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>turbo-stream</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>turbo-stream</span> <span class="token attr-name">action</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>update<span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>new_quote<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- An empty template! --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>turbo-stream</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我们传递的参数，可以被Turbo理解，然后Turbo执行对应的行为（append, prepend, replace, remove）在目标Fream中</p>
+<hr>
+<p>现在我们讲讲一些技巧，关于<code>Turbo Stream views</code>中，不同的写法代表的意思是一样的。</p>
+<ul>
+<li>这是我们之前写的</li>
+</ul>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/create.turbo_stream.erb %>
+
+&lt;%= turbo_stream.prepend "quotes", partial: "quotes/quote", locals: &#123; quote: @quote &#125; %>
+&lt;%= turbo_stream.update Quote.new, "" %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>当一行过长时，我们可以修改一下</li>
+</ul>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/create.turbo_stream.erb %>
+
+&lt;%= turbo_stream.prepend "quotes" do %>
+  &lt;%= render partial: "quotes/quote", locals: &#123; quote: @quote &#125; %>
+&lt;% end %>
+
+&lt;%= turbo_stream.update Quote.new, "" %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>而在Rails中下面的表述是一致的</li>
+</ul>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">render partial: "quotes/quote", locals: &#123; quote: @quote &#125;
+render @quote<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<ul>
+<li>所以我们将我们写的进行简化</li>
+</ul>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/create.turbo_stream.erb %>
+
+&lt;%= turbo_stream.prepend "quotes" do %>
+  &lt;%= render @quote %>
+&lt;% end %>
+
+&lt;%= turbo_stream.update Quote.new, "" %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>而这里的行并不长，所以不需要使用块儿语法</li>
+</ul>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/create.turbo_stream.erb %>
+
+&lt;%= turbo_stream.prepend "quotes", @quote %>
+&lt;%= turbo_stream.update Quote.new, "" %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>够优雅吧？这就是一些写<code>Turbo Stream views</code>的不同方式</p>
+<h3 id="Ordering-our-quotes"><a href="#Ordering-our-quotes" class="headerlink" title="Ordering our quotes"></a>Ordering our quotes</h3><p>还有一个细节问题，当我们觉得把新加的quote加入到quotes列表的最前面时，但页面刷新时，顺序又乱了，我们应该保证quotes始终按照时间进行倒序展示，最新的放在最上面，让我修改一下<code>Quote model</code></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/models/quote.rb</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Quote</span> <span class="token operator">&lt;</span> ApplicationRecord
+  validates <span class="token symbol">:name</span><span class="token punctuation">,</span> <span class="token symbol">presence</span><span class="token operator">:</span> <span class="token boolean">true</span>
+
+  scope <span class="token symbol">:ordered</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">&#123;</span> order<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token symbol">:desc</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>然后再在<code>Controller#index</code>中使用</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/controllers/quotes_controller.rb</span>
+
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">index</span></span>
+  <span class="token variable">@quotes</span> <span class="token operator">=</span> Quote<span class="token punctuation">.</span>ordered
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>现在即使页面刷新，顺序也是不变的。</p>
+<p>记得修改对应的测试代码，来让测试通过</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># test/system/quotes_test.rb</span>
+
+setup <span class="token keyword">do</span>
+  <span class="token comment"># We need to order quote as well in the system tests</span>
+  <span class="token variable">@quote</span> <span class="token operator">=</span> Quote<span class="token punctuation">.</span>ordered<span class="token punctuation">.</span>first
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>测试已经可以全部通过了，我们学习了很多技巧，而几乎只写了几行代码</p>
+<h3 id="Adding-a-cancel-button"><a href="#Adding-a-cancel-button" class="headerlink" title="Adding a cancel button"></a>Adding a cancel button</h3><p>现在一切工作良好，但是我们希望可以加一个<code>Cancel</code>按钮在<code>quotes/_form.html.erb</code>视图中。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">&lt;%# app/views/quotes/_form.html.erb %>
+
+&lt;%= simple_form_for quote, html: &#123; class: "quote form" &#125; do |f| %>
+  &lt;% if quote.errors.any? %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>error-message<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+      &lt;%= quote.errors.full_messages.to_sentence.capitalize %>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  &lt;% end %>
+
+  &lt;%= f.input :name, input_html: &#123; autofocus: true &#125; %>
+  &lt;%= link_to "Cancel", quotes_path, class: "btn btn--light" %>
+  &lt;%= f.submit class: "btn btn--secondary" %>
+&lt;% end %><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我们在浏览器中试试看，发现一切正常，我们看看到底发生了什么</p>
+<p>当我们点击 <strong>new quote form 中的Cancel链接时</strong></p>
+<ol>
+<li>这里的link是嵌套在id为<code>new_quote</code>的Frame中，所以Turbo也只会替换这部分内容</li>
+<li>这里的link导航到了<code>Quotes#index</code>页面，其中嵌套了id为<code>new_quote</code>但是是空的frame</li>
+<li>Turbo就用目标页面的空frame替换掉了原来页面的form表单，所以表单消失了</li>
+</ol>
+<p>当我们点击 <strong>edit quote form 中的Cancel链接时</strong></p>
+<ol>
+<li>这里的link是嵌套在id为<code>dom_id(quote)</code>的frame中，所以也是替换这部分</li>
+<li>这里的link导航到了<code>Quotes#index</code>页面，其中嵌套了id为<code>dom_id(quote)</code>的frame，内部含有对应quote的html数据</li>
+<li>然后引用这段html替换，原先的form表单，所以表单消失了</li>
+</ol>
+<p>当我们再创建quote并且同时修改多个quote时，我没法发现页面的状态是保留的，这么的各个部分是独立保留的，这就是Turbo带给我们的能力，而不需要写自定义的JS。</p>
+<h3 id="Wrap-up"><a href="#Wrap-up" class="headerlink" title="Wrap up"></a>Wrap up</h3><p>这一章节，我们替换了原先传统的CRUD，变成一个响应式应用，而这几乎不需要什么代码，你可以试着创建，修改，删除，查看数据，感受一下我们的应用。学了很多东西，让我们休息一下，然后把所有内容理清楚。</p>
+<p>下一章中，我们将使用<code>Active Cable</code>来给系统加入实时更新的特点。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://www.chengling.cloud">庚辰</a></span></div><!--.post-copyright__type--><!--  span.post-copyright-meta= _p('post.copyright.link') + ": "--><!--  span.post-copyright-info--><!--    a(href=url_for(url))= theme.post_copyright.decode ? decodeURI(url) : url--><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.chengling.cloud" target="_blank">玲辰书斋</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Rails/">Rails</a><a class="post-meta__tags" href="/tags/turbo/">turbo</a></div><div class="post_share"><div class="social-share" data-image="/img/default_top_img.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/post/Ruby/Hotails/%E7%AC%AC%E4%BA%94%E7%AB%A0.html"><img class="prev-cover" src="/img/default_top_img.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Turbo Rails Tutorial-第五章</div></div></a></div><div class="next-post pull-right"><a href="/post/Ruby/Hotails/%E7%AC%AC%E4%BA%8C%E7%AB%A0.html"><img class="next-cover" src="/img/default_top_img.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Turbo Rails Tutorial-第二章</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/Ruby/Hotails/%E7%AC%AC%E4%B8%80%E7%AB%A0.html" title="Turbo Rails Tutorial-第一章"><img class="cover" src="/img/default_top_img.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-02</div><div class="title">Turbo Rails Tutorial-第一章</div></div></a></div><div><a href="/post/Ruby/Hotails/%E7%AC%AC%E4%B8%83%E7%AB%A0.html" title="Turbo Rails Tutorial-第七章"><img class="cover" src="/img/default_top_img.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-02</div><div class="title">Turbo Rails Tutorial-第七章</div></div></a></div><div><a href="/post/Ruby/Hotails/%E7%AC%AC%E4%B8%89%E7%AB%A0.html" title="Turbo Rails Tutorial-第三章"><img class="cover" src="/img/default_top_img.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-02</div><div class="title">Turbo Rails Tutorial-第三章</div></div></a></div><div><a href="/post/Ruby/Hotails/%E7%AC%AC%E4%B9%9D%E7%AB%A0.html" title="Turbo Rails Tutorial-第九章"><img class="cover" src="/img/default_top_img.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-02</div><div class="title">Turbo Rails Tutorial-第九章</div></div></a></div><div><a href="/post/Ruby/Hotails/%E7%AC%AC%E4%BA%8C%E7%AB%A0.html" title="Turbo Rails Tutorial-第二章"><img class="cover" src="/img/default_top_img.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-02</div><div class="title">Turbo Rails Tutorial-第二章</div></div></a></div><div><a href="/post/Ruby/Hotails/%E7%AC%AC%E4%BA%94%E7%AB%A0.html" title="Turbo Rails Tutorial-第五章"><img class="cover" src="/img/default_top_img.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-02</div><div class="title">Turbo Rails Tutorial-第五章</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/myHead.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">庚辰</div><div class="author-info__description">要么读书，要么旅行，身体和心灵总有一个要在路上.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">43</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Turbo-Drive"><span class="toc-number">1.</span> <span class="toc-text">Turbo Drive</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Turbo-Drive%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">Turbo Drive是如何工作的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A6%81%E7%94%A8Turbo-Drive"><span class="toc-number">1.3.</span> <span class="toc-text">禁用Turbo Drive</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reloading-the-page-with-data-turbo-track-%E2%80%9Dreload%E2%80%9D"><span class="toc-number">1.4.</span> <span class="toc-text">Reloading the page with data-turbo-track&#x3D;”reload”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Changing-the-style-of-the-Turbo-Drive-progress-bar"><span class="toc-number">1.5.</span> <span class="toc-text">Changing the style of the Turbo Drive progress bar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">1.6.</span> <span class="toc-text">结论</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Turbo-Frames-and-Turbo-Stream-templates"><span class="toc-number">2.</span> <span class="toc-text">Turbo Frames and Turbo Stream templates</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%81%E5%B9%B2%E5%98%9B%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">要干嘛？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFTurbo-Frames%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">什么是Turbo Frames？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Turbo-Frames-cheat-sheet"><span class="toc-number">2.3.</span> <span class="toc-text">Turbo Frames cheat sheet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Editing-quotes-with-Turbo-Frames"><span class="toc-number">2.4.</span> <span class="toc-text">Editing quotes with Turbo Frames</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Turbo-Frames-and-the-dom-id-helper"><span class="toc-number">2.5.</span> <span class="toc-text">Turbo Frames and the dom_id helper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Showing-and-deleting-quotes"><span class="toc-number">2.6.</span> <span class="toc-text">Showing and deleting quotes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#The-Turbo-Stream-format"><span class="toc-number">2.7.</span> <span class="toc-text">The Turbo Stream format</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Creating-a-new-quote-with-Turbo-Frames"><span class="toc-number">2.8.</span> <span class="toc-text">Creating a new quote with Turbo Frames</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ordering-our-quotes"><span class="toc-number">2.9.</span> <span class="toc-text">Ordering our quotes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Adding-a-cancel-button"><span class="toc-number">2.10.</span> <span class="toc-text">Adding a cancel button</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wrap-up"><span class="toc-number">2.11.</span> <span class="toc-text">Wrap up</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/Hotails/%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0.html" title="Turbo Rails Tutorial-第十一章"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Turbo Rails Tutorial-第十一章"/></a><div class="content"><a class="title" href="/post/Ruby/Hotails/%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0.html" title="Turbo Rails Tutorial-第十一章">Turbo Rails Tutorial-第十一章</a><time datetime="2023-07-02T02:24:51.000Z" title="发表于 2023-07-02 10:24:51">2023-07-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/Hotails/%E7%AC%AC%E5%8D%81%E7%AB%A0.html" title="Turbo Rails Tutorial-第十章"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Turbo Rails Tutorial-第十章"/></a><div class="content"><a class="title" href="/post/Ruby/Hotails/%E7%AC%AC%E5%8D%81%E7%AB%A0.html" title="Turbo Rails Tutorial-第十章">Turbo Rails Tutorial-第十章</a><time datetime="2023-07-02T02:24:50.000Z" title="发表于 2023-07-02 10:24:50">2023-07-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/Hotails/%E7%AC%AC%E4%B9%9D%E7%AB%A0.html" title="Turbo Rails Tutorial-第九章"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Turbo Rails Tutorial-第九章"/></a><div class="content"><a class="title" href="/post/Ruby/Hotails/%E7%AC%AC%E4%B9%9D%E7%AB%A0.html" title="Turbo Rails Tutorial-第九章">Turbo Rails Tutorial-第九章</a><time datetime="2023-07-02T02:24:49.000Z" title="发表于 2023-07-02 10:24:49">2023-07-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/Hotails/%E7%AC%AC%E5%85%AB%E7%AB%A0.html" title="Turbo Rails Tutorial-第八章"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Turbo Rails Tutorial-第八章"/></a><div class="content"><a class="title" href="/post/Ruby/Hotails/%E7%AC%AC%E5%85%AB%E7%AB%A0.html" title="Turbo Rails Tutorial-第八章">Turbo Rails Tutorial-第八章</a><time datetime="2023-07-02T02:24:48.000Z" title="发表于 2023-07-02 10:24:48">2023-07-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/Hotails/%E7%AC%AC%E4%B8%83%E7%AB%A0.html" title="Turbo Rails Tutorial-第七章"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Turbo Rails Tutorial-第七章"/></a><div class="content"><a class="title" href="/post/Ruby/Hotails/%E7%AC%AC%E4%B8%83%E7%AB%A0.html" title="Turbo Rails Tutorial-第七章">Turbo Rails Tutorial-第七章</a><time datetime="2023-07-02T02:24:47.000Z" title="发表于 2023-07-02 10:24:47">2023-07-02</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 庚辰</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a><br>
+<a href="https://beian.miit.gov.cn/"  style="color:#f72b07" target="_blank">陕ICP备2022014054号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="498210" data-server="netease" data-type="song" data-fixed="true" data-autoplay="true" data-lrcType="-1"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
