@@ -13661,7 +13661,7 @@ redirect_to quote_path<span class="token punctuation">(</span><span class="token
 <p><img src="https://img-blog.csdnimg.cn/img_convert/a018ec6ac774ee170e281b7a9831753f.png" alt="img"></p>
 <p>当点击<code>Create quote</code>时跳转到<code>Quotes#index</code>页面，显示存储的数据，并按照时间排序。</p>
 <p>当你点击Edit按钮时，就会跳转到<code>Quotes#edit</code>去更新已有的数据</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/67727a53b31b963137eb309625003827.png" alt="img"></p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/ut.png" alt="img"></p>
 <p>当点击<code>Update quote</code>，还是跳回<code>Quotes#index</code>页面</p>
 <p>当点击quote的标题时，则跳转到<code>Quotes#show</code>，现在我们仅仅显示标题，后面增加其他内容。</p>
 <p><img src="https://img-blog.csdnimg.cn/img_convert/ff89835e6e40860a36acd80a8015223c.png" alt="img"></p>
