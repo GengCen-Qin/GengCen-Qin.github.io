@@ -470,7 +470,7 @@ Rails<span class="token punctuation">.</span>application<span class="token punct
 <p><code>arch -arm64 bundle install</code> 命令使用 <code>-arm64</code> 标志来显式指定了命令应该在 ARM64 架构下执行。这意味着它将使用 ARM64 架构编译 gem，并将这些 gem 安装到 ARM64 目录下，而不管终端窗口当前所处的架构是什么。</p>
 <p>所以这里我们应该使用<code>arch -arm64 bundle install</code>命令以确保所有 gem 都被正确地编译和安装到 ARM64 架构目录下。这样就可以匹配上了。</p>
 <hr>
-<p>现在让我们在页面中登陆吧，点击导航栏中的<code>sign in</code>，输入账号：<a href="mailto:&#97;&#x63;&#99;&#111;&#117;&#110;&#116;&#97;&#110;&#x74;&#x40;&#107;&#x70;&#109;&#103;&#x2e;&#99;&#x6f;&#109;">&#97;&#x63;&#99;&#111;&#117;&#110;&#116;&#97;&#110;&#x74;&#x40;&#107;&#x70;&#109;&#103;&#x2e;&#99;&#x6f;&#109;</a> 和 密码：password，这些都是你fixture文件中定义的假数据。</p>
+<p>现在让我们在页面中登陆吧，点击导航栏中的<code>sign in</code>，输入账号：<a href="mailto:&#97;&#99;&#x63;&#111;&#117;&#110;&#116;&#97;&#110;&#x74;&#x40;&#107;&#x70;&#109;&#103;&#x2e;&#99;&#111;&#x6d;">&#97;&#99;&#x63;&#111;&#117;&#110;&#116;&#97;&#110;&#x74;&#x40;&#107;&#x70;&#109;&#103;&#x2e;&#99;&#111;&#x6d;</a> 和 密码：password，这些都是你fixture文件中定义的假数据。</p>
 <p>一切都正常运转，但我们应该动态的改变 公司名 和 当前用户名称</p>
 <p>这里面我们简单的，看登录账户邮箱，从中获取当前用户名称，并在用户模型中增加方法</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/models/user.rb</span>
