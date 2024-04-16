@@ -19556,4 +19556,191 @@ p match<span aria-hidden="true" class="line-numbers-rows"><span></span><span></s
         <category>个人经历</category>
       </categories>
   </entry>
+  <entry>
+    <title>Rails N+1</title>
+    <url>//post/Ruby/Rails%20N+1%20%E9%97%AE%E9%A2%98.html</url>
+    <content><![CDATA[<h1 id="Rails-N-1-问题"><a href="#Rails-N-1-问题" class="headerlink" title="Rails N+1 问题"></a>Rails N+1 问题</h1><h2 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h2><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># Get all posts</span>
+posts <span class="token operator">=</span> Post<span class="token punctuation">.</span>all
+
+<span class="token comment"># For each post, a new author query will be triggered</span>
+posts<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>post<span class="token operator">|</span>
+  post<span class="token punctuation">.</span>author<span class="token punctuation">.</span>name
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>我先获取了所有的帖子，然后想知道每个帖子的作者名称，实际执行时相当于每个帖子都执行了一遍SQL查询这个帖子的作者信息。如果有1000个帖子，则会执行1000条SQL</p>
+<h2 id="在什么时候发生？"><a href="#在什么时候发生？" class="headerlink" title="在什么时候发生？"></a>在什么时候发生？</h2><p>当我们使用Rails的ORM框架操作聚合关系的操作，比如：<code>has_many | belongs_to</code></p>
+<p>这极大的影响了我的系统性能</p>
+<h2 id="如何解决？"><a href="#如何解决？" class="headerlink" title="如何解决？"></a>如何解决？</h2><p>三种方式：Preload，includes，Eager load，joins</p>
+<h3 id="Preload"><a href="#Preload" class="headerlink" title="Preload"></a>Preload</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>preload<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a
+
+<span class="token comment"># =></span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"posts"</span></span>  <span class="token constant">WHERE</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">IN</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在默认情况下，<code>includes</code>也是这么加载数据的</p>
+<p>但问题是，这种情况无法对post加上where条件</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>preload<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>where<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"posts.desc='ruby is awesome'"</span></span><span class="token punctuation">)</span>
+
+<span class="token comment"># =></span>
+SQLite3<span class="token double-colon punctuation">::</span>SQLException<span class="token operator">:</span> no such column<span class="token operator">:</span> posts<span class="token punctuation">.</span>desc<span class="token operator">:</span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span>  <span class="token constant">WHERE</span> <span class="token punctuation">(</span>posts<span class="token punctuation">.</span>desc<span class="token operator">=</span><span class="token string-literal"><span class="token string">'ruby is awesome'</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以给User中添加：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>preload<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>where<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"users.name='Neeraj'"</span></span><span class="token punctuation">)</span>
+
+<span class="token comment"># =></span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span>  <span class="token constant">WHERE</span> <span class="token punctuation">(</span>users<span class="token punctuation">.</span>name<span class="token operator">=</span><span class="token string-literal"><span class="token string">'Neeraj'</span></span><span class="token punctuation">)</span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"posts"</span></span>  <span class="token constant">WHERE</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">IN</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到，这里是先对User进行筛选，然后再查询posts，也就是说在Preload时，where条件是加在第一个查询语句的，Preload是执行了两个查询语句。</p>
+<h3 id="Includes"><a href="#Includes" class="headerlink" title="Includes"></a>Includes</h3><p>和<code>preload</code>是类似的，但<code>Includes</code>智能一些，我们替换上面报错的代码</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>includes<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>where<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'posts.desc = "ruby is awesome"'</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a
+
+<span class="token comment"># =></span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span> <span class="token constant">AS</span> t0_r0<span class="token punctuation">,</span>
+       <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"name"</span></span> <span class="token constant">AS</span> t0_r1<span class="token punctuation">,</span> 
+       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span> <span class="token constant">AS</span> t1_r0<span class="token punctuation">,</span>
+       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"title"</span></span> <span class="token constant">AS</span> t1_r1<span class="token punctuation">,</span>
+       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">AS</span> t1_r2<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"desc"</span></span> <span class="token constant">AS</span> t1_r3
+<span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span> <span class="token constant">LEFT</span> <span class="token constant">OUTER</span> <span class="token constant">JOIN</span> <span class="token string-literal"><span class="token string">"posts"</span></span> <span class="token constant">ON</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span>
+<span class="token constant">WHERE</span> <span class="token punctuation">(</span>posts<span class="token punctuation">.</span>desc <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"ruby is awesome"</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里<code>Includes</code>通过连表操作(left join)，只执行了一条SQL，但是如果没有where条件的话，还是执行了两个SQL，但如果你仍想强制执行一个SQL的话，需要使用<code>references</code></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>includes<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>references<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a
+
+<span class="token comment"># =></span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span> <span class="token constant">AS</span> t0_r0<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"name"</span></span> <span class="token constant">AS</span> t0_r1<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span> <span class="token constant">AS</span> t1_r0<span class="token punctuation">,</span>
+       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"title"</span></span> <span class="token constant">AS</span> t1_r1<span class="token punctuation">,</span>
+       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">AS</span> t1_r2<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"desc"</span></span> <span class="token constant">AS</span> t1_r3
+<span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span> <span class="token constant">LEFT</span> <span class="token constant">OUTER</span> <span class="token constant">JOIN</span> <span class="token string-literal"><span class="token string">"posts"</span></span> <span class="token constant">ON</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Eager-Load"><a href="#Eager-Load" class="headerlink" title="Eager Load"></a>Eager Load</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>eager_load<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a
+
+<span class="token comment"># =></span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span> <span class="token constant">AS</span> t0_r0<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"name"</span></span> <span class="token constant">AS</span> t0_r1<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span> <span class="token constant">AS</span> t1_r0<span class="token punctuation">,</span>
+       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"title"</span></span> <span class="token constant">AS</span> t1_r1<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">AS</span> t1_r2<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"desc"</span></span> <span class="token constant">AS</span> t1_r3
+<span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span> <span class="token constant">LEFT</span> <span class="token constant">OUTER</span> <span class="token constant">JOIN</span> <span class="token string-literal"><span class="token string">"posts"</span></span> <span class="token constant">ON</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到这相当于<code>includes</code>在<code>where</code>或者<code>order</code>时执行的操作，只有一个SQL</p>
+<h3 id="Joins"><a href="#Joins" class="headerlink" title="Joins"></a>Joins</h3><p>与上面<code>Left join</code>不同，Joins执行的是<code>inner join</code></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>joins<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span>
+
+<span class="token comment"># =></span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span> <span class="token constant">INNER</span> <span class="token constant">JOIN</span> <span class="token string-literal"><span class="token string">"posts"</span></span> <span class="token constant">ON</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上面是因为没有post被查询到，而且上面的查询会导致数据冗余，我们来构造一些数据</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">setup</span></span>
+  User<span class="token punctuation">.</span>delete_all
+  Post<span class="token punctuation">.</span>delete_all
+
+  u <span class="token operator">=</span> User<span class="token punctuation">.</span>create name<span class="token operator">:</span> <span class="token string-literal"><span class="token string">'Neeraj'</span></span>
+  u<span class="token punctuation">.</span>posts<span class="token punctuation">.</span>create<span class="token operator">!</span> title<span class="token operator">:</span> <span class="token string-literal"><span class="token string">'ruby'</span></span><span class="token punctuation">,</span> <span class="token symbol">desc</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'ruby is awesome'</span></span>
+  u<span class="token punctuation">.</span>posts<span class="token punctuation">.</span>create<span class="token operator">!</span> title<span class="token operator">:</span> <span class="token string-literal"><span class="token string">'rails'</span></span><span class="token punctuation">,</span> <span class="token symbol">desc</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'rails is awesome'</span></span>
+  u<span class="token punctuation">.</span>posts<span class="token punctuation">.</span>create<span class="token operator">!</span> title<span class="token operator">:</span> <span class="token string-literal"><span class="token string">'JavaScript'</span></span><span class="token punctuation">,</span> <span class="token symbol">desc</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'JavaScript is awesome'</span></span>
+
+  u <span class="token operator">=</span> User<span class="token punctuation">.</span>create name<span class="token operator">:</span> <span class="token string-literal"><span class="token string">'Neil'</span></span>
+  u<span class="token punctuation">.</span>posts<span class="token punctuation">.</span>create<span class="token operator">!</span> title<span class="token operator">:</span> <span class="token string-literal"><span class="token string">'JavaScript'</span></span><span class="token punctuation">,</span> <span class="token symbol">desc</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">'Javascript is awesome'</span></span>
+
+  u <span class="token operator">=</span> User<span class="token punctuation">.</span>create name<span class="token operator">:</span> <span class="token string-literal"><span class="token string">'Trisha'</span></span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>当我们执行：<code>User.joins(:posts)</code></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment">#&lt;User id: 9, name: "Neeraj"></span>
+<span class="token comment">#&lt;User id: 9, name: "Neeraj"></span>
+<span class="token comment">#&lt;User id: 9, name: "Neeraj"></span>
+<span class="token comment">#&lt;User id: 10, name: "Neil"></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以通过distinct来删除冗余</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>joins<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>select<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'distinct users.*'</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果你想用posts中的属性，需要显示的选择</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">records <span class="token operator">=</span> User<span class="token punctuation">.</span>joins<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>select<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'distinct users.*, posts.title as posts_title'</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a
+records<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>user<span class="token operator">|</span>
+  puts user<span class="token punctuation">.</span>name
+  puts user<span class="token punctuation">.</span>posts_title
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+]]></content>
+      <categories>
+        <category>Ruby</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Web Server &amp; Application Server解惑</title>
+    <url>//post/Web/Web%20Server%20&amp;%20Application%20Server%E8%A7%A3%E6%83%91.html</url>
+    <content><![CDATA[<h1 id="Web-Server-amp-Application-Server解惑"><a href="#Web-Server-amp-Application-Server解惑" class="headerlink" title="Web Server &amp; Application Server解惑"></a>Web Server &amp; Application Server解惑</h1><blockquote>
+<p>参考文章与书籍</p>
+</blockquote>
+<ul>
+<li><a href="https://www.rubyguides.com/2015/04/ruby-network-programming/">ruby网络编程</a></li>
+<li><a href="https://www.rubyguides.com/2016/08/build-your-own-web-server/">构建你自己的Web服务器</a></li>
+<li><a href="https://www.rubyguides.com/2019/08/puma-app-server/">为什么我们需要Ruby中的应用服务器(比如Puma)？</a></li>
+<li><a href="https://www.rubyguides.com/2018/09/rack-middleware/">rack探索</a></li>
+<li><a href="https://ruby-china.org/topics/24378">Puma 源代码分析</a></li>
+<li><a href="https://book.douban.com/subject/36807496/">码农翻身2</a></li>
+</ul>
+<p>如果你使用<code>Java</code>或<code>Ruby</code>开发过Web项目，你一定了解过<code>Tomcat</code>和<code>Puma</code>，他们本质上都是一种容器，具有监听端口，返回文件或动态内容的服务。但这样的表述有点儿抽象，<code>SpringBoot</code> 和 <code>Rails</code> 为什么不自己去做所有的事儿？而是需要在内部嵌入这么个玩意儿。我们从历史进程中一点点看。</p>
+<h2 id="Web服务器的历史"><a href="#Web服务器的历史" class="headerlink" title="Web服务器的历史"></a>Web服务器的历史</h2><h3 id="版本1"><a href="#版本1" class="headerlink" title="版本1"></a>版本1</h3><p>最初Web服务(Web Server)是一个很简单的玩意儿，在端口上监听，解析HTTP请求，把请求对应的文件返回。</p>
+<p><img src="https://raw.githubusercontent.com/GengCen-Qin/pic/main/image-20240414172010010.png" alt="image-20240414172010010"></p>
+<p>实际上只要了解<code>socket</code>编程与<code>HTTP</code>网络协议，就能很简单的制作出一个玩具Web服务器。参考这篇文章：<a href="https://www.rubyguides.com/2016/08/build-your-own-web-server/">构建你自己的Web服务器</a>。</p>
+<h3 id="版本2"><a href="#版本2" class="headerlink" title="版本2"></a>版本2</h3><p>很常见的一个需求，鉴权操作。我需要通过解析请求，知道对方是谁，并从数据库中查询一下对方是否有权限，我们称为应用服务(Application Server)。</p>
+<p>但是版本1中的服务不支持这种操作，那我们就再写一个服务(另一个进程中)，专门用于数据库查询并校验身份。当请求来时，先到Web服务中，Web服务再去问应用服务，看看能操作不，等收到结果后进行返回。两个服务职责也被很好的分离开了。</p>
+<p>但是这两个服务该怎么通信呢？一种办法是对于每个动态请求，Web服务都创建一个应用服务的子进程，<strong>通过环境变量将信息进行传递</strong>，子进程通过读取环境变量知道要查谁。而子进程查询判断完后，可以知道浏览器与Web服务建立的socket fd，通过标准输出重定向到该fd中，直接就能给用户返回了。这也就是大名鼎鼎的CGI了。</p>
+<p><img src="https://raw.githubusercontent.com/GengCen-Qin/pic/main/image-20240414175151595.png" alt="image-20240414175151595"></p>
+<p>但这样看的话，进程的频繁创建和销毁可是很消耗资源的。而且开发者需要自己操作环境变量，也需要在程序中输出HTML，就很麻烦啊。</p>
+<h3 id="版本3"><a href="#版本3" class="headerlink" title="版本3"></a>版本3</h3><p>现在程序员关注的点就是获取请求信息，执行业务逻辑，输出响应。其他的环境变量，重定向什么的就别烦我们了。</p>
+<p>那这就好办了，程序员自己创建一个类，写具体的业务逻辑，我们创建一个<code>HttpRequest</code>对象，一个<code>HttpResponse</code>对象传递给这个类以供使用。那这就和我们最初使用的<code>Servlet</code>很像了，而负责创建这俩对象的任务就交给了<code>Tomcat</code>。Servlet本质上是一种规范或接口。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">javax<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span></span><span class="token operator">*</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">javax<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span>http<span class="token punctuation">.</span></span><span class="token operator">*</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token operator">*</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloWorldServlet</span> <span class="token keyword">extends</span> <span class="token class-name">HttpServlet</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doGet</span><span class="token punctuation">(</span><span class="token class-name">HttpServletRequest</span> request<span class="token punctuation">,</span> <span class="token class-name">HttpServletResponse</span> response<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> <span class="token class-name">ServletException</span><span class="token punctuation">,</span> <span class="token class-name">IOException</span> <span class="token punctuation">&#123;</span>
+
+        <span class="token comment">// 设置响应内容类型为文本/纯文本</span>
+        response<span class="token punctuation">.</span><span class="token function">setContentType</span><span class="token punctuation">(</span><span class="token string">"text/plain"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        response<span class="token punctuation">.</span><span class="token function">setCharacterEncoding</span><span class="token punctuation">(</span><span class="token string">"UTF-8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 输出响应正文</span>
+        <span class="token class-name">PrintWriter</span> out <span class="token operator">=</span> response<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Hello, World! This is a simple Servlet example."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 关闭输出流</span>
+        out<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doPost</span><span class="token punctuation">(</span><span class="token class-name">HttpServletRequest</span> request<span class="token punctuation">,</span> <span class="token class-name">HttpServletResponse</span> response<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> <span class="token class-name">ServletException</span><span class="token punctuation">,</span> <span class="token class-name">IOException</span> <span class="token punctuation">&#123;</span>
+			   <span class="token comment">// ...</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>那比如说我要返回一段html，其中这段html中很多内容是动态的，总不能一行一行写到代码里吧。</p>
+<p>那Tomcat也有办法，在HTML中混杂代码，这就是JSP！！！😂在执行期会被编译为Servlet。这样就很方便了。</p>
+<hr>
+<p>其实类似的，Ruby中的Rack和Python中的WSGI，都是使用了类似的思想。如果原理清楚了，那学另外两个就很容易了。</p>
+<hr>
+<h2 id="问题思考"><a href="#问题思考" class="headerlink" title="问题思考"></a>问题思考</h2><h3 id="为什么SpringBoot不自己处理请求，而是交给Tomcat"><a href="#为什么SpringBoot不自己处理请求，而是交给Tomcat" class="headerlink" title="为什么SpringBoot不自己处理请求，而是交给Tomcat"></a>为什么SpringBoot不自己处理请求，而是交给Tomcat</h3><p>Rails也是一样的，为什么不自己处理请求，而是交给Puma</p>
+<p>从上面的历史讲解中就能看到，这就是<strong>专注点分离。</strong></p>
+<p>就好比你开了一家餐厅，雇佣的厨师长是一位做菜很棒的大厨，而你一定不会让厨师长既要做菜，又要去前台要订单，等做好菜，再端过去吧。一定是有专门的前台 和 后厨进行配合工作。那再回到程序中，Tomcat就是那个传送订单的，Servlet就是那个做菜的（SpringMVC本质上是使用的Servlet）。</p>
+<p>当然还有一个很关键的一点，你可以更换前台和后厨！！！比如现在很流行<strong>Undertow</strong>，我们能很方便的把Tomcat替换为Undertow，这就是因为Undertow也实现了Servlet协议接口，能保证Servlet本身不变的同时，替换掉处理请求的主体，性能被更好的优化。而在Ruby中就更不用说了，前台，后厨都有大量的备选方案。</p>
+<h2 id="Application-Server-vs-Web-Server-Nginx-amp-Apache"><a href="#Application-Server-vs-Web-Server-Nginx-amp-Apache" class="headerlink" title="Application Server vs Web Server (Nginx &amp; Apache)"></a>Application Server vs Web Server (Nginx &amp; Apache)</h2><p>Nginx是目前很主流的Web服务器，比如反向代理，静态资源读取等。本质上就是我们阶段一中所说的。但是它和Tomcat这种应用服务器有什么区别? 为什么Nginx能做到并发量那么高？</p>
+<p>Nginx、Puma 和 Tomcat 都可以作为 Web 服务器，但它们的设计哲学、工作模式和对资源的利用方式有所不同，导致它们在处理高并发请求时表现出不同的性能特点。其中最本质的就是<strong>职责不同，请求模型不同</strong>。</p>
+<h4 id="请求模型不同："><a href="#请求模型不同：" class="headerlink" title="请求模型不同："></a>请求模型不同：</h4><p>Nginx 最显著的优势在于其采用了高效的事件驱动架构和异步非阻塞I/O模型。这种模型允许Nginx在一个工作进程中同时处理数千甚至数万个并发连接，而不会因为等待某个操作（如磁盘I/O或网络通信）完成而阻塞其他请求的处理。</p>
+<p>而应用服务器比如Tomcat，Puma 采用多线程模型，每个线程可以独立处理一个请求。虽然线程比进程更轻量级，但线程间共享内存空间可能导致资源竞争和锁的使用，特别是在高并发场景下可能会引入额外的同步开销。另外，如果某个线程执行的业务逻辑耗时较长，可能会阻塞其他线程的执行，影响整体并发能力。</p>
+<h4 id="职责不同："><a href="#职责不同：" class="headerlink" title="职责不同："></a>职责不同：</h4><p>Nginx 在处理静态资源请求时非常高效，因为它只需直接读取文件并将其发送回客户端，无需进行复杂的计算或脚本解释。对于动态请求，Nginx 通常作为反向代理，将请求转发给后端应用服务器（如Puma、Tomcat等）处理，自身并不直接执行业务逻辑。</p>
+<p>Puma 和 Tomcat 在处理动态请求时需要执行复杂的业务逻辑、脚本解释、数据库查询等工作，这些操作往往比单纯返回静态文件更耗时且资源消耗更大。特别是对于Tomcat，由于其运行在JVM之上，Java应用程序在内存管理和垃圾回收（GC）方面的特性可能在高并发下导致性能波动，如频繁的GC暂停可能会暂时降低系统的响应速度。</p>
+<h3 id="Application-Server-和-Web-Server的区别"><a href="#Application-Server-和-Web-Server的区别" class="headerlink" title="Application Server 和 Web Server的区别"></a>Application Server 和 Web Server的区别</h3><p>现在两者的概念很容易混淆，主要是因为有些功能是重合的。比如静态文件读取返回，Application Server也能做到。</p>
+<p>但实际中两种往往结合使用，就比如通过Nginx读取静态资源，对于复杂操作反向代理的Tomcat或者Puma中。</p>
+<p>Application Server 更侧重于业务实现</p>
+<p>Web Server 更侧重于端口监听，资源读取，路由转发等</p>
+]]></content>
+      <categories>
+        <category>Ruby</category>
+      </categories>
+  </entry>
 </search>
