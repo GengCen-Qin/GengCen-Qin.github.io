@@ -19743,4 +19743,94 @@ records<span class="token punctuation">.</span><span class="token keyword">each<
         <category>Ruby</category>
       </categories>
   </entry>
+  <entry>
+    <title>LSP探索</title>
+    <url>//post/Ruby/LSP.html</url>
+    <content><![CDATA[<h2 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h2><p>官方定义：<a href="https://microsoft.github.io/language-server-protocol/overviews/lsp/overview/">https://microsoft.github.io/language-server-protocol/overviews/lsp/overview/</a></p>
+<p>为编程语言实现自动补全、定义跳转或在鼠标悬停时显示文档等功能的支持是一项重大工作。传统上，这项工作必须为每个开发工具重复进行，因为每个工具提供的实现相同功能的API都不同。</p>
+<p>LSP的理念就是通过一种协议，与开发工具交流，实现功能。通过中间层，来做到一个语言服务器<strong>服务</strong>多个开发工具。</p>
+<h2 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h2><p><img src="https://microsoft.github.io/language-server-protocol/overviews/lsp/img/language-server-sequence.png"></p>
+<p>意识就是开发工具会捕捉一个个事件点，与语言服务器进行交互，比如这里的：打开文档，编辑文档，用户执行定义跳转，关闭文档等。</p>
+<p>可以具体看一下<code>定义跳转</code>的交互</p>
+<p>请求：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+    <span class="token property">"jsonrpc"</span><span class="token operator">:</span> <span class="token string">"2.0"</span><span class="token punctuation">,</span>
+    <span class="token property">"id"</span> <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"textDocument/definition"</span><span class="token punctuation">,</span>
+    <span class="token property">"params"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">"textDocument"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token property">"uri"</span><span class="token operator">:</span> <span class="token string">"file:///p%3A/mseng/VSCode/Playgrounds/cpp/use.cpp"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token property">"position"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token property">"line"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+            <span class="token property">"character"</span><span class="token operator">:</span> <span class="token number">12</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>响应：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+    <span class="token property">"jsonrpc"</span><span class="token operator">:</span> <span class="token string">"2.0"</span><span class="token punctuation">,</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token property">"result"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">"uri"</span><span class="token operator">:</span> <span class="token string">"file:///p%3A/mseng/VSCode/Playgrounds/cpp/provide.cpp"</span><span class="token punctuation">,</span>
+        <span class="token property">"range"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token property">"start"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+                <span class="token property">"line"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+                <span class="token property">"character"</span><span class="token operator">:</span> <span class="token number">4</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token property">"end"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+                <span class="token property">"line"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+                <span class="token property">"character"</span><span class="token operator">:</span> <span class="token number">11</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>具体参数信息可看：<a href="https://microsoft.github.io/language-server-protocol/specifications/specification-current">官方文档</a></p>
+<p>并非所有语言服务器都支持协议中定义的所有功能，所以需要在初始化时通过<code>Capabilities</code>,来告诉开发工具，我能做啥。</p>
+<h2 id="自己实现"><a href="#自己实现" class="headerlink" title="自己实现"></a>自己实现</h2><h3 id="编译审查"><a href="#编译审查" class="headerlink" title="编译审查"></a>编译审查</h3><p>完整代码：<a href="https://gist.github.com/tenderlove/9a18be7a27ba7a074a8ba8fbf554e794">gist</a></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">check_syntax</span></span> file
+  <span class="token comment"># 检查语法</span>
+  RubyVM<span class="token double-colon punctuation">::</span>InstructionSequence<span class="token punctuation">.</span>compile_file<span class="token punctuation">(</span>file<span class="token punctuation">)</span>
+  <span class="token keyword">nil</span>
+<span class="token keyword">rescue</span> SyntaxError <span class="token operator">=></span> e
+  e <span class="token comment"># only return syntax errors</span>
+<span class="token keyword">rescue</span> <span class="token builtin">Exception</span>
+  <span class="token keyword">nil</span> <span class="token comment"># ignore anything else</span>
+<span class="token keyword">end</span>
+
+<span class="token comment"># 获取异常信息</span>
+line_number <span class="token operator">=</span> error<span class="token punctuation">.</span>message<span class="token punctuation">[</span><span class="token operator">/</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token operator">&lt;=</span><span class="token operator">:</span><span class="token punctuation">)</span>\d<span class="token operator">+</span><span class="token operator">/</span><span class="token punctuation">]</span><span class="token punctuation">.</span>to_i
+<span class="token comment"># 找到具体行</span>
+line <span class="token operator">=</span> <span class="token builtin">File</span><span class="token punctuation">.</span>readlines<span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">[</span>line_number <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+
+<span class="token comment"># 返回信息</span>
+result <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token symbol">:uri</span> <span class="token operator">=></span> doc<span class="token punctuation">[</span><span class="token symbol">:uri</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token symbol">:diagnostics</span> <span class="token operator">=></span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token string-literal"><span class="token string">"range"</span></span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+        <span class="token string-literal"><span class="token string">"start"</span></span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span> <span class="token string-literal"><span class="token string">"character"</span></span> <span class="token operator">=></span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"line"</span></span> <span class="token operator">=></span> line_number <span class="token operator">-</span> <span class="token number">1</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token string-literal"><span class="token string">"end"</span></span>   <span class="token operator">=></span> <span class="token punctuation">&#123;</span> <span class="token string-literal"><span class="token string">"character"</span></span> <span class="token operator">=></span> line<span class="token punctuation">.</span>bytesize<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"line"</span></span> <span class="token operator">=></span> line_number <span class="token operator">-</span> <span class="token number">1</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token comment"># 具体返回的信息</span>
+      <span class="token string-literal"><span class="token string">"message"</span></span> <span class="token operator">=></span> error<span class="token punctuation">.</span>message<span class="token punctuation">.</span>lines<span class="token punctuation">.</span>first<span class="token punctuation">,</span>
+      <span class="token comment"># 标识符，表示错误、警告、信息或提示。</span>
+      <span class="token string-literal"><span class="token string">"severity"</span></span> <span class="token operator">=></span> <span class="token number">1</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 写回流中</span>
+writer<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token symbol">method</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"textDocument/publishDiagnostics"</span></span><span class="token punctuation">,</span> <span class="token symbol">params</span><span class="token operator">:</span> result<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+]]></content>
+      <categories>
+        <category>LSP</category>
+      </categories>
+      <tags>
+        <tag>LSP</tag>
+      </tags>
+  </entry>
 </search>
