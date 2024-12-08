@@ -20590,4 +20590,65 @@ end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
         <tag>Zed</tag>
       </tags>
   </entry>
+  <entry>
+    <title>位运算 &amp; (与)实际应用</title>
+    <url>//post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BD%8D%E8%BF%90%E7%AE%97%20&amp;%20(%E4%B8%8E)%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8.html</url>
+    <content><![CDATA[<blockquote>
+<p>疑问？</p>
+</blockquote>
+<p>在<code>linux</code>系统中，我们经常使用<code>chmod</code>进行文件权限修改(读，写，执行)</p>
+<p>比如我要对<code>some.sh</code>赋予权限: <code>chmod u=rwx,g=rx,o=x some.sh</code></p>
+<ul>
+<li><code>u=rwx</code>：<ul>
+<li><code>u</code> 表示文件所有者（user）。</li>
+<li><code>rwx</code> 表示读（r）、写（w）和执行（x）权限。</li>
+<li>这意味着文件所有者将拥有读、写和执行权限。</li>
+</ul>
+</li>
+<li><code>g=rx</code>：<ul>
+<li><code>g</code> 表示文件所属组（group）。</li>
+<li><code>rx</code> 表示读（r）和执行（x）权限。</li>
+<li>这意味着文件所属组将拥有读和执行权限，但没有写权限。</li>
+</ul>
+</li>
+<li><code>o=x</code>：<ul>
+<li><code>o</code> 表示其他用户（others）。</li>
+<li><code>x</code> 表示执行权限。</li>
+<li>这意味着其他用户将只有执行权限，没有读和写权限。</li>
+</ul>
+</li>
+</ul>
+<p>可以看到我们分别对文件所属人，文件所属组，其他用户赋予了读，写，执行的权限，那这些信息实际存储是什么样子的呢？难道是一个数组？</p>
+<p><code>u: [r, w, x], g: [r, x], o: [x]</code></p>
+<p>这种看起来最直观，但有没有更优雅的方式，比如用一个数字就能表示所有的权限信息，<code>u: 7, g: 5, o: 1</code>，经常用这个命令的人知道，上述的写法可以使用<code>chmod 751 some.sh</code>直接表示</p>
+<hr>
+<p>那为什么我通过数字<code>7</code>就能知道是对应的<code>rwx</code>呢？其实从二进制层面来看，就直观许多</p>
+<ul>
+<li>execution:  执行，通过<code>1</code>表示，二进制表示：<code>001</code></li>
+<li>write: 编写，通过<code>2</code>表示，二进制表示：<code>010</code></li>
+<li>read: 读取，通过<code>4</code>表示，二进制表示：<code>100</code></li>
+</ul>
+<p>那 <code>7</code> 实际上是 通过 <code>1 + 2 + 4</code> 得来的，而7的二进制：<code>111</code></p>
+<p>从这里就能看出，当相应的权限拥有时，对应的数字进行相加，从二进制的层面来看，每个权限只会赋值一次，所以进行相加时，二进制中的每一位信息都能进行保留。然后我们再通过查看权限对应位是否为1，就能知道是否有该权限</p>
+<p>但二进制是让机器看的，我们怎么知道是不是有值，那这里通过<code>&amp;</code>运算就能快速知道结果了</p>
+<hr>
+<p><strong><font style="color:rgb(0, 0, 0);">位运算 &amp; (与)</font></strong></p>
+<p>规则：二进制对应位两两进行逻辑AND运算(只有对应位的值都是 1 时结果才为 1, 否则即为 0)即 <code>0&amp;0=0</code>,<code>0&amp;1=0</code>,<code>1&amp;1=1</code></p>
+<hr>
+<p>比如 <code>111（7） &amp; 010（2）= 010（2）</code>就能确认出是拥有权限的</p>
+<p>如果我们只赋予了写，执行权限，我们想看有没有读权限。<code>011（3）&amp; 100（4） = 000</code>计算结果就是没有权限。</p>
+<p>可以看到通过位运算，就能优雅的实现权限设置和读取。当然这里每个权限的取值也是有规则的，<strong>必须是2的进制位</strong>。</p>
+<p>比如：<code>1(0001), 2(0010), 4(0100), 8(1000)</code>以此类推。</p>
+<blockquote>
+<p>总结：</p>
+</blockquote>
+<p>当我们自己在开发中遇到类似的需求，比如：权限设置之类的，有多种情况，并且每种情况只设置一次。那就能使用该技巧，来进行优化。</p>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>位运算</tag>
+      </tags>
+  </entry>
 </search>
