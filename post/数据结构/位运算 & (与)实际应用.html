@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>位运算 &amp; (与)实际应用 | 玲辰书斋</title><meta name="author" content="庚辰"><meta name="copyright" content="庚辰"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="疑问？  在linux系统中，我们经常使用chmod进行文件权限修改(读，写，执行) 比如我要对some.sh赋予权限: chmod u&#x3D;rwx,g&#x3D;rx,o&#x3D;x some.sh  u&#x3D;rwx： u 表示文件所有者（user）。 rwx 表示读（r）、写（w）和执行（x）权限。 这意味着文件所有者将拥有读、写和执行权限。   g&#x3D;rx： g 表示文件所属组（group）。 rx 表示读（r）和执">
+<meta property="og:type" content="article">
+<meta property="og:title" content="位运算 &amp; (与)实际应用">
+<meta property="og:url" content="http://www.chengling.cloud/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BD%8D%E8%BF%90%E7%AE%97%20&%20(%E4%B8%8E)%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8.html">
+<meta property="og:site_name" content="玲辰书斋">
+<meta property="og:description" content="疑问？  在linux系统中，我们经常使用chmod进行文件权限修改(读，写，执行) 比如我要对some.sh赋予权限: chmod u&#x3D;rwx,g&#x3D;rx,o&#x3D;x some.sh  u&#x3D;rwx： u 表示文件所有者（user）。 rwx 表示读（r）、写（w）和执行（x）权限。 这意味着文件所有者将拥有读、写和执行权限。   g&#x3D;rx： g 表示文件所属组（group）。 rx 表示读（r）和执">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.chengling.cloud/img/default_top_img.jpg">
+<meta property="article:published_time" content="2024-12-08T03:51:04.000Z">
+<meta property="article:modified_time" content="2024-12-08T03:51:28.426Z">
+<meta property="article:author" content="庚辰">
+<meta property="article:tag" content="位运算">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.chengling.cloud/img/default_top_img.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://www.chengling.cloud/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BD%8D%E8%BF%90%E7%AE%97%20&amp;%20(%E4%B8%8E)%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '位运算 & (与)实际应用',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2024-12-08 11:51:28'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/myHead.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">56</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">21</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top_img.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">玲辰书斋</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">位运算 &amp; (与)实际应用</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-08T03:51:04.000Z" title="发表于 2024-12-08 11:51:04">2024-12-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-08T03:51:28.426Z" title="更新于 2024-12-08 11:51:28">2024-12-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="位运算 &amp; (与)实际应用"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>疑问？</p>
+</blockquote>
+<p>在<code>linux</code>系统中，我们经常使用<code>chmod</code>进行文件权限修改(读，写，执行)</p>
+<p>比如我要对<code>some.sh</code>赋予权限: <code>chmod u=rwx,g=rx,o=x some.sh</code></p>
+<ul>
+<li><code>u=rwx</code>：<ul>
+<li><code>u</code> 表示文件所有者（user）。</li>
+<li><code>rwx</code> 表示读（r）、写（w）和执行（x）权限。</li>
+<li>这意味着文件所有者将拥有读、写和执行权限。</li>
+</ul>
+</li>
+<li><code>g=rx</code>：<ul>
+<li><code>g</code> 表示文件所属组（group）。</li>
+<li><code>rx</code> 表示读（r）和执行（x）权限。</li>
+<li>这意味着文件所属组将拥有读和执行权限，但没有写权限。</li>
+</ul>
+</li>
+<li><code>o=x</code>：<ul>
+<li><code>o</code> 表示其他用户（others）。</li>
+<li><code>x</code> 表示执行权限。</li>
+<li>这意味着其他用户将只有执行权限，没有读和写权限。</li>
+</ul>
+</li>
+</ul>
+<p>可以看到我们分别对文件所属人，文件所属组，其他用户赋予了读，写，执行的权限，那这些信息实际存储是什么样子的呢？难道是一个数组？</p>
+<p><code>u: [r, w, x], g: [r, x], o: [x]</code></p>
+<p>这种看起来最直观，但有没有更优雅的方式，比如用一个数字就能表示所有的权限信息，<code>u: 7, g: 5, o: 1</code>，经常用这个命令的人知道，上述的写法可以使用<code>chmod 751 some.sh</code>直接表示</p>
+<hr>
+<p>那为什么我通过数字<code>7</code>就能知道是对应的<code>rwx</code>呢？其实从二进制层面来看，就直观许多</p>
+<ul>
+<li>execution:  执行，通过<code>1</code>表示，二进制表示：<code>001</code></li>
+<li>write: 编写，通过<code>2</code>表示，二进制表示：<code>010</code></li>
+<li>read: 读取，通过<code>4</code>表示，二进制表示：<code>100</code></li>
+</ul>
+<p>那 <code>7</code> 实际上是 通过 <code>1 + 2 + 4</code> 得来的，而7的二进制：<code>111</code></p>
+<p>从这里就能看出，当相应的权限拥有时，对应的数字进行相加，从二进制的层面来看，每个权限只会赋值一次，所以进行相加时，二进制中的每一位信息都能进行保留。然后我们再通过查看权限对应位是否为1，就能知道是否有该权限</p>
+<p>但二进制是让机器看的，我们怎么知道是不是有值，那这里通过<code>&amp;</code>运算就能快速知道结果了</p>
+<hr>
+<p><strong><font style="color:rgb(0, 0, 0);">位运算 &amp; (与)</font></strong></p>
+<p>规则：二进制对应位两两进行逻辑AND运算(只有对应位的值都是 1 时结果才为 1, 否则即为 0)即 <code>0&amp;0=0</code>,<code>0&amp;1=0</code>,<code>1&amp;1=1</code></p>
+<hr>
+<p>比如 <code>111（7） &amp; 010（2）= 010（2）</code>就能确认出是拥有权限的</p>
+<p>如果我们只赋予了写，执行权限，我们想看有没有读权限。<code>011（3）&amp; 100（4） = 000</code>计算结果就是没有权限。</p>
+<p>可以看到通过位运算，就能优雅的实现权限设置和读取。当然这里每个权限的取值也是有规则的，<strong>必须是2的进制位</strong>。</p>
+<p>比如：<code>1(0001), 2(0010), 4(0100), 8(1000)</code>以此类推。</p>
+<blockquote>
+<p>总结：</p>
+</blockquote>
+<p>当我们自己在开发中遇到类似的需求，比如：权限设置之类的，有多种情况，并且每种情况只设置一次。那就能使用该技巧，来进行优化。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://www.chengling.cloud">庚辰</a></span></div><!--.post-copyright__type--><!--  span.post-copyright-meta= _p('post.copyright.link') + ": "--><!--  span.post-copyright-info--><!--    a(href=url_for(url))= theme.post_copyright.decode ? decodeURI(url) : url--><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.chengling.cloud" target="_blank">玲辰书斋</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/">位运算</a></div><div class="post_share"><div class="social-share" data-image="/img/default_top_img.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/post/%E5%B7%A5%E5%85%B7/Zed%E5%8A%A8%E6%80%81%E6%9F%A5%E8%AF%A2.html"><img class="next-cover" src="/img/default_top_img.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Zed动态查询</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/myHead.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">庚辰</div><div class="author-info__description">要么读书，要么旅行，身体和心灵总有一个要在路上.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">56</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">21</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BD%8D%E8%BF%90%E7%AE%97%20&amp;%20(%E4%B8%8E)%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8.html" title="位运算 &amp; (与)实际应用"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="位运算 &amp; (与)实际应用"/></a><div class="content"><a class="title" href="/post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BD%8D%E8%BF%90%E7%AE%97%20&amp;%20(%E4%B8%8E)%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8.html" title="位运算 &amp; (与)实际应用">位运算 &amp; (与)实际应用</a><time datetime="2024-12-08T03:51:04.000Z" title="发表于 2024-12-08 11:51:04">2024-12-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/%E5%B7%A5%E5%85%B7/Zed%E5%8A%A8%E6%80%81%E6%9F%A5%E8%AF%A2.html" title="Zed动态查询"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zed动态查询"/></a><div class="content"><a class="title" href="/post/%E5%B7%A5%E5%85%B7/Zed%E5%8A%A8%E6%80%81%E6%9F%A5%E8%AF%A2.html" title="Zed动态查询">Zed动态查询</a><time datetime="2024-12-03T00:00:00.000Z" title="发表于 2024-12-03 08:00:00">2024-12-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/%E5%B7%A5%E5%85%B7/Electron%E5%88%86%E4%BA%AB.html" title="Electron分享"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Electron分享"/></a><div class="content"><a class="title" href="/post/%E5%B7%A5%E5%85%B7/Electron%E5%88%86%E4%BA%AB.html" title="Electron分享">Electron分享</a><time datetime="2024-10-09T00:00:00.000Z" title="发表于 2024-10-09 08:00:00">2024-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/%E5%89%8D%E7%AB%AF/Promise%E5%BC%82%E6%AD%A5%E5%AD%A6%E4%B9%A0.html" title="Promise异步学习"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Promise异步学习"/></a><div class="content"><a class="title" href="/post/%E5%89%8D%E7%AB%AF/Promise%E5%BC%82%E6%AD%A5%E5%AD%A6%E4%B9%A0.html" title="Promise异步学习">Promise异步学习</a><time datetime="2024-08-25T02:57:12.000Z" title="发表于 2024-08-25 10:57:12">2024-08-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/LSP.html" title="LSP探索"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LSP探索"/></a><div class="content"><a class="title" href="/post/Ruby/LSP.html" title="LSP探索">LSP探索</a><time datetime="2024-07-28T04:30:12.000Z" title="发表于 2024-07-28 12:30:12">2024-07-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By 庚辰</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a><br>
+<a href="https://beian.miit.gov.cn/"  style="color:#f72b07" target="_blank">陕ICP备2022014054号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="498210" data-server="netease" data-type="song" data-fixed="true" data-autoplay="true" data-lrcType="-1"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
