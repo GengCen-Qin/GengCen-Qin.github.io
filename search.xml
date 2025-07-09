@@ -3449,11 +3449,12 @@ posts<span class="token punctuation">.</span><span class="token keyword">each</s
 <h3 id="Preload"><a href="#Preload" class="headerlink" title="Preload"></a>Preload</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>preload<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a
 
 <span class="token comment"># =></span>
+<span class="token comment"># 查找所有user数据</span>
 <span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span>
-<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"posts"</span></span>  <span class="token constant">WHERE</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">IN</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token comment"># 根据上面的users的所有id，再获取对应的posts缓存起来</span>
+<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"posts"</span></span>  <span class="token constant">WHERE</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">IN</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>在默认情况下，<code>includes</code>也是这么加载数据的</p>
-<p>但问题是，这种情况无法对post加上where条件</p>
+<p>但问题是，这种情况无法对post(关联查询的表)加上where条件</p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>preload<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>where<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"posts.desc='ruby is awesome'"</span></span><span class="token punctuation">)</span>
 
 <span class="token comment"># =></span>
@@ -3467,20 +3468,8 @@ SQLite3<span class="token double-colon punctuation">::</span>SQLException<span c
 <span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span>  <span class="token constant">WHERE</span> <span class="token punctuation">(</span>users<span class="token punctuation">.</span>name<span class="token operator">=</span><span class="token string-literal"><span class="token string">'Neeraj'</span></span><span class="token punctuation">)</span>
 <span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token operator">*</span> <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"posts"</span></span>  <span class="token constant">WHERE</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">IN</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>可以看到，这里是先对User进行筛选，然后再查询posts，也就是说在Preload时，where条件是加在第一个查询语句的，Preload是执行了两个查询语句。</p>
-<h3 id="Includes"><a href="#Includes" class="headerlink" title="Includes"></a>Includes</h3><p>和<code>preload</code>是类似的，但<code>Includes</code>智能一些，我们替换上面报错的代码</p>
-<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>includes<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>where<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'posts.desc = "ruby is awesome"'</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a
-
-<span class="token comment"># =></span>
-<span class="token constant">SELECT</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span> <span class="token constant">AS</span> t0_r0<span class="token punctuation">,</span>
-       <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"name"</span></span> <span class="token constant">AS</span> t0_r1<span class="token punctuation">,</span> 
-       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span> <span class="token constant">AS</span> t1_r0<span class="token punctuation">,</span>
-       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"title"</span></span> <span class="token constant">AS</span> t1_r1<span class="token punctuation">,</span>
-       <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">AS</span> t1_r2<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"desc"</span></span> <span class="token constant">AS</span> t1_r3
-<span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span> <span class="token constant">LEFT</span> <span class="token constant">OUTER</span> <span class="token constant">JOIN</span> <span class="token string-literal"><span class="token string">"posts"</span></span> <span class="token constant">ON</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span>
-<span class="token constant">WHERE</span> <span class="token punctuation">(</span>posts<span class="token punctuation">.</span>desc <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"ruby is awesome"</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>这里<code>Includes</code>通过连表操作(left join)，只执行了一条SQL，但是如果没有where条件的话，还是执行了两个SQL，但如果你仍想强制执行一个SQL的话，需要使用<code>references</code></p>
+<p>可以看到，这里是先对User进行筛选，然后再查询posts，也就是说在Preload时，where条件是加在第一个查询语句的，Preload是执行了两个查询语句。这对于两个表数据量很大时，联表可能性差时，用这个会好一些</p>
+<h3 id="Includes"><a href="#Includes" class="headerlink" title="Includes"></a>Includes</h3><p>默认会进行预加载关联表数据，但是where条件中也不能包含关联表的筛选，如果要加的话需要使用<code>references</code></p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>includes<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>references<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span><span class="token punctuation">.</span>to_a
 
 <span class="token comment"># =></span>
@@ -3496,7 +3485,7 @@ SQLite3<span class="token double-colon punctuation">::</span>SQLException<span c
        <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"title"</span></span> <span class="token constant">AS</span> t1_r1<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token constant">AS</span> t1_r2<span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"desc"</span></span> <span class="token constant">AS</span> t1_r3
 <span class="token constant">FROM</span> <span class="token string-literal"><span class="token string">"users"</span></span> <span class="token constant">LEFT</span> <span class="token constant">OUTER</span> <span class="token constant">JOIN</span> <span class="token string-literal"><span class="token string">"posts"</span></span> <span class="token constant">ON</span> <span class="token string-literal"><span class="token string">"posts"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"user_id"</span></span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"users"</span></span><span class="token punctuation">.</span><span class="token string-literal"><span class="token string">"id"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>可以看到这相当于<code>includes</code>在<code>where</code>或者<code>order</code>时执行的操作，只有一个SQL</p>
+<p>支持在关联模型中进行where查询，默认使用<code>left outer join</code></p>
 <h3 id="Joins"><a href="#Joins" class="headerlink" title="Joins"></a>Joins</h3><p>与上面<code>Left join</code>不同，Joins执行的是<code>inner join</code></p>
 <pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">User<span class="token punctuation">.</span>joins<span class="token punctuation">(</span><span class="token symbol">:posts</span><span class="token punctuation">)</span>
 
@@ -3544,7 +3533,7 @@ records<span class="token punctuation">.</span><span class="token keyword">each<
     <title>Effective Ruby</title>
     <url>//post/Ruby/Effective%20Ruby.html</url>
     <content><![CDATA[<h2 id="熟悉Ruby"><a href="#熟悉Ruby" class="headerlink" title="熟悉Ruby"></a>熟悉Ruby</h2><h3 id="第一条：ruby中的True与False"><a href="#第一条：ruby中的True与False" class="headerlink" title="第一条：ruby中的True与False"></a>第一条：ruby中的True与False</h3><ol>
-<li>在Ruby中，除了<code>false</code>和<code>nil</code>，其他值都为<code>true</code>，包括数字0</li>
+<li><h6 id="在Ruby中，除了false和nil，其他值都为true，包括数字0"><a href="#在Ruby中，除了false和nil，其他值都为true，包括数字0" class="headerlink" title="在Ruby中，除了false和nil，其他值都为true，包括数字0"></a>在Ruby中，除了<code>false</code>和<code>nil</code>，其他值都为<code>true</code>，包括数字0</h6></li>
 <li><code>true</code>和<code>false</code>并不是关键字，而是一个全局常量但不遵守命名规范和赋值规范<ol>
 <li>不遵守命名规范是因为，它没有以<code>$</code>开头</li>
 <li>不遵守赋值规范是因为，无法写<code>ture = something</code></li>
@@ -21240,5 +21229,325 @@ UserWorker<span class="token punctuation">.</span>perform_later<span aria-hidden
       <tags>
         <tag>ruby</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Rails层级设计演化</title>
+    <url>//post/Ruby/Rails%E6%9E%B6%E6%9E%84%E5%B1%82%E7%BA%A7%E8%AE%BE%E8%AE%A1.html</url>
+    <content><![CDATA[<h1 id="Rails层级设计演化"><a href="#Rails层级设计演化" class="headerlink" title="Rails层级设计演化"></a>Rails层级设计演化</h1><blockquote>
+<p>相关资料</p>
+</blockquote>
+<ol>
+<li><a href="https://dev.37signals.com/vanilla-rails-is-plenty/">37signal - 层级设计</a></li>
+<li><a href="https://dev.37signals.com/good-concerns/">37signal - concern设计</a></li>
+<li><a href="https://xfyuan.github.io/2022/11/vanilla-rails-is-plenty">层级设计翻译</a></li>
+<li><a href="https://dev.37signals.com/good-concerns/">concern设计翻译</a></li>
+<li><a href="https://www.bilibili.com/video/BV1F94y1s7kx/?spm_id_from=333.337.search-card.all.click">gitlab-ddd应用</a></li>
+</ol>
+<h2 id="版本1"><a href="#版本1" class="headerlink" title="版本1"></a>版本1</h2><p>我们都知道rails初始化项目，在层级拆分上只有两层</p>
+<ol>
+<li>controller</li>
+<li>model</li>
+</ol>
+<pre class="line-numbers language-mermaid" data-language="mermaid"><code class="language-mermaid"><span class="token keyword">graph</span> TD
+    A<span class="token text string">[Controller]</span> <span class="token arrow operator">--></span><span class="token label property">|调用|</span> B<span class="token text string">[Model]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>controller负责接收请求，model负责实现存储，那业务逻辑在哪里实现？</p>
+<p>可能为了model的干净，你可能将业务逻辑写到controller中。也有可能为了复用，将业务逻辑写在model中。但不管选择哪种方式，随着业务逻辑的不断迭代，你的controller或者model也逐渐的臃肿。变得难以维护，也有很多人批评说不应该controller直接访问model层，自然而然的大家决定抽离出业务层，比如：Service，Command等等</p>
+<h2 id="版本2"><a href="#版本2" class="headerlink" title="版本2"></a>版本2</h2><p>比如我有一个报价单模型，我可能有类似的结构</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># controller</span>
+<span class="token keyword">class</span> <span class="token class-name">QuotationController</span> <span class="token operator">&lt;</span> ApplicationController
+<span class="token keyword">end</span>
+
+<span class="token comment"># Command</span>
+<span class="token keyword">class</span> <span class="token class-name">QuotationCommand</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">create</span></span>
+  <span class="token keyword">end</span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">list</span></span>
+  <span class="token keyword">end</span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">modify</span></span>
+  <span class="token keyword">end</span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">delete</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token comment"># model</span>
+<span class="token keyword">class</span> <span class="token class-name">Quotation</span> <span class="token operator">&lt;</span> ApplicationRecord
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所有关于报价单的操作我都封装到QuotationCommand中，通过Controller调用Command，最终调用Model</p>
+<pre class="line-numbers language-Mermaid" data-language="Mermaid"><code class="language-Mermaid">graph TD
+    A[Controller] --&gt;|调用| B[Command]
+    B --&gt;|调用| C[Model]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到我将增删改查的复杂业务逻辑统一放入到Command中，假如我这时候再来一个新的需求比如我要导出一部分数据，我就简单的称为<code>export</code>吧，根据惯性我会将这个功能也实现到QuotationCommand中。一切自然而然，但是很明显我的这个类早已违反了<strong>单一功能原则（Single responsibility principle）</strong>,直到有一天这个巨无霸的Command也变得臃肿和难以维护，随便一个修改都可能是牵一发而动全身的。没办法我们再按照功能拆分一下吧。</p>
+<pre class="line-numbers language-Mermaid" data-language="Mermaid"><code class="language-Mermaid">graph TD
+    A[QuotationController] --&gt;|调用| B1[::Quotation::CreateCommand]
+    A --&gt;|调用| B2[::Quotation::ModifyCommand]
+    A --&gt;|调用| B3[::Quotation::ListCommand]
+    A --&gt;|调用| B4[::Quotation::ExportCommand]
+    
+    B1 --&gt;|调用| C[QuotationModel]
+    B2 --&gt;|调用| C
+    B3 --&gt;|调用| C
+    B4 --&gt;|调用| C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>看起来很漂亮，每个Command只负责自己的业务，保证职责单一，如果再出现新的业务只需要构建新的Command即可。</p>
+<h2 id="版本3"><a href="#版本3" class="headerlink" title="版本3"></a>版本3</h2><p>我们目前的方案有什么问题呢？</p>
+<p>比如<code>ExportCommand</code>导出功能是在列表查询的基础上做的，比如我有一个后台管理页面，它拥有一个列表搜索页，通过传递不同的筛选项，查询出不同的数据，使用<code>ListCommand</code>。现在我希望能将查询的数据导成Excel，也就是<code>ExportCommand</code>负责的内容，毫无疑问我查询的功能已经有了，我只需要在<code>ExportCommand</code>中使用<code>ListCommand</code>即可，那这就牵扯到一个问题：</p>
+<blockquote>
+<p>Command之前是否允许相互调用？</p>
+</blockquote>
+<p>如果相互允许调用，势必引发耦合性，也就是<code>ListCommand</code>的修改势必会影响到<code>ExportCommand</code></p>
+<blockquote>
+<p>抽离Command本身可能会有什么问题？</p>
+</blockquote>
+<p>我们引用一些DDD书评论</p>
+<blockquote>
+<p>Now, the more common mistake is to give up too easily on fitting the behavior into an appropriate object, gradually slipping towards procedural programming.*</p>
+<p>现在，更常见的错误是过于轻易地放弃将行为适配到适当的对象中，逐渐滑向过程编程。</p>
+</blockquote>
+<blockquote>
+<p><em>Don’t lean too heavily toward modeling a domain concept as a Service. Do so only if the circumstances fit. If we aren’t careful, we might start to treat Services as our modeling “silver bullet.” Using Services overzealously will usually result in the negative consequences of creating an Anemic Domain Model, where all the domain logic resides in Services rather than mostly spread across Entities and Value Objects.</em></p>
+<p>不要过于倾向于将领域概念建模为一个 Service。仅仅在情况适合时才这样做。如果我们不仔细地话，就可能会开始将 Services 视为建模的“银弹”。过度使用 Services 通常会导致创建贫血领域模型的负面后果，其中所有领域逻辑都驻留在 Services 中，而不是主要分布在实体和值对象中。</p>
+</blockquote>
+<p>也就是说，如果我们如果不假思索的将所有的行为一股脑的塞进Service层级中，而不考虑内聚性，抽象性，我们会渐渐走向面向过程编程，并且会导致模型<strong>贫血</strong>，即为携带数据的空壳。</p>
+<p>所以我们再看看该怎么组织Model？</p>
+<hr>
+<p>假设我们有一个<code>User</code>模型，随着业务发展，它包含了用户认证、资料管理、权限检查、统计报表等多种功能，导致代码量过大。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/models/user.rb</span>
+<span class="token keyword">class</span> <span class="token class-name">User</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token comment"># 验证相关</span>
+  validates <span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">presence</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token symbol">uniqueness</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  validates <span class="token symbol">:password</span><span class="token punctuation">,</span> <span class="token symbol">presence</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token symbol">length</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span> <span class="token symbol">minimum</span><span class="token operator">:</span> <span class="token number">8</span> <span class="token punctuation">&#125;</span>
+  
+  <span class="token comment"># 认证相关</span>
+  has_secure_password
+  has_many <span class="token symbol">:sessions</span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">generate_auth_token</span></span>
+    <span class="token comment"># 生成认证token的逻辑</span>
+  <span class="token keyword">end</span>
+  
+  <span class="token comment"># 资料管理相关</span>
+  before_save <span class="token symbol">:format_name</span>
+  has_one <span class="token symbol">:profile</span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">full_name</span></span>
+    <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">first_name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">last_name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+  <span class="token keyword">end</span>
+  
+  <span class="token keyword">private</span> <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">format_name</span></span>
+    <span class="token keyword">self</span><span class="token punctuation">.</span>first_name <span class="token operator">=</span> first_name<span class="token punctuation">.</span>capitalize
+    <span class="token keyword">self</span><span class="token punctuation">.</span>last_name <span class="token operator">=</span> last_name<span class="token punctuation">.</span>capitalize
+  <span class="token keyword">end</span>
+  
+  <span class="token comment"># 权限相关</span>
+  <span class="token constant">ROLES</span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">%w[admin moderator user guest]</span></span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">admin</span></span><span class="token operator">?</span>
+    role <span class="token operator">==</span> <span class="token string-literal"><span class="token string">'admin'</span></span>
+  <span class="token keyword">end</span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">can_edit</span></span><span class="token operator">?</span><span class="token punctuation">(</span>resource<span class="token punctuation">)</span>
+    admin<span class="token operator">?</span> <span class="token operator">||</span> resource<span class="token punctuation">.</span>user <span class="token operator">==</span> <span class="token keyword">self</span>
+  <span class="token keyword">end</span>
+  
+  <span class="token comment"># 统计相关</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">active_users_count</span></span>
+    where<span class="token punctuation">(</span><span class="token symbol">last_active_at</span><span class="token operator">:</span> <span class="token number">1.</span>week<span class="token punctuation">.</span>ago<span class="token operator">..</span><span class="token builtin">Time</span><span class="token punctuation">.</span>current<span class="token punctuation">)</span><span class="token punctuation">.</span>count
+  <span class="token keyword">end</span>
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">activity_score</span></span>
+    <span class="token comment"># 计算用户活跃度分数</span>
+  <span class="token keyword">end</span>
+
+  <span class="token comment"># ... 更多方法 ...</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>里面混乱的组织着各种方法，假如我想找到某个功能，我需要一个个的看，哪些对我是有用的。这也称为<code>Fat Model</code></p>
+<p>但如果我们能用Concern进行合理化的拆分聚合，效果就会完全不同</p>
+<h3 id="拆分的目录结构："><a href="#拆分的目录结构：" class="headerlink" title="拆分的目录结构："></a>拆分的目录结构：</h3><pre class="line-numbers language-text" data-language="text"><code class="language-text">app/
+  models/
+    concerns/
+      user/
+        authenticatable.rb
+        profileable.rb
+        roleable.rb
+        reportable.rb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="拆分后Concern模块"><a href="#拆分后Concern模块" class="headerlink" title="拆分后Concern模块"></a>拆分后Concern模块</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/models/concerns/user/authenticatable.rb</span>
+<span class="token keyword">module</span> <span class="token class-name">User</span><span class="token double-colon punctuation">::</span>Authenticatable
+  <span class="token keyword">extend</span> ActiveSupport<span class="token double-colon punctuation">::</span>Concern
+
+  included <span class="token keyword">do</span>
+    validates <span class="token symbol">:email</span><span class="token punctuation">,</span> <span class="token symbol">presence</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token symbol">uniqueness</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    validates <span class="token symbol">:password</span><span class="token punctuation">,</span> <span class="token symbol">presence</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token symbol">length</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span> <span class="token symbol">minimum</span><span class="token operator">:</span> <span class="token number">8</span> <span class="token punctuation">&#125;</span>
+    
+    has_secure_password
+    has_many <span class="token symbol">:sessions</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">generate_auth_token</span></span>
+    <span class="token comment"># 生成认证token的逻辑</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/models/concerns/user/profileable.rb</span>
+<span class="token keyword">module</span> <span class="token class-name">User</span><span class="token double-colon punctuation">::</span>Profileable
+  <span class="token keyword">extend</span> ActiveSupport<span class="token double-colon punctuation">::</span>Concern
+
+  included <span class="token keyword">do</span>
+    before_save <span class="token symbol">:format_name</span>
+    has_one <span class="token symbol">:profile</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">full_name</span></span>
+    <span class="token string-literal"><span class="token string">"</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">first_name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">last_name</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">private</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">format_name</span></span>
+    <span class="token keyword">self</span><span class="token punctuation">.</span>first_name <span class="token operator">=</span> first_name<span class="token punctuation">.</span>capitalize
+    <span class="token keyword">self</span><span class="token punctuation">.</span>last_name <span class="token operator">=</span> last_name<span class="token punctuation">.</span>capitalize
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/models/concerns/user/roleable.rb</span>
+<span class="token keyword">module</span> <span class="token class-name">User</span><span class="token double-colon punctuation">::</span>Roleable
+  <span class="token keyword">extend</span> ActiveSupport<span class="token double-colon punctuation">::</span>Concern
+
+  included <span class="token keyword">do</span>
+    <span class="token constant">ROLES</span> <span class="token operator">=</span> <span class="token string-literal"><span class="token string">%w[admin moderator user guest]</span></span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">admin</span></span><span class="token operator">?</span>
+    role <span class="token operator">==</span> <span class="token string-literal"><span class="token string">'admin'</span></span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">can_edit</span></span><span class="token operator">?</span><span class="token punctuation">(</span>resource<span class="token punctuation">)</span>
+    admin<span class="token operator">?</span> <span class="token operator">||</span> resource<span class="token punctuation">.</span>user <span class="token operator">==</span> <span class="token keyword">self</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/models/concerns/user/reportable.rb</span>
+<span class="token keyword">module</span> <span class="token class-name">User</span><span class="token double-colon punctuation">::</span>Reportable
+  <span class="token keyword">extend</span> ActiveSupport<span class="token double-colon punctuation">::</span>Concern
+
+  class_methods <span class="token keyword">do</span>
+    <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">active_users_count</span></span>
+      where<span class="token punctuation">(</span><span class="token symbol">last_active_at</span><span class="token operator">:</span> <span class="token number">1.</span>week<span class="token punctuation">.</span>ago<span class="token operator">..</span><span class="token builtin">Time</span><span class="token punctuation">.</span>current<span class="token punctuation">)</span><span class="token punctuation">.</span>count
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">activity_score</span></span>
+    <span class="token comment"># 计算用户活跃度分数</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="拆分后的User模型"><a href="#拆分后的User模型" class="headerlink" title="拆分后的User模型"></a>拆分后的User模型</h3><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># app/models/user.rb</span>
+<span class="token keyword">class</span> <span class="token class-name">User</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> User<span class="token double-colon punctuation">::</span>Authenticatable
+  <span class="token keyword">include</span> User<span class="token double-colon punctuation">::</span>Profileable
+  <span class="token keyword">include</span> User<span class="token double-colon punctuation">::</span>Roleable
+  <span class="token keyword">include</span> User<span class="token double-colon punctuation">::</span>Reportable
+  
+  <span class="token comment"># 这里只保留模型特有的或无法分类的方法</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这样拆分后，可能都不用构建特定的Command，模型本身维护拆分良好的功能，来让Controller直接进行调用</p>
+<p>但是这也要求团队内的成员遵守统一的规范和要求，并且具有良好的抽象化思想，这一点很难，最难的可能是如何给你的模块命名🤣，因为它直接反映了该模块儿的内涵。</p>
+<hr>
+<p>简略总结几点：</p>
+<ol>
+<li>鼓励构建<code>rich domain model</code>，不过为了避免<code>Fat</code><ol>
+<li>使用Concern来组织Model的代码</li>
+<li>将复杂功能委托到额外的对象系统（PORO）</li>
+<li>ActiveRecord和Poro视为一整套领域模型，而至于是否需要持久化，业务逻辑消费者并不在意</li>
+</ol>
+</li>
+<li>对于复杂的行为，可构建Service/Command，但是需要谨慎和良好的设计</li>
+</ol>
+<p>比较有趣的是：<code>37signal</code>很激进，觉得Service层都是没有必要的。</p>
+]]></content>
+      <categories>
+        <category>Ruby</category>
+      </categories>
+      <tags>
+        <tag>rails</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>//post/Ruby/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1.html</url>
+    <content><![CDATA[<h1 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h1><ol>
+<li>一个类，一个方法只做一件事儿</li>
+<li>所有的实例数据，都通过统一访问器，进行统一访问，而不是堆散在代码的各个角落中</li>
+<li>对于特定数据结构，可以使用Struct来封装。这样保证只有封装的地方需要知道数据结构的表达方式是什么。其他地方通过Struct对象，来获取信息即可。</li>
+<li>推迟重构的心，不要急着将一些信息分离出去。可能未来这里永远的不会变。等到一天你需要变化时，再去重构也来得及</li>
+<li>单一职责 -&gt; 增加职责(但没有明确的目的去分离一个类出来)，那可以先试用Struct来做封装</li>
+</ol>
+<h2 id="管理依赖"><a href="#管理依赖" class="headerlink" title="管理依赖"></a>管理依赖</h2><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">B</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">b_thing</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">build_something</span></span>
+    b <span class="token operator">=</span> <span class="token class-name">B</span><span class="token punctuation">.</span><span class="token keyword">new</span>
+    a_thing <span class="token operator">*</span> b<span class="token punctuation">.</span>b_thing
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里的A的build_something就有很多依赖</p>
+<ol>
+<li>它知道B这个类</li>
+<li>知道如何实例化B这个类</li>
+<li>知道这个类有b_thing这个方法</li>
+</ol>
+<p>这就导致A 和 B耦合</p>
+<ol>
+<li>如果B要改名，A这个类的代码需要一起改</li>
+<li>如果B的构造方法修改，A需要改</li>
+<li>假如有个C，也想利用A.build_something，现在的代码无法直接复用，因为A 和 B绑定了</li>
+</ol>
+<blockquote>
+<p>解决知道其他类，以及如何构造的依赖</p>
+</blockquote>
+<ol>
+<li>依赖注入</li>
+</ol>
+<p>也就是说，如果A依赖B，那在A实例化的时候，将B引入进来，作为实例变量</p>
+<ol start="2">
+<li>如果不依赖注入，也应该将类的构造隔离出去，也就是说单独写一个方法来获取构造好的外部类</li>
+</ol>
+<blockquote>
+<p>解决知道其他对象的方法，以及如何调用他们的</p>
+</blockquote>
+<ol>
+<li>隔离</li>
+</ol>
+<p>比如 A.a_method 中有一行，执行了 b.b_method , 最好将这部分依赖单独放到一个方法中，这样如果b_method需要修改，那只单独修改该方法就好。a_method本身并不需要调整</p>
+<ol start="2">
+<li>定义函数参数时，尽量使用关键字参数，好处就是你不需要知道参数的顺序，并且你知道每个参数的含义</li>
+<li>如果初始化方法中需要复杂代码构建信息，也应该放到一个方法中</li>
+<li>依赖抽象而不是具体</li>
+</ol>
+<h2 id="创建灵活接口"><a href="#创建灵活接口" class="headerlink" title="创建灵活接口"></a>创建灵活接口</h2><ol>
+<li>面向类编程 -&gt; 面向消息发送编程</li>
+</ol>
+<p>以往我们会将注意力放在，有哪些类需要定义，每个类能做什么</p>
+<p>现在我们应更多想想，我有哪些消息要发送，谁来发送，发送给谁</p>
+<ol start="2">
+<li>在依赖其他人时，我们更应该关注What，而不是How</li>
+</ol>
+<p>也就是说你只需要告诉你依赖的人，你想要什么。至于具体怎么实现，并不需要你清楚。尽可能将信息封锁起来。</p>
+<ol start="3">
+<li>对他人知道的越少，依赖就越小</li>
+</ol>
+<h2 id="减少鸭子类型的成本"><a href="#减少鸭子类型的成本" class="headerlink" title="减少鸭子类型的成本"></a>减少鸭子类型的成本</h2>]]></content>
   </entry>
 </search>
