@@ -1,0 +1,471 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>利用 Delegated Types 与 Self Joins 设计高扩展性系统 | 玲辰书斋</title><meta name="author" content="庚辰"><meta name="copyright" content="庚辰"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言  如何设计一套类似Confluence、语雀、Notion这类CMS系统，在一个容器内，里面含有大量的不同形式的内容，同时多种内容又有很多类似的操作：移动、复制、删除、支持评论等。一个文档下可以写文本，也可以再次建立子文档，文本评论也可以建立子评论。一篇文档能够清晰的查看操作历史、变化内容。同时一个容器内可能还会新增一些不同的内容，又同时也要支持上述的操作。 https:&#x2F;&#x2F;dev.37s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用 Delegated Types 与 Self Joins 设计高扩展性系统">
+<meta property="og:url" content="http://www.chengling.cloud/post/Ruby/%E5%88%A9%E7%94%A8%20Delegated%20Types%20%E4%B8%8E%20Self%20Joins%20%E8%AE%BE%E8%AE%A1%E9%AB%98%E6%89%A9%E5%B1%95%E6%80%A7%E7%B3%BB%E7%BB%9F.html">
+<meta property="og:site_name" content="玲辰书斋">
+<meta property="og:description" content="前言  如何设计一套类似Confluence、语雀、Notion这类CMS系统，在一个容器内，里面含有大量的不同形式的内容，同时多种内容又有很多类似的操作：移动、复制、删除、支持评论等。一个文档下可以写文本，也可以再次建立子文档，文本评论也可以建立子评论。一篇文档能够清晰的查看操作历史、变化内容。同时一个容器内可能还会新增一些不同的内容，又同时也要支持上述的操作。 https:&#x2F;&#x2F;dev.37s">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.chengling.cloud/img/default_top_img.jpg">
+<meta property="article:published_time" content="2026-01-05T05:03:04.000Z">
+<meta property="article:modified_time" content="2026-01-17T10:12:56.869Z">
+<meta property="article:author" content="庚辰">
+<meta property="article:tag" content="ruby,rails">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.chengling.cloud/img/default_top_img.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://www.chengling.cloud/post/Ruby/%E5%88%A9%E7%94%A8%20Delegated%20Types%20%E4%B8%8E%20Self%20Joins%20%E8%AE%BE%E8%AE%A1%E9%AB%98%E6%89%A9%E5%B1%95%E6%80%A7%E7%B3%BB%E7%BB%9F"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '利用 Delegated Types 与 Self Joins 设计高扩展性系统',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-01-17 18:12:56'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><link rel="stylesheet" href="APlayer.min.css"><div id="aplayer"></div><script src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async></script><script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async></script><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/myHead.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">62</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">23</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top_img.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">玲辰书斋</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">利用 Delegated Types 与 Self Joins 设计高扩展性系统</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-01-05T05:03:04.000Z" title="发表于 2026-01-05 13:03:04">2026-01-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-01-17T10:12:56.869Z" title="更新于 2026-01-17 18:12:56">2026-01-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="利用 Delegated Types 与 Self Joins 设计高扩展性系统"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>前言</p>
+</blockquote>
+<p>如何设计一套类似<code>Confluence</code>、<code>语雀</code>、<code>Notion</code>这类CMS系统，在一个容器内，里面含有大量的不同形式的内容，同时多种内容又有很多类似的操作：移动、复制、删除、支持评论等。一个文档下可以写文本，也可以再次建立子文档，文本评论也可以建立子评论。一篇文档能够清晰的查看操作历史、变化内容。同时一个容器内可能还会新增一些不同的内容，又同时也要支持上述的操作。</p>
+<p><a target="_blank" rel="noopener" href="https://dev.37signals.com/the-rails-delegated-type-pattern/">https://dev.37signals.com/the-rails-delegated-type-pattern/</a> 文章中探讨了37Signals团队如何设计系统架构，保证高维护性和高扩展性。其核心概念就是Recording、Recordable和Event。本质上，他们利用了<code>Delegated Types + Self Joins</code>模式设计架构，来最大程度上支持高扩展性和可维护性。</p>
+<p>参考资料：</p>
+<p><a target="_blank" rel="noopener" href="https://guides.rubyonrails.org/association_basics.html#delegated-types">Active Record Associations — Ruby on Rails Guides</a></p>
+<p><a target="_blank" rel="noopener" href="https://api.rubyonrails.org/classes/ActiveRecord/DelegatedType.html">https://api.rubyonrails.org/classes/ActiveRecord/DelegatedType.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://guides.rubyonrails.org/association_basics.html#delegated-types">Active Record Associations — Ruby on Rails Guides</a></p>
+<p>以下几种模式需要清楚：</p>
+<h3 id="基础模型关联"><a href="#基础模型关联" class="headerlink" title="基础模型关联"></a>基础模型关联</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://api.rubyonrails.org/v8.1.1/classes/ActiveRecord/Associations/ClassMethods.html#method-i-belongs_to">belongs_to</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.rubyonrails.org/v8.1.1/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_one">has_one</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.rubyonrails.org/v8.1.1/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many">has_many</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.rubyonrails.org/v8.1.1/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many">has_many :through</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.rubyonrails.org/v8.1.1/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_one">has_one :through</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.rubyonrails.org/v8.1.1/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_and_belongs_to_many">has_and_belongs_to_many</a></li>
+</ul>
+<p>最常见的关联关系，相当于每个独立的表，通过一个索引关联ID来关联其他模型</p>
+<h3 id="高级模型关联"><a href="#高级模型关联" class="headerlink" title="高级模型关联"></a>高级模型关联</h3><h4 id="Polymorphic-Associations"><a href="#Polymorphic-Associations" class="headerlink" title="Polymorphic Associations"></a>Polymorphic Associations</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Picture</span> <span class="token operator">&lt;</span> ApplicationRecord
+  belongs_to <span class="token symbol">:imageable</span><span class="token punctuation">,</span> <span class="token symbol">polymorphic</span><span class="token operator">:</span> <span class="token boolean">true</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Employee</span> <span class="token operator">&lt;</span> ApplicationRecord
+  has_many <span class="token symbol">:pictures</span><span class="token punctuation">,</span> <span class="token symbol">as</span><span class="token operator">:</span> <span class="token symbol">:imageable</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Product</span> <span class="token operator">&lt;</span> ApplicationRecord
+  has_many <span class="token symbol">:pictures</span><span class="token punctuation">,</span> <span class="token symbol">as</span><span class="token operator">:</span> <span class="token symbol">:imageable</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里相当于图片资源，可能属于是用户的，也可能属于是产品的。未来可能还有其他地方也使用图片。那这里在图片模型中就会定义两个字段：</p>
+<ul>
+<li>imageable_id</li>
+<li>imageable_type</li>
+</ul>
+<p>通过rails的关联模型，就能直接扩展和关联想要的数据，在复用历史模型的情况下，支持可拓展性</p>
+<h4 id="Self-Joins"><a href="#Self-Joins" class="headerlink" title="Self Joins"></a>Self Joins</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Employee</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token comment"># an employee can have many subordinates.</span>
+  has_many <span class="token symbol">:subordinates</span><span class="token punctuation">,</span> <span class="token symbol">class_name</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Employee"</span></span><span class="token punctuation">,</span> <span class="token symbol">foreign_key</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"leader_id"</span></span>
+
+  <span class="token comment"># an employee can have one leader.</span>
+  belongs_to <span class="token symbol">:leader</span><span class="token punctuation">,</span> <span class="token symbol">class_name</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Employee"</span></span><span class="token punctuation">,</span> <span class="token symbol">optional</span><span class="token operator">:</span> <span class="token boolean">true</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>一个领导有很多员工，但领导本身也是一个员工，也可能有上级领导。统一存在一个表中，通过一个<code>leader_id</code>进行关联。</p>
+<p>这本质上利用了树结构进行灵活的扩展，通过自连接替换掉了普通的模型关联。对于多层级但又是同一类型的实体，这种模式很方便。</p>
+<h4 id="Single-Table-Inheritance-单表继承"><a href="#Single-Table-Inheritance-单表继承" class="headerlink" title="Single Table Inheritance 单表继承"></a>Single Table Inheritance 单表继承</h4><p>允许多个模型存储在单个数据库表中。当你拥有不同类型实体，它们共享共同属性和行为，但又有特定行为时，这非常有用。</p>
+<p>例如，假设我们有 <code>Car</code> 、 <code>Motorcycle</code> 和 <code>Bicycle</code> 模型。这些模型将共享诸如 <code>color</code> 和 <code>price</code> 之类的字段，但每个模型都有独特的行为。它们也各自拥有自己的控制器。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Vehicle</span> <span class="token operator">&lt;</span> ApplicationRecord
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Car</span> <span class="token operator">&lt;</span> Vehicle
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Motorcycle</span> <span class="token operator">&lt;</span> Vehicle
+<span class="token keyword">end</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所有模型使用一张表（vehicle），通过一个<code>type</code>字段来区分不同的类型。这样可以避免重复建表，又保留了扩展性。不同的类型，做各自特别的处理。</p>
+<p>不过STI有个问题：随着业务复杂化，多个类型需要存储特定的数据，这些数据对有的类型有用，对有的类型无用，会导致原本的一张表中字段越来越多，很多字段对某些类型来说就是<code>NULL</code>值。</p>
+<h4 id="Delegated-Types-委托类型"><a href="#Delegated-Types-委托类型" class="headerlink" title="Delegated Types  委托类型"></a>Delegated Types  委托类型</h4><p>这正是为了解决STI的问题而出现的：</p>
+<p>可能一开始使用单表继承很方便，但随着业务的复杂化，可能多个类型需要存储特定的数据，这些特定的数据，对有的类型有用，对有的类型无用，会导致原本的一张表中，字段越来越多，而又不是每个类型，都要使用的。那就可以把核心公共字段放在原始表上，然后创建各个类型具体字段到具体的表中。</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># Schema: entries[ id, entryable_type, entryable_id, created_at, updated_at, created_by, updated_by ]</span>
+<span class="token keyword">class</span> <span class="token class-name">Entry</span> <span class="token operator">&lt;</span> ApplicationRecord
+  delegated_type <span class="token symbol">:entryable</span><span class="token punctuation">,</span> <span class="token symbol">types</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">%w[ Message Comment ]</span></span><span class="token punctuation">,</span> <span class="token symbol">dependent</span><span class="token operator">:</span> <span class="token symbol">:destroy</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">module</span> <span class="token class-name">Entryable</span>
+  <span class="token keyword">extend</span> ActiveSupport<span class="token double-colon punctuation">::</span>Concern
+
+  included <span class="token keyword">do</span>
+    has_one <span class="token symbol">:entry</span><span class="token punctuation">,</span> <span class="token symbol">as</span><span class="token operator">:</span> <span class="token symbol">:entryable</span><span class="token punctuation">,</span> <span class="token symbol">touch</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token comment"># Schema: messages[ id, subject, body ]</span>
+<span class="token keyword">class</span> <span class="token class-name">Message</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Entryable
+<span class="token keyword">end</span>
+
+<span class="token comment"># Schema: comments[ id, content ]</span>
+<span class="token keyword">class</span> <span class="token class-name">Comment</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Entryable
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>数据创建时使用：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">Entry<span class="token punctuation">.</span>create<span class="token operator">!</span> entryable<span class="token operator">:</span> <span class="token class-name">Message</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span><span class="token symbol">subject</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"hello!"</span></span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>数据使用时：</p>
+<p>比如我希望文本搜索 Entry 中的内容时，可以将命令委托到特定的类上</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Entry</span> <span class="token operator">&lt;</span> ApplicationRecord
+  delegated_type <span class="token symbol">:entryable</span><span class="token punctuation">,</span> <span class="token symbol">types</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">%w[ Message Comment ]</span></span><span class="token punctuation">,</span> <span class="token symbol">dependent</span><span class="token operator">:</span> <span class="token symbol">:destroy</span>
+  delegate <span class="token symbol">:searchable_content</span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token symbol">:leafable</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Message</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Entryable
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">searchable_content</span></span>
+    body
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Comment</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Entryable
+  
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">searchable_content</span></span>
+    content
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="从业务场景看设计选择"><a href="#从业务场景看设计选择" class="headerlink" title="从业务场景看设计选择"></a>从业务场景看设计选择</h3><p>通过一个实际的业务场景来理解这些设计模式的选择。</p>
+<p>假设我们有一个报价单系统，报价单下包含多种服务，这些服务大致类似，但又有各自不同的订阅内容。</p>
+<p><strong>公共信息</strong>：订阅时长、原价格、实际价格、创建人、创建时间、更新人、更新时间、价格版本</p>
+<p><strong>特定信息</strong>：</p>
+<ul>
+<li>A服务需要：订阅数量</li>
+<li>B服务需要：订阅类型</li>
+<li>C服务可能还需要其他信息…</li>
+</ul>
+<h4 id="传统设计"><a href="#传统设计" class="headerlink" title="传统设计"></a>传统设计</h4><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 报价单表</span>
+<span class="token keyword">class</span> <span class="token class-name">Quotation</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token comment"># 关联A服务</span>
+  <span class="token symbol">has_many</span><span class="token operator">:</span> <span class="token symbol">:project_service</span>
+  <span class="token comment"># 关联B服务</span>
+  <span class="token symbol">has_many</span><span class="token operator">:</span> <span class="token symbol">:bid_info</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># A服务 存储：订阅服务多久，原价格，实际价格，创建人，创建时间，更新人，更新时间，价格版本，订阅数量</span>
+<span class="token keyword">class</span> <span class="token class-name">ProjectService</span> <span class="token operator">&lt;</span> ApplicationRecord
+  belongs_to <span class="token symbol">:quotation</span>
+<span class="token keyword">end</span>
+
+<span class="token comment"># B服务 存储：订阅服务多久，原价格，实际价格，创建人，创建时间，更新人，更新时间，价格版本，订阅类型</span>
+<span class="token keyword">class</span> <span class="token class-name">BidInfo</span> <span class="token operator">&lt;</span> ApplicationRecord
+  belongs_to <span class="token symbol">:quotation</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到每个服务核心内容是一致的，但是又有一些各自的信息。假如说我再加一个新的服务，就需要再修改</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 报价单表</span>
+<span class="token keyword">class</span> <span class="token class-name">Quotation</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token comment"># 关联A服务</span>
+  <span class="token symbol">has_many</span><span class="token operator">:</span> <span class="token symbol">:project_service</span>
+  <span class="token comment"># 关联B服务</span>
+  <span class="token symbol">has_many</span><span class="token operator">:</span> <span class="token symbol">:bid_info</span>
+  <span class="token comment"># 关联C服务</span>
+  <span class="token symbol">has_many</span><span class="token operator">:</span> <span class="token symbol">:market_service</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># C服务</span>
+<span class="token keyword">class</span> <span class="token class-name">MarketService</span> <span class="token operator">&lt;</span> ApplicationRecord
+  belongs_to <span class="token symbol">:quotation</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>现在遇到两个场景：</p>
+<ol>
+<li>我想查看一个报价单下有哪些订阅服务，并分页查看，怎么写？</li>
+<li>我想统计报价单下某些类别的金额，怎么写？ </li>
+</ol>
+<p>统计可能稍好一些，大不了就是多查几个表。但分页获取怎么做呢？</p>
+<p><strong>按照委托模式设计的话，可以这样：</strong></p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 报价单表</span>
+<span class="token keyword">class</span> <span class="token class-name">Quotation</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token symbol">has_many</span><span class="token operator">:</span> <span class="token symbol">:quotion_service</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 服务表</span>
+<span class="token keyword">class</span> <span class="token class-name">Service</span> <span class="token operator">&lt;</span> ApplicationRecord
+  delegated_type <span class="token symbol">:serviceable</span><span class="token punctuation">,</span> <span class="token symbol">types</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">%w[ ProjectService BidInfo ]</span></span><span class="token punctuation">,</span> <span class="token symbol">dependent</span><span class="token operator">:</span> <span class="token symbol">:destroy</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">Serviceable</span>
+  <span class="token keyword">extend</span> ActiveSupport<span class="token double-colon punctuation">::</span>Concern
+
+  included <span class="token keyword">do</span>
+    has_one <span class="token symbol">:service</span><span class="token punctuation">,</span> <span class="token symbol">as</span><span class="token operator">:</span> <span class="token symbol">:serviceable</span><span class="token punctuation">,</span> <span class="token symbol">touch</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">ProjectService</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Serviceable
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">BidInfo</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Serviceable
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个方案虽然多了一张表，关系也更复杂，但带来的好处很明显：</p>
+<ul>
+<li>所有服务的统计、分页、批处理都能直接从<code>services</code>表获取</li>
+<li>新增服务类型只需要添加新的Recordable类型，不需要修改报价单模型</li>
+<li>统一的管理接口，便于维护</li>
+</ul>
+<h3 id="WriteBook-源码查看"><a href="#WriteBook-源码查看" class="headerlink" title="WriteBook 源码查看"></a>WriteBook 源码查看</h3><p>源码：<a target="_blank" rel="noopener" href="https://once.com/writebook">https://once.com/writebook</a> </p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Book</span> <span class="token operator">&lt;</span> ApplicationRecord
+  has_many <span class="token symbol">:leaves</span><span class="token punctuation">,</span> <span class="token symbol">dependent</span><span class="token operator">:</span> <span class="token symbol">:destroy</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Leaf</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Editable<span class="token punctuation">,</span> Positionable<span class="token punctuation">,</span> Searchable
+
+  belongs_to <span class="token symbol">:book</span><span class="token punctuation">,</span> <span class="token symbol">touch</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  delegated_type <span class="token symbol">:leafable</span><span class="token punctuation">,</span> <span class="token symbol">types</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">%w[ Page Section Picture ]</span></span><span class="token punctuation">,</span> <span class="token symbol">dependent</span><span class="token operator">:</span> <span class="token symbol">:destroy</span>
+  delegate <span class="token symbol">:searchable_content</span><span class="token punctuation">,</span> <span class="token symbol">to</span><span class="token operator">:</span> <span class="token symbol">:leafable</span>
+  
+  scope <span class="token symbol">:with_leafables</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">&#123;</span> includes<span class="token punctuation">(</span><span class="token symbol">:leafable</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Page</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Leafable
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Section</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Leafable
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Picture</span> <span class="token operator">&lt;</span> ApplicationRecord
+  <span class="token keyword">include</span> Leafable
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里的设计很清晰：</p>
+<ul>
+<li><code>Book</code>是容器</li>
+<li><code>Leaf</code>是通用记录层（Recording）</li>
+<li><code>Page</code>、<code>Section</code>、<code>Picture</code>是具体内容（Recordable）</li>
+</ul>
+<h3 id="37Signals的核心设计思想"><a href="#37Signals的核心设计思想" class="headerlink" title="37Signals的核心设计思想"></a>37Signals的核心设计思想</h3><p>回到37Signals文章提出的概念</p>
+<h4 id="Recording（记录外壳）"><a href="#Recording（记录外壳）" class="headerlink" title="Recording（记录外壳）"></a>Recording（记录外壳）</h4><p>存储所有内容的公共属性：ID、创建时间、创建者、位置信息等。相当于给所有内容穿了一个统一的外套。</p>
+<h4 id="Recordable（记录内核）"><a href="#Recordable（记录内核）" class="headerlink" title="Recordable（记录内核）"></a>Recordable（记录内核）</h4><p>存储特定类型的具体数据。文档有文档的数据结构，评论有评论的数据结构。</p>
+<p><strong>关键设计</strong>：Recordable是不可变的。用户操作修改时，不是修改原来的Recordable，而是拷贝并创建一条新的数据，同时创建一个Event。</p>
+<h4 id="Event（事件）"><a href="#Event（事件）" class="headerlink" title="Event（事件）"></a>Event（事件）</h4><p>记录操作历史，关联新旧版本ID。历史版本查看实际上就是查看一系列Event，回滚到特定版本只需要把相应的Recordable挂载到Recording上。</p>
+<p>在CMS系统中往往有文档历史更新记录的查看功能，所以在设计上，Recordale是不能修改的。如果用户操作修改，则拷贝并创建一条新的数据，和一个Event。Event关联两个版本ID，Recordable挂载到新的Recording上，历史版本查看，实际上就是一个个事件，如果要回滚文档到某个具体的版本，只需要把 Recordable 挂载到特定的 Recording 上。</p>
+<h4 id="树形结构设计：Self-Joins的应用"><a href="#树形结构设计：Self-Joins的应用" class="headerlink" title="树形结构设计：Self Joins的应用"></a>树形结构设计：Self Joins的应用</h4><p>在CMS系统中，内容往往需要支持树形结构：文档可以包含子文档，评论可以有子评论。</p>
+<p>37Signals文章中还提到一个值得学习的点：<strong>通过自连接来替换关联关系</strong>。实际上就是Recordable本身有一个<code>parent_id</code>。</p>
+<p>用Confluence举例，假设有这样的文档结构：</p>
+<pre class="line-numbers language-code" data-language="code"><code class="language-code">- A文档
+  - B文档
+    - C文档
+      - 1评论
+      - 2评论
+    - D文件列表<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>看起来就像一个目录结构，文档、评论、文件列表可以自由地挂载到任意位置。其他服务也可以挂载。通过<code>parent_id</code>就可以做到：被挂载的服务无需知道以后会有什么挂载在自己下面，只要遵守规范，就能获得一致性处理。</p>
+<p>这种设计的优雅之处在于：</p>
+<ol>
+<li><strong>Delegated Types</strong>负责处理内容的水平扩展（不同类型的内容）</li>
+<li><strong>Self Joins</strong>负责处理内容的垂直组织（树形结构）</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><code>Delegated Types + Self Joins</code>这种设计模式为构建复杂CMS系统提供了一个优雅的解决方案：</p>
+<ul>
+<li><strong>Delegated Types</strong>解决了“多种内容类型统一管理”的问题</li>
+<li><strong>Self Joins</strong>解决了“无限层级嵌套结构”的问题</li>
+<li><strong>不可变Recordable + Event</strong>解决了“完整版本历史”的问题</li>
+</ul>
+<p>这种架构的核心优势在于：<strong>将内容类型的变化与内容结构的变化解耦</strong>。当需要新增内容类型时，只需实现新的Recordable；当需要调整组织结构时，只需调整<code>parent_id</code>关系。两者互不干扰，系统维护性和扩展性都得到了保证。</p>
+<p>对于需要处理复杂内容关系、支持未来扩展的现代应用系统，这一模式提供了一个经过实践验证的优秀设计范式。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://www.chengling.cloud">庚辰</a></span></div><!--.post-copyright__type--><!--  span.post-copyright-meta= _p('post.copyright.link') + ": "--><!--  span.post-copyright-info--><!--    a(href=url_for(url))= theme.post_copyright.decode ? decodeURI(url) : url--><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.chengling.cloud" target="_blank">玲辰书斋</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ruby-rails/">ruby,rails</a></div><div class="post_share"><div class="social-share" data-image="/img/default_top_img.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/post/Ruby/kamal%E5%8A%A0%E9%80%9F.html"><img class="next-cover" src="/img/default_top_img.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">kamal 部署加速</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/myHead.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">庚辰</div><div class="author-info__description">要么读书，要么旅行，身体和心灵总有一个要在路上.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">62</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">23</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/GengCen-Qin"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%85%B3%E8%81%94"><span class="toc-number">1.</span> <span class="toc-text">基础模型关联</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7%E6%A8%A1%E5%9E%8B%E5%85%B3%E8%81%94"><span class="toc-number">2.</span> <span class="toc-text">高级模型关联</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Polymorphic-Associations"><span class="toc-number">2.1.</span> <span class="toc-text">Polymorphic Associations</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Self-Joins"><span class="toc-number">2.2.</span> <span class="toc-text">Self Joins</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Single-Table-Inheritance-%E5%8D%95%E8%A1%A8%E7%BB%A7%E6%89%BF"><span class="toc-number">2.3.</span> <span class="toc-text">Single Table Inheritance 单表继承</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Delegated-Types-%E5%A7%94%E6%89%98%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.4.</span> <span class="toc-text">Delegated Types  委托类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E7%9C%8B%E8%AE%BE%E8%AE%A1%E9%80%89%E6%8B%A9"><span class="toc-number">3.</span> <span class="toc-text">从业务场景看设计选择</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9F%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.1.</span> <span class="toc-text">传统设计</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WriteBook-%E6%BA%90%E7%A0%81%E6%9F%A5%E7%9C%8B"><span class="toc-number">4.</span> <span class="toc-text">WriteBook 源码查看</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#37Signals%E7%9A%84%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="toc-number">5.</span> <span class="toc-text">37Signals的核心设计思想</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Recording%EF%BC%88%E8%AE%B0%E5%BD%95%E5%A4%96%E5%A3%B3%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">Recording（记录外壳）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Recordable%EF%BC%88%E8%AE%B0%E5%BD%95%E5%86%85%E6%A0%B8%EF%BC%89"><span class="toc-number">5.2.</span> <span class="toc-text">Recordable（记录内核）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Event%EF%BC%88%E4%BA%8B%E4%BB%B6%EF%BC%89"><span class="toc-number">5.3.</span> <span class="toc-text">Event（事件）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1%EF%BC%9ASelf-Joins%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">5.4.</span> <span class="toc-text">树形结构设计：Self Joins的应用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/%E5%88%A9%E7%94%A8%20Delegated%20Types%20%E4%B8%8E%20Self%20Joins%20%E8%AE%BE%E8%AE%A1%E9%AB%98%E6%89%A9%E5%B1%95%E6%80%A7%E7%B3%BB%E7%BB%9F.html" title="利用 Delegated Types 与 Self Joins 设计高扩展性系统"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用 Delegated Types 与 Self Joins 设计高扩展性系统"/></a><div class="content"><a class="title" href="/post/Ruby/%E5%88%A9%E7%94%A8%20Delegated%20Types%20%E4%B8%8E%20Self%20Joins%20%E8%AE%BE%E8%AE%A1%E9%AB%98%E6%89%A9%E5%B1%95%E6%80%A7%E7%B3%BB%E7%BB%9F.html" title="利用 Delegated Types 与 Self Joins 设计高扩展性系统">利用 Delegated Types 与 Self Joins 设计高扩展性系统</a><time datetime="2026-01-05T05:03:04.000Z" title="发表于 2026-01-05 13:03:04">2026-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/kamal%E5%8A%A0%E9%80%9F.html" title="kamal 部署加速"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="kamal 部署加速"/></a><div class="content"><a class="title" href="/post/Ruby/kamal%E5%8A%A0%E9%80%9F.html" title="kamal 部署加速">kamal 部署加速</a><time datetime="2026-01-01T05:03:04.000Z" title="发表于 2026-01-01 13:03:04">2026-01-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/%E5%89%8D%E7%AB%AF/Vue%E7%BB%84%E4%BB%B6%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E6%A1%88%EF%BC%9A%E5%AE%9E%E7%8E%B0Drawer%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F.html" title="Vue 组件间通信方案：实现 Drawer 单例模式"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vue 组件间通信方案：实现 Drawer 单例模式"/></a><div class="content"><a class="title" href="/post/%E5%89%8D%E7%AB%AF/Vue%E7%BB%84%E4%BB%B6%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E6%A1%88%EF%BC%9A%E5%AE%9E%E7%8E%B0Drawer%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F.html" title="Vue 组件间通信方案：实现 Drawer 单例模式">Vue 组件间通信方案：实现 Drawer 单例模式</a><time datetime="2025-10-09T02:57:12.000Z" title="发表于 2025-10-09 10:57:12">2025-10-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/Ruby/Rails%E6%9E%B6%E6%9E%84%E5%B1%82%E7%BA%A7%E8%AE%BE%E8%AE%A1.html" title="Rails层级设计演化"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rails层级设计演化"/></a><div class="content"><a class="title" href="/post/Ruby/Rails%E6%9E%B6%E6%9E%84%E5%B1%82%E7%BA%A7%E8%AE%BE%E8%AE%A1.html" title="Rails层级设计演化">Rails层级设计演化</a><time datetime="2025-07-09T02:30:12.000Z" title="发表于 2025-07-09 10:30:12">2025-07-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/%E5%B7%A5%E5%85%B7/%E8%AD%A6%E6%83%95AI.html" title="警惕AI"><img src="/img/default_top_img.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="警惕AI"/></a><div class="content"><a class="title" href="/post/%E5%B7%A5%E5%85%B7/%E8%AD%A6%E6%83%95AI.html" title="警惕AI">警惕AI</a><time datetime="2025-04-06T10:00:00.000Z" title="发表于 2025-04-06 18:00:00">2025-04-06</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By 庚辰</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a><br>
+<a href="https://beian.miit.gov.cn/"  style="color:#f72b07" target="_blank">陕ICP备2022014054号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="498210" data-server="netease" data-type="song" data-fixed="true" data-autoplay="true" data-lrcType="-1"> </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
