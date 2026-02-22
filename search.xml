@@ -22200,4 +22200,399 @@ get <span class="token string">"up"</span> => <span class="token string">"rails/
         <tag>kamal</tag>
       </tags>
   </entry>
+  <entry>
+    <title>树结构在计算表达式解析上的应用（设计统计组件）</title>
+    <url>//post/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91%E7%BB%93%E6%9E%84%E5%9C%A8%E8%AE%A1%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%A7%A3%E6%9E%90%E7%9A%84%E5%BA%94%E7%94%A8.html</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>大部分公司都存在数据统计的业务逻辑，而随着业务的不断发展，数据量的增加，统计指标的增加导致原先的统计代码的复杂度也会迅速上升。如果没有良好的组织和维护，往往会出现修改难（代码间耦合严重），项目中有大量重复代码，比如很多个地方都需要某个统计数据，开发人员直接复制粘贴代码，还有就是性能N+1问题。所以在编写这种统计逻辑时，应考虑以下几点：</p>
+<ol>
+<li>基础数据如何获取（从数据库读取，从缓存中读取，从外部系统获取）</li>
+<li>多个数据源如何组织计算（比如计算某个员工的绩效排名，最终的得分一定是多个维度的）</li>
+<li>天然要求考虑性能问题，避免N+1查询</li>
+<li>统计逻辑应独立，可组合，可复用（比如销售的订单金额这一指标在多个统计项中都要使用，那就应尽量复用统一）</li>
+</ol>
+<p>这里我们尝试设计一个统计框架</p>
+<h2 id="模块儿区分"><a href="#模块儿区分" class="headerlink" title="模块儿区分"></a>模块儿区分</h2><p>其实统计指标数据粗略可分为两种</p>
+<ol>
+<li>基础指标</li>
+<li>计算指标</li>
+</ol>
+<p>我们统一称呼 指标 为 Field</p>
+<h3 id="基础指标"><a href="#基础指标" class="headerlink" title="基础指标"></a>基础指标</h3><p>基础指标就是数据源是独立的，比如获取当前销售部门下在职销售的本月订单金额。这个信息来源于Order表。能直接获取到的而不设计比较，计算，条件判断等。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> sales_id<span class="token punctuation">,</span> <span class="token function">sum</span><span class="token punctuation">(</span>amount<span class="token punctuation">)</span> <span class="token keyword">from</span> orders <span class="token keyword">where</span> sales_id <span class="token operator">in</span> <span class="token punctuation">(</span>xxxxx<span class="token punctuation">)</span> <span class="token keyword">group</span> <span class="token keyword">by</span> sales_id<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>比如我们设计一个基础类：Field 表示是一个指标</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Field</span>
+  attr_accessor <span class="token symbol">:obj_ids</span>
+  
+  <span class="token comment"># obj_ids 表示统计维度，比如：我要统计一批人的数据，那这里的obj_ids就是这些人的id</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">)</span>
+    <span class="token keyword">self</span><span class="token punctuation">.</span>obj_ids <span class="token operator">=</span> <span class="token builtin">Array</span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+  
+  <span class="token comment"># 子类需要具体的数据统计方法，这里约定返回的结构必须是Hash，同时Key为obj_id, value为对应的统计值</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">value_hash</span></span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token comment"># 统计订单金额</span>
+<span class="token keyword">class</span> <span class="token class-name">OrderAmountField</span> <span class="token operator">&lt;</span> Field
+  <span class="token comment"># key: obj_id</span>
+  <span class="token comment"># value: 对应统计的数据</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">value_hash</span></span>
+    <span class="token comment"># 这里可以是从数据库获取，缓存获取，接口获取，总之返回结构是固定的</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token number">1</span> <span class="token operator">=></span> <span class="token number">300</span><span class="token punctuation">,</span>
+      <span class="token number">2</span> <span class="token operator">=></span> <span class="token number">100</span><span class="token punctuation">,</span>
+      <span class="token number">3</span> <span class="token operator">=></span> <span class="token number">200</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token comment"># 使用</span>
+<span class="token class-name">OrderAmountField</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span>sales_ids<span class="token punctuation">)</span><span class="token punctuation">.</span>value_hash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里我们按照最基础的形式去表达，实际使用中要考虑多种场景，例如缓存等</p>
+<h3 id="计算指标"><a href="#计算指标" class="headerlink" title="计算指标"></a>计算指标</h3><p>计算指标就是指在某个数据源的基础上去处理，比如 <code>A指标 + B指标 - C指标 = 当前指标</code>，我们以销售人员提成来说，销售人员自身等级和提成率是挂钩的，相同的销售金额，给的提成是不同的。那这里就是计算指标，即依赖其他指标，并其上进行运算得出的值。</p>
+<p>比如上面我们已经有了订单金额的Field统计了，我们还需要两个指标：销售的提成率，销售的实际提成金额<br>而销售的实际提成金额 = 每个销售的订单金额 * 每个销售的提成率</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby">
+<span class="token comment"># 销售提成率</span>
+<span class="token keyword">class</span> <span class="token class-name">SalesCommissionRateField</span> <span class="token operator">&lt;</span> Field
+  <span class="token comment"># key: obj_id 销售</span>
+  <span class="token comment"># value: 每个销售的提成率</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">value_hash</span></span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token number">1</span> <span class="token operator">=></span> <span class="token number">0.3</span><span class="token punctuation">,</span>
+      <span class="token number">2</span> <span class="token operator">=></span> <span class="token number">0.2</span><span class="token punctuation">,</span>
+      <span class="token number">3</span> <span class="token operator">=></span> <span class="token number">0.1</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token comment"># 销售提成金额</span>
+<span class="token keyword">class</span> <span class="token class-name">SalesCommissionAmountField</span> <span class="token operator">&lt;</span> Field
+  <span class="token keyword">self</span><span class="token punctuation">.</span>formula <span class="token operator">=</span> OrderAmountField <span class="token operator">*</span> SalesCommissionRateField
+<span class="token keyword">end</span>
+
+<span class="token comment"># 使用</span>
+<span class="token class-name">SalesCommissionAmountField</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span>sales_ids<span class="token punctuation">)</span><span class="token punctuation">.</span>value_hash
+
+<span class="token punctuation">&#123;</span>
+  <span class="token number">1</span> <span class="token operator">=></span> <span class="token number">300</span> <span class="token operator">*</span> <span class="token number">0.3</span><span class="token punctuation">,</span>
+  <span class="token number">2</span> <span class="token operator">=></span> <span class="token number">100</span> <span class="token operator">*</span> <span class="token number">0.2</span><span class="token punctuation">,</span>
+  <span class="token number">3</span> <span class="token operator">=></span> <span class="token number">200</span> <span class="token operator">*</span> <span class="token number">0.1</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们先不看具体是怎么实现的，但是上面的 <code>OrderAmountField * SalesCommissionRateField</code> 就能很优雅的体现当前指标是如何计算的。这里我们的计算指标是依赖于 两个基础指标的。<br>我们甚至可以再往前一步，比如 计算指标 = 另一个计算指标 + 基础指标 - 计算指标，比如：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 年底奖金</span>
+<span class="token keyword">class</span> <span class="token class-name">YearEndBonusField</span> <span class="token operator">&lt;</span> Field
+  <span class="token comment"># 年终奖 = 提成金额 + 销售员基础一个月工资</span>
+  <span class="token keyword">self</span><span class="token punctuation">.</span>formula <span class="token operator">=</span> SalesCommissionAmountField <span class="token operator">+</span> SalesOneMonthSalaryField
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从这里我们就能看出，formula这个表达式是非常灵活的，既可以处理基础指标，也可以处理计算指标，这里的计算指标又是来源于其他计算统计获取的。甚至这个表达式你也可以去操作数字，比如：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token comment"># 年底奖金</span>
+<span class="token keyword">class</span> <span class="token class-name">YearEndBonusField</span> <span class="token operator">&lt;</span> Field
+  <span class="token comment"># 老板红包</span>
+  <span class="token constant">BOSS_RED_ENVELOPE</span> <span class="token operator">=</span> <span class="token number">5000</span>
+
+  <span class="token comment"># 年终奖 = 提成金额 + 销售员基础一个月工资</span>
+  <span class="token keyword">self</span><span class="token punctuation">.</span>formula <span class="token operator">=</span> SalesCommissionAmountField <span class="token operator">+</span> SalesOneMonthSalaryField <span class="token operator">+</span> <span class="token constant">BOSS_RED_ENVELOPE</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在实际场景中肯定还有其他运算符，比如基础的 + - * / 求和 最大值 最小值等等。这里演示只用最基本的操作符</p>
+<h3 id="疑问梳理"><a href="#疑问梳理" class="headerlink" title="疑问梳理"></a>疑问梳理</h3><ol>
+<li>为什么这里的类能使用 + - * / 甚至更多的操作符？</li>
+</ol>
+<p>这里是因为Ruby语言的灵活性，+ - * / 比赛关键字，而是一个个方法，<br>比如：<code>SalesCommissionAmountField + SalesOneMonthSalaryField =&gt; SalesCommissionAmountField.+(SalesOneMonthSalaryField)</code></p>
+<p>我们可以重写Field的类方法，比如我们控制 + - * / 另一个类时是怎么操作的。同时这里有一个非常关键的点：即使我们重写了这些操作符的实现方式，但是操作符的优先级仍然存在，比如说：<br><code>AField + BField * CField</code> = <code>BField * CField + AField</code> ，甚至如果你可以写成<br><code>(AField + BField) * CField</code> 这些都是在Ruby底层实现好的，我们只需要关注两个指标是怎么加起来的</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">CalculateMethod</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">calculate</span></span>
+    <span class="token keyword">raise</span> NotImplementedError
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Add</span> <span class="token operator">&lt;</span> CalculateMethod
+  attr_accessor <span class="token symbol">:args</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>args<span class="token punctuation">)</span>
+    <span class="token variable">@args</span> <span class="token operator">=</span> args
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">calculate</span></span>
+    args<span class="token punctuation">.</span>sum
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">module</span> <span class="token class-name">Formulable</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">s_add</span></span><span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">)</span>
+    FormulaNode<span class="token punctuation">.</span>build<span class="token punctuation">(</span>Add<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">module</span> <span class="token class-name">Calculatable</span>
+  <span class="token keyword">include</span> Formulable
+
+  <span class="token comment"># Field + Field</span>
+  <span class="token comment"># 将表达式转成一个计算节点</span>
+  <span class="token keyword">def</span> <span class="token operator">+</span><span class="token punctuation">(</span>other<span class="token punctuation">)</span>
+    s_add<span class="token punctuation">(</span><span class="token keyword">self</span><span class="token punctuation">,</span> other<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="2">
+<li><code>self.formula = SalesCommissionAmountField + SalesOneMonthSalaryField + BOSS_RED_ENVELOPE</code> 这种结构是怎么解析并存储的？</li>
+</ol>
+<p>如果写过算法题，应该了解过如果写一个 数字计算表达式的解析，这里有什么双栈法，后缀表达式，树结构之类的解析。这里实际上就是采用的树结构来表达的，具体原因，因为我们处理最基本的操作符运算，还可以实现很多特定的运算方式，比如取最大值，取最小值，取平均值，或运算，与运算等等。树结构能很好的扩展，并且对节点进行操作。</p>
+<p>YearEndBonusField 的实际结构应该是=<br> (OrderAmountField * SalesCommissionRateField) + SalesOneMonthSalaryField + BOSS_RED_ENVELOPE</p>
+<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">||_ +
+|    |_ BOSS_RED_ENVELOPE
+|    |_ SalesOneMonthSalaryField
+|    |_ *
+|        |_ OrderAmountField
+|        |_ SalesCommissionRateField<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里采用的树结构是：树结构中的孩子兄弟表示法，其实实质上就是一个二叉树，不过它的有点就是可以把一个多叉树转成二叉树，具体可以自己了解。</p>
+<p>大概的树结构：</p>
+<pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">TreeNode</span>
+  attr_accessor <span class="token symbol">:child</span><span class="token punctuation">,</span> <span class="token symbol">:brother</span><span class="token punctuation">,</span> <span class="token symbol">:data</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> brother<span class="token punctuation">,</span> data<span class="token punctuation">)</span>
+    <span class="token keyword">self</span><span class="token punctuation">.</span>child <span class="token operator">=</span> child
+    <span class="token keyword">self</span><span class="token punctuation">.</span>brother <span class="token operator">=</span> brother
+    <span class="token keyword">self</span><span class="token punctuation">.</span>data <span class="token operator">=</span> data
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">childrens</span></span>
+    tmp <span class="token operator">=</span> child
+    res <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">while</span> tmp
+      res <span class="token operator">&lt;&lt;</span> tmp
+      tmp <span class="token operator">=</span> tmp<span class="token punctuation">.</span>brother
+    <span class="token keyword">end</span>
+    res
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>比如 A + B + C，转成树结构就可以表达为：</p>
+<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">+
+--- A
+--- B
+--- C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>也就是 + 作为 data，A作为child，A节点指针brother指向B，B再指向C。然后运算的时候，从A，B，C field 中取出对应obj_id的值进行运算。这里可能看起来还是比较抽象，看了原代码就更清晰了。</p>
+<p>当计算类被定义好时，就会将运算表达式转成一个树结构，然后当实际运算的时候就会利用这个树结构去动态的计算表达式最终的结果</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整个统计框架明确的区分出了一个统计指标是如何统计各个基础信息的，并最终汇总数据的。甚至你可以打印树结构来直观的看到整个计算过程。同时在设计实现上天然支持批量查询，而如果每个指标被使用多次的话，我们也可以使用缓存来优化性能。具体可以查看下方简略版源码。通过树结构我们优雅的动态解析统计表达式，并直观的进行运算。每个指标的定义都是独立，可组合可复用的。</p>
+<h2 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h2><pre class="line-numbers language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">Formulable</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">s_add</span></span><span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">)</span>
+    FormulaNode<span class="token punctuation">.</span>build<span class="token punctuation">(</span>Add<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">module</span> <span class="token class-name">Calculatable</span>
+  <span class="token keyword">include</span> Formulable
+
+  <span class="token comment"># Field + Field</span>
+  <span class="token comment"># 将表达式转成一个计算节点</span>
+  <span class="token keyword">def</span> <span class="token operator">+</span><span class="token punctuation">(</span>other<span class="token punctuation">)</span>
+    s_add<span class="token punctuation">(</span><span class="token keyword">self</span><span class="token punctuation">,</span> other<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">TreeNode</span>
+  attr_accessor <span class="token symbol">:child</span><span class="token punctuation">,</span> <span class="token symbol">:brother</span><span class="token punctuation">,</span> <span class="token symbol">:data</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> brother<span class="token punctuation">,</span> data<span class="token punctuation">)</span>
+    <span class="token keyword">self</span><span class="token punctuation">.</span>child <span class="token operator">=</span> child
+    <span class="token keyword">self</span><span class="token punctuation">.</span>brother <span class="token operator">=</span> brother
+    <span class="token keyword">self</span><span class="token punctuation">.</span>data <span class="token operator">=</span> data
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">childrens</span></span>
+    tmp <span class="token operator">=</span> child
+    res <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">while</span> tmp
+      res <span class="token operator">&lt;&lt;</span> tmp
+      tmp <span class="token operator">=</span> tmp<span class="token punctuation">.</span>brother
+    <span class="token keyword">end</span>
+    res
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">tree_view</span></span><span class="token punctuation">(</span><span class="token symbol">level</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>block<span class="token punctuation">)</span>
+    data <span class="token operator">=</span> block_given<span class="token operator">?</span> <span class="token operator">?</span> block<span class="token punctuation">.</span>call<span class="token punctuation">(</span><span class="token keyword">self</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">self</span><span class="token punctuation">.</span>data
+    label <span class="token operator">=</span> <span class="token string-literal"><span class="token string">"|_ </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">data</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+    puts <span class="token string-literal"><span class="token string">" |</span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content"><span class="token string-literal"><span class="token string">'    '</span></span> <span class="token operator">*</span> level</span><span class="token delimiter punctuation">&#125;</span></span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">label</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string">"</span></span>
+    childrens<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>child<span class="token operator">|</span>
+      child<span class="token punctuation">.</span>tree_view<span class="token punctuation">(</span><span class="token symbol">level</span><span class="token operator">:</span> level <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>block<span class="token punctuation">)</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">nil</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">FormulaNode</span> <span class="token operator">&lt;</span> TreeNode
+  <span class="token keyword">include</span> <span class="token double-colon punctuation">::</span>Calculatable
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">build</span></span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">)</span>
+    nodes <span class="token operator">=</span> args<span class="token punctuation">.</span>map <span class="token keyword">do</span> <span class="token operator">|</span>arg<span class="token operator">|</span>
+      <span class="token keyword">if</span> arg<span class="token punctuation">.</span>is_a<span class="token operator">?</span><span class="token punctuation">(</span>FormulaNode<span class="token punctuation">)</span>
+        arg
+      <span class="token keyword">elsif</span> arg<span class="token punctuation">.</span>respond_to<span class="token operator">?</span><span class="token punctuation">(</span><span class="token symbol">:formula</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> arg<span class="token punctuation">.</span>formula
+        arg<span class="token punctuation">.</span>formula
+      <span class="token keyword">else</span>
+        <span class="token keyword">new</span><span class="token punctuation">(</span><span class="token keyword">nil</span><span class="token punctuation">,</span> <span class="token keyword">nil</span><span class="token punctuation">,</span> arg<span class="token punctuation">)</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    nodes<span class="token punctuation">.</span>each_with_index <span class="token keyword">do</span> <span class="token operator">|</span>node<span class="token punctuation">,</span> index<span class="token operator">|</span>
+      node<span class="token punctuation">.</span>brother <span class="token operator">=</span> nodes<span class="token punctuation">[</span>index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">new</span><span class="token punctuation">(</span>nodes<span class="token punctuation">.</span>first<span class="token punctuation">,</span> <span class="token keyword">nil</span><span class="token punctuation">,</span> method<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">CalculateMethod</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">calculate</span></span>
+    <span class="token keyword">raise</span> NotImplementedError
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Add</span> <span class="token operator">&lt;</span> CalculateMethod
+  attr_accessor <span class="token symbol">:args</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>args<span class="token punctuation">)</span>
+    <span class="token variable">@args</span> <span class="token operator">=</span> args
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">calculate</span></span>
+    args<span class="token punctuation">.</span>sum
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Report</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token function">schema</span></span><span class="token operator">=</span><span class="token punctuation">(</span>hash<span class="token punctuation">)</span>
+    <span class="token variable">@@schema</span> <span class="token operator">=</span> hash
+  <span class="token keyword">end</span>
+
+  attr_accessor <span class="token symbol">:obj_ids</span><span class="token punctuation">,</span> <span class="token symbol">:preloads</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">)</span>
+    <span class="token variable">@obj_ids</span> <span class="token operator">=</span> <span class="token builtin">Array</span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">)</span>
+    <span class="token variable">@preloads</span> <span class="token operator">=</span> <span class="token builtin">Hash</span><span class="token punctuation">(</span>preloads<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">report</span></span>
+    report_hash <span class="token operator">=</span> <span class="token builtin">Hash</span><span class="token punctuation">(</span><span class="token variable">@@schema</span><span class="token punctuation">)</span><span class="token punctuation">.</span>transform_values <span class="token keyword">do</span> <span class="token operator">|</span>value<span class="token operator">|</span>
+      value<span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">,</span> <span class="token symbol">preloads</span><span class="token operator">:</span> <span class="token variable">@preloads</span><span class="token punctuation">)</span><span class="token punctuation">.</span>value_hash_info
+    <span class="token keyword">end</span>
+
+    result <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    report_hash<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>key<span class="token punctuation">,</span> value<span class="token operator">|</span>
+      obj_ids<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>obj_id<span class="token operator">|</span>
+        result<span class="token punctuation">[</span>obj_id<span class="token punctuation">]</span> <span class="token operator">||=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+        result<span class="token punctuation">[</span>obj_id<span class="token punctuation">]</span><span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> value<span class="token punctuation">[</span>obj_id<span class="token punctuation">]</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+
+    result
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Field</span>
+  <span class="token keyword">extend</span> Calculatable
+
+  <span class="token keyword">class</span> <span class="token operator">&lt;&lt;</span> <span class="token keyword">self</span>
+    attr_accessor <span class="token symbol">:formula</span><span class="token punctuation">,</span> <span class="token symbol">:loaded_fields</span>
+
+    <span class="token comment"># 声明依赖的字段（用于复杂计算逻辑）</span>
+    <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">load_fields</span></span><span class="token punctuation">(</span>fields<span class="token punctuation">)</span>
+      <span class="token keyword">self</span><span class="token punctuation">.</span>loaded_fields <span class="token operator">||=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+      <span class="token keyword">self</span><span class="token punctuation">.</span>loaded_fields <span class="token operator">+=</span> fields
+    <span class="token keyword">end</span>
+    
+    <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">has_loaded_fields</span></span><span class="token operator">?</span>
+      <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>loaded_fields <span class="token operator">&amp;&amp;</span> <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>loaded_fields<span class="token punctuation">.</span>any<span class="token operator">?</span>
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+
+  attr_accessor <span class="token symbol">:obj_ids</span><span class="token punctuation">,</span> <span class="token symbol">:preloads</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">,</span> <span class="token symbol">preloads</span><span class="token operator">:</span> <span class="token keyword">nil</span><span class="token punctuation">)</span>
+    <span class="token keyword">self</span><span class="token punctuation">.</span>obj_ids <span class="token operator">=</span> <span class="token builtin">Array</span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">)</span>
+    <span class="token keyword">self</span><span class="token punctuation">.</span>preloads <span class="token operator">=</span> preloads <span class="token operator">||=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">value_hash_info</span></span><span class="token punctuation">(</span>tmp_formula <span class="token operator">=</span> <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>formula<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> preloads<span class="token punctuation">[</span><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>to_s<span class="token punctuation">]</span> <span class="token keyword">if</span> preloads<span class="token punctuation">[</span><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>to_s<span class="token punctuation">]</span>
+
+    <span class="token keyword">if</span> tmp_formula
+      preloads<span class="token punctuation">[</span><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>to_s<span class="token punctuation">]</span> <span class="token operator">=</span> formula_to_value_hash<span class="token punctuation">(</span>tmp_formula<span class="token punctuation">)</span>
+    <span class="token keyword">elsif</span> has_loaded_fields<span class="token operator">?</span>
+      load_dependencies
+      result <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+      obj_ids<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>obj_id<span class="token operator">|</span>
+        instance <span class="token operator">=</span> <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span>obj_id<span class="token punctuation">,</span> <span class="token symbol">preloads</span><span class="token operator">:</span> preloads<span class="token punctuation">)</span>
+        <span class="token comment"># 这里value，如果是计算字段，则由当前类自己实现，如果是基础字段，则按照默认value计算</span>
+        result<span class="token punctuation">[</span>obj_id<span class="token punctuation">]</span> <span class="token operator">=</span> instance<span class="token punctuation">.</span>value
+      <span class="token keyword">end</span>
+      preloads<span class="token punctuation">[</span><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>to_s<span class="token punctuation">]</span> <span class="token operator">=</span> result
+    <span class="token keyword">else</span>
+      preloads<span class="token punctuation">[</span><span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>to_s<span class="token punctuation">]</span> <span class="token operator">=</span> value_hash
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">formula_to_value_hash</span></span><span class="token punctuation">(</span>tmp_formula<span class="token punctuation">)</span>
+    calculate_class <span class="token operator">=</span> tmp_formula<span class="token punctuation">.</span>data
+    childrens <span class="token operator">=</span> tmp_formula<span class="token punctuation">.</span>childrens
+
+    value_hashs <span class="token operator">=</span> childrens<span class="token punctuation">.</span>map <span class="token keyword">do</span> <span class="token operator">|</span>child<span class="token operator">|</span>
+      <span class="token keyword">if</span> child<span class="token punctuation">.</span>data<span class="token punctuation">.</span>is_a<span class="token operator">?</span><span class="token punctuation">(</span><span class="token builtin">Numeric</span><span class="token punctuation">)</span>
+        obj_ids<span class="token punctuation">.</span>map <span class="token punctuation">&#123;</span> <span class="token operator">|</span>id<span class="token operator">|</span> <span class="token punctuation">[</span>id<span class="token punctuation">,</span> child<span class="token punctuation">.</span>data<span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">.</span>to_h
+      <span class="token keyword">elsif</span> child<span class="token punctuation">.</span>data<span class="token punctuation">.</span>is_a<span class="token operator">?</span><span class="token punctuation">(</span><span class="token builtin">Class</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> child<span class="token punctuation">.</span>data <span class="token operator">&lt;</span> CalculateMethod
+        value_hash_info<span class="token punctuation">(</span>child<span class="token punctuation">)</span>
+      <span class="token keyword">elsif</span> child<span class="token punctuation">.</span>data<span class="token punctuation">.</span>is_a<span class="token operator">?</span><span class="token punctuation">(</span><span class="token builtin">Class</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> child<span class="token punctuation">.</span>data <span class="token operator">&lt;</span> Field
+        child<span class="token punctuation">.</span>data<span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">,</span> <span class="token symbol">preloads</span><span class="token operator">:</span> preloads<span class="token punctuation">)</span><span class="token punctuation">.</span>value_hash_info
+      <span class="token keyword">else</span>
+        <span class="token keyword">raise</span> NotImplementedError
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+
+    datas <span class="token operator">=</span> obj_ids<span class="token punctuation">.</span>each_with_object<span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span> <span class="token keyword">do</span> <span class="token operator">|</span>obj_id<span class="token punctuation">,</span> hash<span class="token operator">|</span>
+      hash<span class="token punctuation">[</span>obj_id<span class="token punctuation">]</span> <span class="token operator">=</span> value_hashs<span class="token punctuation">.</span>map <span class="token punctuation">&#123;</span> <span class="token operator">|</span>child<span class="token operator">|</span> child<span class="token punctuation">[</span>obj_id<span class="token punctuation">]</span> <span class="token punctuation">&#125;</span>
+    <span class="token keyword">end</span>
+
+    datas<span class="token punctuation">.</span>transform_values <span class="token keyword">do</span> <span class="token operator">|</span>values<span class="token operator">|</span>
+      calculate_class<span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span>values<span class="token punctuation">)</span><span class="token punctuation">.</span>calculate
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+
+  <span class="token comment"># 加载依赖字段（用于自定义 value 方法的场景）</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">load_dependencies</span></span>
+    <span class="token keyword">return</span> <span class="token keyword">unless</span> <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>loaded_fields
+
+    <span class="token keyword">self</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span>loaded_fields<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token keyword">do</span> <span class="token operator">|</span>field_class<span class="token operator">|</span>
+      <span class="token comment"># 避免重复加载</span>
+      key <span class="token operator">=</span> field_class<span class="token punctuation">.</span>to_s
+      <span class="token keyword">unless</span> preloads<span class="token punctuation">[</span>key<span class="token punctuation">]</span>
+        field_instance <span class="token operator">=</span> field_class<span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span>obj_ids<span class="token punctuation">,</span> <span class="token symbol">preloads</span><span class="token operator">:</span> preloads<span class="token punctuation">)</span>
+        preloads<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> field_instance<span class="token punctuation">.</span>value_hash_info
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+
+  <span class="token comment"># 获取已加载字段的值</span>
+  <span class="token comment"># @param field_class [Class] 字段类</span>
+  <span class="token comment"># @param obj_id [Object] 对象 ID</span>
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">field_value</span></span><span class="token punctuation">(</span>field_class<span class="token punctuation">,</span> obj_id <span class="token operator">=</span> <span class="token keyword">nil</span><span class="token punctuation">)</span>
+    target_id <span class="token operator">=</span> obj_id <span class="token operator">||</span> obj_ids<span class="token punctuation">.</span>first
+    key <span class="token operator">=</span> field_class<span class="token punctuation">.</span>to_s
+    <span class="token keyword">raise</span> <span class="token string-literal"><span class="token string">"Field </span><span class="token interpolation"><span class="token delimiter punctuation">#&#123;</span><span class="token content">field_class</span><span class="token delimiter punctuation">&#125;</span></span><span class="token string"> not loaded. Use load_fields to declare dependencies first."</span></span> <span class="token keyword">unless</span> preloads<span class="token punctuation">[</span>key<span class="token punctuation">]</span>
+
+    preloads<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">[</span>target_id<span class="token punctuation">]</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">value</span></span>
+    value_hash_info<span class="token punctuation">[</span>obj_ids<span class="token punctuation">.</span>first<span class="token punctuation">]</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>Ruby 树结构</tag>
+      </tags>
+  </entry>
 </search>
