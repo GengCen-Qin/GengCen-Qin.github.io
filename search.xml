@@ -22595,4 +22595,96 @@ get <span class="token string">"up"</span> => <span class="token string">"rails/
         <tag>Ruby 树结构</tag>
       </tags>
   </entry>
+  <entry>
+    <title>苏格拉底式对话：理解React的设计哲学</title>
+    <url>//post/%E5%89%8D%E7%AB%AF/%E8%8B%8F%E6%A0%BC%E6%8B%89%E5%BA%95%E5%BC%8F%E5%AF%B9%E8%AF%9D%EF%BC%9A%E7%90%86%E8%A7%A3React%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6.html</url>
+    <content><![CDATA[<p><em>—— 一个Vue开发者探索React之旅</em></p>
+<h2 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h2><p>这份对话录采用苏格拉底式提问法，一个问题接一个问题，引导你逐步思考。每个问题都值得你停下来想一想，再继续往下读。</p>
+<p><strong>核心问题</strong>：为什么从Vue转React会感到“繁琐”？这种繁琐是设计缺陷，还是有意为之的哲学选择？</p>
+<hr>
+<h2 id="第一幕：从“自然”到“繁琐”"><a href="#第一幕：从“自然”到“繁琐”" class="headerlink" title="第一幕：从“自然”到“繁琐”"></a>第一幕：从“自然”到“繁琐”</h2><p><strong>学习者：</strong> 用惯了Vue，再学React感觉很繁琐。Vue里data变了视图就更新，还有computed、watch、明确的生命周期。React却要setState，感觉像函数式编程。</p>
+<p><strong>引导者：</strong> 你提到Vue很“自然”——那我问你，你觉得“直接修改数据”为什么感觉自然？</p>
+<p><em>请停下来想一想……</em></p>
+<p><strong>学习者：</strong> 因为这就是编程最直观的方式啊，变量改了，用到它的地方自然应该更新。</p>
+<p><strong>引导者：</strong> 好，那我想问你一个生活中的问题：如果你有一份重要文档，你是直接在原稿上涂改，还是创建新版本并记录修改历史？</p>
+<p><em>再想想……</em></p>
+<p><strong>学习者：</strong> 重要文档当然要留历史记录，不然改错了就找不回来了。</p>
+<p><strong>引导者：</strong> 那为什么代码里的数据，你觉得直接涂改是自然的呢？</p>
+<hr>
+<h2 id="第二幕：探究API的多与少"><a href="#第二幕：探究API的多与少" class="headerlink" title="第二幕：探究API的多与少"></a>第二幕：探究API的多与少</h2><p><strong>学习者：</strong> 我明白了——你是说React选择“贴新的”而不是“改旧的”，是为了可追溯？</p>
+<p><strong>引导者：</strong> 先不谈对错。我问你：Vue提供了computed、watch、methods等多个概念，React却只用普通JavaScript函数，你觉得哪种更容易预测行为？</p>
+<p><strong>学习者：</strong> 嗯……React更少概念，但好像更难用了。</p>
+<p><strong>引导者：</strong> 那我问你：如果一个框架提供了很多专用API，当你遇到问题时，你是先查文档找那个特定的API，还是用基础JavaScript知识就能解决？</p>
+<p><strong>学习者：</strong> 如果有基础JS就能解决，那确实更省心，不用记那么多API。</p>
+<p><strong>引导者：</strong> 所以“少即是多”在这里是什么意思？</p>
+<hr>
+<h2 id="第三幕：“贴新的”哲学"><a href="#第三幕：“贴新的”哲学" class="headerlink" title="第三幕：“贴新的”哲学"></a>第三幕：“贴新的”哲学</h2><p><strong>引导者：</strong> 我们再看setState。Vue里你写<code>this.count++</code>，React里你写<code>setCount(count + 1)</code>。我问你一个简单的问题：这两种写法，哪个能让你清楚地知道“数据是在这一刻被修改的”？</p>
+<p><strong>学习者：</strong> 当然是setCount，因为函数调用是显式的。</p>
+<p><strong>引导者：</strong> 好。再问你：如果你的代码里有10个地方都可能修改同一个数据，你希望它们是显式调用<code>setCount</code>，还是可以随处<code>count++</code>？</p>
+<p><strong>学习者：</strong> 显式调用好，这样我能搜索到所有修改的地方。</p>
+<p><strong>引导者：</strong> 那你现在明白React为什么让你用setState了吗？</p>
+<hr>
+<h2 id="第四幕：便利贴的比喻"><a href="#第四幕：便利贴的比喻" class="headerlink" title="第四幕：便利贴的比喻"></a>第四幕：便利贴的比喻</h2><p><strong>引导者：</strong> 我们来做个想象。你面前有一张便利贴，上面写着数字5。Vue允许你用橡皮擦掉5，写成6。React不允许你擦，你必须把这张撕掉，贴一张新的写着6的便利贴。</p>
+<p><strong>学习者：</strong> 这个比喻很形象。</p>
+<p><strong>引导者：</strong> 我问你：如果你想知道这张便利贴经历过哪些数字，哪种方式更容易？</p>
+<p><strong>学习者：</strong> React的方式，因为每张旧便利贴都还在，可以回头看。</p>
+<p><strong>引导者：</strong> 对。再问你：如果你发现当前的数字是错的，想回到上一个正确的数字，哪种方式能做到？</p>
+<p><strong>学习者：</strong> 也只有React的方式，因为Vue已经擦掉了。</p>
+<p><strong>引导者：</strong> 这就是“时间旅行调试”。现在你明白这种“麻烦”的价值了吗？</p>
+<hr>
+<h2 id="第五幕：重新渲染的真相"><a href="#第五幕：重新渲染的真相" class="headerlink" title="第五幕：重新渲染的真相"></a>第五幕：重新渲染的真相</h2><p><strong>学习者：</strong> 但听说React里每次setState，整个组件都会重新渲染，这不会很慢吗？</p>
+<p><strong>引导者：</strong> 我问你一个关键问题：“组件重新渲染”和“DOM更新”是一回事吗？</p>
+<p><strong>学习者：</strong> 不是吗？</p>
+<p><strong>引导者：</strong> 那我问你：你写一篇文章，每次修改后你都重新读一遍全文，但只改动那一个错别字——这是不是“重新读全文”和“只改错别字”两件事？</p>
+<p><strong>学习者：</strong> 明白了！重新读全文是组件重新执行，只改错别字是DOM更新。</p>
+<p><strong>引导者：</strong> 对。React让你“重新读全文”是为了生成新快照，但它只把真正变化的地方改到真实DOM上。现在我问你：如果React试图跳过“重新读全文”这一步，它必须做什么？</p>
+<p><strong>学习者：</strong> 它得知道哪些地方没变化……这好像就是Vue的方式？</p>
+<p><strong>引导者：</strong> 没错。所以这是两种不同的哲学。你觉得“每次都重新读，但只改变化的部分”和“只重新执行变化的部分”，哪个更简单可靠？</p>
+<hr>
+<h2 id="第六幕：Hooks的依赖项"><a href="#第六幕：Hooks的依赖项" class="headerlink" title="第六幕：Hooks的依赖项"></a>第六幕：Hooks的依赖项</h2><p><strong>学习者：</strong> 但如果每次组件都重新执行，那组件里的API调用不就每次都执行了吗？</p>
+<p><strong>引导者：</strong> 你抓住了关键！React也想到了这个问题。我问你：如果你想让某些代码只在特定情况下执行，而不是每次渲染都执行，你会怎么告诉React？</p>
+<p><strong>学习者：</strong> 给它一个条件？</p>
+<p><strong>引导者：</strong> 对。你看useEffect的写法：</p>
+<p>javascript</p>
+<p>useEffect(() =&gt; {<br>  fetchData()<br>}, [])</p>
+<p>这个空数组是什么意思？</p>
+<p><strong>学习者：</strong> 意思是……没有依赖，所以只执行一次？</p>
+<p><strong>引导者：</strong> 没错。再看这个：</p>
+<p>javascript</p>
+<p>useEffect(() =&gt; {<br>  fetchData()<br>}, [userId])</p>
+<p>现在是什么意思？</p>
+<p><strong>学习者：</strong> 只有当userId变化时才执行？</p>
+<p><strong>引导者：</strong> 对。我问你：这种写法比起Vue的自动追踪，是更麻烦还是更清晰？</p>
+<p><strong>学习者：</strong> 更清晰，因为我看代码就知道它依赖什么。</p>
+<p><strong>引导者：</strong> 如果你接手一个别人的项目，看到这样的依赖数组，你能快速理解这段代码的逻辑吗？</p>
+<hr>
+<h2 id="第七幕：Vue的坑与React的确定性"><a href="#第七幕：Vue的坑与React的确定性" class="headerlink" title="第七幕：Vue的坑与React的确定性"></a>第七幕：Vue的坑与React的确定性</h2><p><strong>学习者：</strong> 我想起之前在Vue遇到的一个坑。页面展示1，但接口返回2，我找了半天才发现是某个watch里偷偷把值改了。</p>
+<p><strong>引导者：</strong> 我问你：在这个场景里，你最痛苦的是什么？</p>
+<p><strong>学习者：</strong> 不知道是谁改的！console.log看到的是新值，但不知道哪里来的。</p>
+<p><strong>引导者：</strong> 那如果换成React，你console.log看到的值会是接口返回的值吗？</p>
+<p><strong>学习者：</strong> 应该会，因为React有快照，不会在背后修改。</p>
+<p><strong>引导者：</strong> 对。我再问你：如果在React里某个值被改了，你怎么找到是谁改的？</p>
+<p><strong>学习者：</strong> 搜索setState或者setCount，所有修改的地方都在那儿。</p>
+<p><strong>引导者：</strong> 现在你明白为什么React选择这种“繁琐”的方式了吗？</p>
+<hr>
+<h2 id="终章：原子logo的隐喻"><a href="#终章：原子logo的隐喻" class="headerlink" title="终章：原子logo的隐喻"></a>终章：原子logo的隐喻</h2><p><strong>学习者：</strong> 我突然发现React的logo是个原子⚛️，是不是也有什么含义？</p>
+<p><strong>引导者：</strong> 你觉得原子有什么特性？</p>
+<p><strong>学习者：</strong> 原子是不可再分的最小单位？电子围绕原子核转？</p>
+<p><strong>引导者：</strong> 对。我问你：React组件和原子有什么相似之处？</p>
+<p><strong>学习者：</strong> 组件也是UI的最小单位？可以组合成更大的界面？</p>
+<p><strong>引导者：</strong> 还有呢？电子围绕原子核转——如果原子核（state）变了，电子（视图）会怎样？</p>
+<p><strong>学习者：</strong> 会重新排布？但电子本身不会被修改？</p>
+<p><strong>引导者：</strong> 完美！这就是React——state变了，视图重新渲染，但不是直接修改视图。你觉得这个logo是巧合，还是设计哲学的体现？</p>
+<hr>
+<h2 id="最后的思考"><a href="#最后的思考" class="headerlink" title="最后的思考"></a>最后的思考</h2><p><strong>引导者：</strong> 回到最初的问题：React的“繁琐”是设计缺陷，还是有意为之的哲学选择？</p>
+<p><strong>学习者：</strong> 现在明白了，这种繁琐是为了可预测性、可追溯性、调试的便利。</p>
+<p><strong>引导者：</strong> 我问你最后一个问题：如果现在让你选择Vue或React开发一个复杂的电商后台，你会选哪个？为什么？</p>
+]]></content>
+      <categories>
+        <category>苏格拉底式对话</category>
+      </categories>
+      <tags>
+        <tag>React</tag>
+      </tags>
+  </entry>
 </search>
